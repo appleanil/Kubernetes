@@ -70,6 +70,10 @@ spec:
 
 On the node, move the `nginx-static-pod.yaml` file to the `/etc/kubernetes/manifests/` directory:
 
+del and re create once pod will create in same node
+kubectl get po
+kubectl get nodes
+kubectl get po -o wide
 
 sudo mv nginx-static-pod.yaml /etc/kubernetes/manifests/
 
