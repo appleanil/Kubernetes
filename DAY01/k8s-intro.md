@@ -18,7 +18,7 @@ Kubernetes (often abbreviated as K8s) is an open-source container orchestration 
   - Written in **Go/Golang**
   - Donated to **CNCF (Cloud Native Computing Foundation)** in **2014**
   - Kubernetes v1.0 was released on **July 21, 2015**
-  - Current stable release: **v1.31**
+  - Current stable release: **v1.31** (dnt tell the recent version work in job work as v1.25)
 
 ---
 
