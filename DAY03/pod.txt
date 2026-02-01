@@ -22,10 +22,10 @@ in my local once i apply the kubectl apply -f then request go to the API server 
 once the API server stored into the in the master machine scheduler is running that scheduler keep on watching unschedule pods into the etcd database 
 will try to schedule a particular node
 
---> Make a Pod reuqest to API server using a local pod defination file
+--> Make a Pod request to API server using a local pod defination file
 --> The API server saves the info for the pod in ETCD
 --> The scheduler finds the unscheduled pod and shedules it to node.
---> Kubelet running on the node, sees the pod sheduled and fires up container-runtime.
+--> Kubelet running on the node, sees the pod scheduled and fires up container-runtime.
 --> The entire lifecycle state of the pod is stored in ETCD.
 
 
@@ -50,39 +50,31 @@ it  manages the pods instead of directly  managing the containers.
 
 Multi-container-pod or Sidecar  containers 
 ------------------------------------------
-In this model, a pod can hold  multiple co-located containers primary  container And utility container that  helps or enhances how an application  functions (examples of sidecar  containers are log shippers/watchers  and monitoring agents).
+In this model, a pod can hold  multiple co-located containers primary  container And utility container that helps or
+enhances how an application  functions (examples of sidecar  containers are log shippers/watchers  and monitoring agents).
 
 
 
 
-How to list k8s objects?
--------------------------
+How to list k8s objects? -------------------------------> kubectl api-resources
 
-kubectl api-resources
+How to list namespace level objects? -------------------> kubectl api-resources --namespaced=true
 
-How to list namespace level objects?
-------------------------------------
+How to list cluster level objects? ---------------------> kubectl api-resources --namespaced=false
 
-kubectl api-resources --namespaced=true
-
-How to list cluster level objects?
-----------------------------------
-
-kubectl api-resources --namespaced=false
-
-in interview ask to share a screen and write simpple pod yaml
+in interview ask to share a screen and write simpple pod yaml like DeamonSet, ReplicaSet, DeploymenSet
 
 pod syntax
 ===========
 
 apiVersion: v1
 kind: Pod
-metadata: 
+metadata: # information abt pod like which env, which namespaced, pod name
   name: <pod name>
-  labels: 
+  labels: # to identify
    <key>: <value>
-  namespace: <nsName>
-spec:
+  namespace: <nsName> # like prod, db, frontend, staging, UAT
+spec: #container info
    containers:
     - name: <containeName>
       image: <registry/repo:tag>
@@ -96,10 +88,10 @@ save: app1.yaml
 
 apply: kubectl apply -f app1.yaml
 
+kubectl get po --show-lable ----------> to identify
 
 
-
-EXAMPLE 1:
+EXAMPLE 1: In interview they ask to share ur screen and write simple pod yaml like DeamonSet, ReplicaSet, DeploymentSet
 ===========
 
 apiVersion: v1
@@ -119,14 +111,13 @@ spec:
 Example 2:
 =========
 
-
 apiVersion: v1
 kind: Pod
 metadata:
   name: javawebappTest
   labels:
     app: javawebappTest
-  namespace: test-ns
+  namespace: prod
 spec:
   containers:
   - name: javawebapp1
@@ -135,7 +126,36 @@ spec:
     - containerPort: 8080
 
 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: javawebappTest
+  labels:
+    app: javawebappTest
+  namespace: prod
+spec:
+  containers:
+  - name: javawebapp1
+    image: anil
+    ports:
+    - containerPort: 8080
 
+
+kubectl apply -f pod3.yaml, 
+check namespace in prod ----------> kubectl get po -n prod
+error will show u
+
+================================================================
+before apply we need to check syntax error
+
+kubectl apply -f pod.yaml --dry-run=client then one more command
+
+kubectl apply -f pod.yaml --dry-run=server
+
+kubectl get po this is default but we created in prod namespaced
+
+kubectl get po -n prod
+================================================================
 
 
 
@@ -163,11 +183,32 @@ kubectl describe po <podName> -n <NameSpace>
 
 IQ] Before starting pod , i need to do sanity how to do?
 
-Ans: kubectl apply -f abc.yaml -v=8
+Ans: yes, kubectl apply -f abc.yaml -v=8
 
 IQ] in which worker node my pod is running how to check?
 
-Ans: kubectl get po -o wide
+Ans: yes, kubectl get po -o wide
+
+IQ] can we edit the any yaml file 
+Ans: yes, kubectl edit po pod.yaml -n prod
+
+IQ] can we set the default context namespace 
+Ans: yes, kubectl config set-context --current --namespace=default lo undtadi dani manam prod ga change cheyvachu
+
+IQ] how to check default context namespace
+Ans: yes, kubectl config get-contexts
+
+CURRENT   NAME              CLUSTER        AUTHINFO           NAMESPACE
+*         kubernetes-admin  kubernetes      kubernetes-admin   prod
+
+
+
+IQ] can we delete the any pod 
+Ans: yes, kubectl delete po nginxpod -n prod
+
+IQ] can we delete the any yaml pod file
+Ans: yes, kubectl delete -f pod.yaml
+
 
 
 IQ] what is the meaning of 1/1, 2/2, 1/2, 0/2 ?
