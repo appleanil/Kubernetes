@@ -6,7 +6,8 @@ what is a pod?
 
 --> In a Kubernetes cluster, a pod represents a running process.
 
---> Inside a pod, you can have one or more containers. Those containers all share a unique network IP, storage, network and any other specification applied to the pod.
+--> Inside a pod, you can have one or more containers. Those containers all share a unique network IP, storage, network and 
+    any other specification applied to the pod. but highly recommend keep only one container in pod
 
 --> POD is a group of one or more containers which will be running on some node
 
@@ -14,8 +15,12 @@ what is a pod?
 
 
 
-Pod Lifecycle
--------------
+Pod Lifecycle-interview question
+--------------------------------
+let me try to explain a pod life cycle for that we writing a simple yaml file configuration then we try to apply the pod defination
+in my local once i apply the kubectl apply -f then request go to the API server that API server stores the entire information etcd that key value data pairs
+once the API server stored into the in the master machine scheduler is running that scheduler keep on watching unschedule pods into the etcd database 
+will try to schedule a particular node
 
 --> Make a Pod reuqest to API server using a local pod defination file
 --> The API server saves the info for the pod in ETCD
@@ -28,17 +33,19 @@ Pod Lifecycle
 Pod Concepts
 -------------
 --> Pod is ephemeral(lasting for a very short time) and won’t be rescheduled to a  new node once it dies.
---> You should not directly create/use Pod for deployment, Kubernetes have  controllers like Replica Sets, Deployment, Deamon sets to keep pod alive.
+--> You should not directly create/use Pod for deployment, Kubernetes have  controllers like Replica Sets, Deployment,
+    Deamon sets to keep pod alive.
 
 
 
 
---> There are two model types of pod you can create:
+*** There are two model types of pod you can create:
 
 
 One-container-per-pod. 
 ----------------------
-This model is  the most popular. POD is the “wrapper”  for a single container. Since pod is the  smallest object that K8S recognizes, it  manages the pods instead of directly  managing the containers.
+This model is  the most popular. POD is the “wrapper”  for a single container. Since pod is the  smallest object that K8S recognizes, 
+it  manages the pods instead of directly  managing the containers.
 
 
 Multi-container-pod or Sidecar  containers 
@@ -63,7 +70,7 @@ How to list cluster level objects?
 
 kubectl api-resources --namespaced=false
 
-
+in interview ask to share a screen and write simpple pod yaml
 
 pod syntax
 ===========
