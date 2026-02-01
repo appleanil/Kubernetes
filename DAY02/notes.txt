@@ -22,6 +22,9 @@ Kubernetes cluster
 
 
 --> If any failure in the pod, It will taken care by k8s. If any failure in the nodes, cloud will  handle manually. we need to fix it
+nodes -------------> 70+
+microservices -----> 55+
+pods --------------> 240+
 
 
 1 master
@@ -46,8 +49,9 @@ Prerequisite:
 3 - Ubuntu Serves
 
 1 - master  (4GB RAM , 2 Core) t2.medium
+in realtime 64gb, 128gb ++ and 4 core cpu, 8 core cpu
 
-2 - Workers  (1 GB, 1 Core)     t2.micro
+2 - Workers(slave machines)  (1 GB, 1 Core)     t3.micro or t2.micro
 
 
 Note: Open Required Ports In AWS Security Groups. For now we will open All trafic.
@@ -223,6 +227,14 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+in master plz check once kebectl get all -m kube-system
+we can see in K8S architecture names all are in running state by default
+1. pods/etcd
+2. pods/kube-apiserver-<IP-address>
+3. pods/kube-controller-manager-<IP-address>
+4. pods/kube-proxy-<IP-address>
+5. pods/kube-scheduler-<IP-address>
+
 
 # To verify, if kubectl is working or not, run the following command.
 
@@ -241,10 +253,22 @@ https://kubernetes.io/docs/concepts/cluster-administration/addons/
 
 To install Weave net run the following command.
 
-https://www.weave.works/docs/net/latest/kubernetes/kube-addon/
-================================================================
+https://www.weave.works/docs/net/latest/kubernetes/kube-addon/ ---------> to create weave network
+==============================================================
+plz check once kubectl get all nodes then we can see our node status in not ready
 
 kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+after this some more objects will create like 
+1. serviceaccount/weave-net created
+2. clusterrole.rbac.authorization.k8s.io/weave-net created
+3. clusterrolebinding.rbac.authorization.k8s.io/weave-net created
+4. role.rbac.authorization.k8s.io/weave-net created
+5. rolebinding.rbac.authorization.k8s.io/weave-net created
+6. daemonset.apps/weave-net created
+
+
+plz enter kubectl get all nodes then node status ready state
 
 Or To install the calico network addon, run the following command:
 
@@ -261,14 +285,60 @@ kubectl get pods --all-namespaces
 
 kubeadm token create --print-join-command
 
+by this command we have to connect node 1 and node 2 for master machine
+so later copy the data and paste it in node 1 and node 2 
+later run this command kubectl get nodes then status is ready
+
 =========In Master Node End====================
+
+kubectl get po -n kube-system
+
+1. coredns-7c65d6cfc9-45jbh
+   → Provides DNS resolution so pods and services can discover each other.
+
+2. coredns-7c65d6cfc9-xsctr
+   → Second CoreDNS replica for high availability of cluster DNS.
+
+3. etcd-ip-172-31-36-44
+   → Key-value store that holds all Kubernetes cluster state and configuration.
+
+4. kube-apiserver-ip-172-31-36-44
+   → Central API server that handles all kubectl and component requests.
+
+5. kube-controller-manager-ip-172-31-36-44
+   → Runs controllers that maintain desired state (nodes, pods, replicas).
+
+6. kube-proxy-6n97q
+   → Manages network rules to enable service-to-pod communication on this node.
+
+7. kube-proxy-ps5bf
+   → kube-proxy instance running on another node to handle service networking.
+
+8. kube-proxy-tnf8n
+   → Ensures Kubernetes Services routing works on its respective node.
+
+9. kube-scheduler-ip-172-31-36-44
+   → Decides which node new pods should run on based on resources and policies.
+
+10. weave-net-67x9s
+    → Weave CNI pod providing pod-to-pod networking on a node.
+
+11. weave-net-kdgdg
+    → Another Weave Net daemon ensuring networking across cluster nodes.
+
+12. weave-net-tcvb5
+    → Maintains overlay network so pods can communicate across nodes.
+
+
+
+
+
 
 
 Add Worker Machines to Kubernates Master
 =========================================
 
 Copy kubeadm join token from and execute in Worker Nodes to join to cluster
-
 
 
 kubectl commonds has to be executed in master machine.
@@ -348,6 +418,33 @@ k8s nameSpaces
 ==============
 In Kubernetes, namespaces are a way to organize and manage resources within a cluster. They help you divide cluster resources between multiple users or teams and can be useful for managing resource quotas, network policies, and access control.
 
+kubectl get ns
+1. default
+2. kube-node-lease
+3. kube-public
+4. kube-system
+
+without mentioning namespaces then the application go and sit in default namespace ---------> kubectl get po (status is running)
+
+and also check once some more pods are running by default in kube-system --------> kubectl get po -n kube-system
+
+1. coredns-7c65d6cfc9-45jbh
+2. coredns-7c65d6cfc9-xsctr
+3. etcd-ip-172-31-36-44
+4. kube-apiserver-ip-172-31-36-44
+5. kube-controller-manager-ip-172-31-36-44
+6. kube-proxy-6n97q
+7. kube-proxy-ps5bf
+8. kube-proxy-tnf8n
+9. kube-scheduler-ip-172-31-36-44
+10. weave-net-67x9s
+11. weave-net-kdgdg
+12. weave-net-tcvb5
+
+kubectl get po --all-namespaces  (or) kubectl get po -A  ------> it will show u all default pod namespaces
+
+
+
 Here are some key commands and YAML examples related to Kubernetes namespaces:
 
 1. Creating a Namespace
@@ -368,10 +465,7 @@ kubectl apply -f namespace.yaml
 
 --> Alternatively, you can create a namespace directly from the command line:
 
-kubectl create namespace my-namespace
-
-
-
+kubectl create namespace prod
 
 
 
@@ -402,9 +496,6 @@ kubectl describe ns my-namespace
 To delete a namespace (along with all the resources within it):
 
 kubectl delete namespace my-namespace
-
-
-
 
 
 
