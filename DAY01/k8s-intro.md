@@ -18,7 +18,7 @@ Kubernetes (often abbreviated as K8s) is an open-source container orchestration 
   - Written in **Go/Golang**
   - Donated to **CNCF (Cloud Native Computing Foundation)** in **2014**
   - Kubernetes v1.0 was released on **July 21, 2015**
-  - Current stable release: **v1.31** (dnt tell the recent version work in job work as v1.25)
+  - Current stable release: **v1.31** (dnt tell the recent version work in job work as v1.21)
 
 ---
 
@@ -38,6 +38,8 @@ Kubernetes (often abbreviated as K8s) is an open-source container orchestration 
 ### 4. Horizontal Scaling and Load Balancing
 - Applications can be scaled up/down based on CPU usage or other metrics
 - Kubernetes load-balances traffic across containers using built-in services
+- Verictal scaling means increasing the memory and cpu for example first pod as 4gb, 2 cpu later we want scaling then inceasing 8gb memory and 4 cpu
+- 70 node machines and 55+ micro services asked in interview question
 
 ### 5. Service Discovery and Load Balancing
 - Assigns IP addresses and a DNS name for each set of containers
