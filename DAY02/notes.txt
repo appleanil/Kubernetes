@@ -115,7 +115,8 @@ apt-get install ca-certificates curl gnupg lsb-release -y
 
 
 
-Note: We are not installing Docker Here.Since containerd.io package is part of docker apt repositories hence we added docker repository & it's key to download and install containerd.
+Note: We are not installing Docker Here.Since containerd.io package is part of docker apt repositories hence we added docker repository &
+it's key to download and install containerd.
 
 
 # Add Docker’s official GPG key:
@@ -212,7 +213,9 @@ sudo su -
 
 kubeadm init
 
-# If you want to initialize kubernetes on Public EndPoint(Not recommended in real time). You can use below option Replace PUBLIC_IP with actual public ip of your kubernetes master node (Recommended to use Elastic(Create and assign elastic IP to master node and use that Elastic IP below)).Replace PORT with 6443 (API Server Port). 
+# If you want to initialize kubernetes on Public EndPoint(Not recommended in real time). You can use below option
+Replace PUBLIC_IP with actual public ip of your kubernetes master node (Recommended to use Elastic 
+(Create and assign elastic IP to master node and use that Elastic IP below)).Replace PORT with 6443 (API Server Port). 
 
 #kubeadm init --control-plane-endpoint "PUBLIC_IP:PORT"
 
@@ -227,8 +230,10 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-in master plz check once kebectl get all -m kube-system
+in master plz check once kubectl get all -m kube-system
+
 we can see in K8S architecture names all are in running state by default
+
 1. pods/etcd
 2. pods/kube-apiserver-<IP-address>
 3. pods/kube-controller-manager-<IP-address>
@@ -242,7 +247,8 @@ kubectl get nodes
 
 kubectl get pods -o wide -n kube-system
 
-#You will notice from the previous command, that all the pods are running except one: ‘core-dns’. For resolving this we will install a # pod network addon like Calico or Weavenet ..etc. 
+#You will notice from the previous command, that all the pods are running except one: ‘core-dns’. For resolving this we will install a 
+# pod network addon like Calico or Weavenet ..etc. 
 
 
 Note: Install any one network addon don't install both. Install either weave net or calico.
@@ -278,6 +284,7 @@ Or To install the calico network addon, run the following command:
 kubectl get nodes
 
 kubectl get pods 
+
 kubectl get pods --all-namespaces
 
 
@@ -328,6 +335,44 @@ kubectl get po -n kube-system
 
 12. weave-net-tcvb5
     → Maintains overlay network so pods can communicate across nodes.
+
+
+1. coredns-7c65d6cfc9-45jbh
+   → Pods మరియు Services ఒకదానిని ఒకటి కనుగొనడానికి DNS సేవ ఇస్తుంది.
+
+2. coredns-7c65d6cfc9-xsctr
+   → DNS సేవ ఆగకుండా ఉండేందుకు రెండవ CoreDNS pod.
+
+3. etcd-ip-172-31-36-44
+   → Kubernetes క్లస్టర్‌కు సంబంధించిన అన్ని డేటా మరియు సెట్టింగ్స్‌ని స్టోర్ చేస్తుంది.
+
+4. kube-apiserver-ip-172-31-36-44
+   → kubectl మరియు అన్ని components మధ్య కమ్యూనికేషన్‌ను హ్యాండిల్ చేస్తుంది.
+
+5. kube-controller-manager-ip-172-31-36-44
+   → Pods, Nodes, Replicas సరైన స్థితిలో ఉన్నాయా లేదా చూసుకుంటుంది.
+
+6. kube-proxy-6n97q
+   → ఈ నోడ్‌లో Services నుండి Pods‌కు నెట్‌వర్క్ కనెక్షన్ సరిగ్గా పనిచేసేలా చేస్తుంది.
+
+7. kube-proxy-ps5bf
+   → మరో నోడ్‌లో Services నెట్‌వర్క్ ట్రాఫిక్‌ను నిర్వహిస్తుంది.
+
+8. kube-proxy-tnf8n
+   → తన నోడ్‌లో Kubernetes Services routing సరిగ్గా జరిగేలా చూస్తుంది.
+
+9. kube-scheduler-ip-172-31-36-44
+   → కొత్త Pod ఏ నోడ్‌లో రన్ అవ్వాలో నిర్ణయిస్తుంది.
+
+10. weave-net-67x9s
+    → ఈ నోడ్‌లో Pods ఒకదానితో ఒకటి మాట్లాడుకునేలా నెట్‌వర్క్ ఇస్తుంది.
+
+11. weave-net-kdgdg
+    → క్లస్టర్‌లోని మరో నోడ్‌కు నెట్‌వర్క్ కనెక్టివిటీ ఇస్తుంది.
+
+12. weave-net-tcvb5
+    → అన్ని నోడ్స్ మధ్య Pods కమ్యూనికేషన్ స్మూత్‌గా జరిగేలా చూస్తుంది.
+
 
 
 
@@ -416,7 +461,8 @@ kubectl create ns testing-ns
 
 k8s nameSpaces
 ==============
-In Kubernetes, namespaces are a way to organize and manage resources within a cluster. They help you divide cluster resources between multiple users or teams and can be useful for managing resource quotas, network policies, and access control.
+In Kubernetes, namespaces are a way to organize and manage resources within a cluster.
+They help you divide cluster resources between multiple users or teams and can be useful for managing resource quotas, network policies, and access control.
 
 kubectl get ns
 1. default
