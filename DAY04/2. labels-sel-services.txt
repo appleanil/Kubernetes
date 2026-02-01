@@ -88,6 +88,8 @@ How to go inside of pod?
 -------------------------
 
 kubectl exec -it -n test-ns javawebapptest -- sh
+                (or)
+kubectl exec -it -n prod javawebapp -- /bin/bash
 
 NOTE: take another pod ip and run the ping command to check the connection
 
@@ -205,11 +207,19 @@ spec:
     targetPort: 8080
 
 
+service object ki javewebapp connect aye undali so inda leda ani yela telsuthundi
+
+kubectl get ep -n prod     (or)     kubectl describe svc javawebappsvc  --> to check the endpoints
+
 kubectl apply -f pod1.yaml
 
-kubectl get all -n test-ns -o wide --show-labels
+kubectl get all -n prod -o wide --show-labels
 
-kubectl describe svc javawebappsvc  --> to check the endpoints
+kubectl get po -n prod -o wide --show-labels
+
+kubectl get svc -n prod -o wide --show-labels    we did not define labels in service
+
+
 
 
 NOTE: create one more pod with same labels and see the endpoints.
@@ -289,25 +299,3 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
