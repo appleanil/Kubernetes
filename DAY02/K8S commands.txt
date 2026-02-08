@@ -1,0 +1,168 @@
+===============================
+KUBERNETES COMMANDS CHEAT SHEET
+Beginner → Intermediate → Advanced
+===============================
+
+========================
+BEGINNER LEVEL (Daily Use)
+========================
+
+--- Cluster & Nodes ---
+kubectl cluster-info
+kubectl version
+kubectl get nodes
+kubectl describe node <node-name>
+
+--- Namespaces ---
+kubectl get namespaces
+kubectl get ns
+kubectl create ns dev
+kubectl delete ns dev
+kubectl config set-context --current --namespace=dev
+
+--- Pods ---
+kubectl get pods
+kubectl get pods -o wide
+kubectl get pods -n kube-system
+kubectl describe pod <pod-name>
+kubectl delete pod <pod-name>
+
+--- Deployments ---
+kubectl get deployments
+kubectl describe deployment <deployment-name>
+kubectl create deployment nginx --image=nginx
+kubectl delete deployment nginx
+
+--- Services ---
+kubectl get svc
+kubectl describe svc <service-name>
+
+--- YAML Apply ---
+kubectl apply -f pod.yaml
+kubectl delete -f pod.yaml
+kubectl get all
+
+
+=============================
+INTERMEDIATE LEVEL (Real Work)
+=============================
+
+--- Scaling & Rollouts ---
+kubectl scale deployment nginx --replicas=3
+kubectl rollout status deployment nginx
+kubectl rollout history deployment nginx
+kubectl rollout undo deployment nginx
+
+--- Logs & Exec ---
+kubectl logs <pod-name>
+kubectl logs <pod-name> -c <container-name>
+kubectl logs -f <pod-name>
+
+kubectl exec -it <pod-name> -- /bin/bash
+kubectl exec -it <pod-name> -- /bin/sh
+
+--- Labels & Selectors ---
+kubectl get pods --show-labels
+kubectl label pod nginx app=web
+kubectl get pods -l app=web
+
+--- ConfigMaps & Secrets ---
+kubectl create configmap mycfg --from-literal=env=prod
+kubectl get configmap
+kubectl describe configmap mycfg
+
+kubectl create secret generic mysecret --from-literal=password=admin
+kubectl get secrets
+
+--- Resource Usage (metrics-server required) ---
+kubectl top nodes
+kubectl top pods
+
+
+=============================
+ADVANCED LEVEL (Production)
+=============================
+
+--- Contexts & Kubeconfig ---
+kubectl config get-contexts
+kubectl config use-context <context-name>
+kubectl config view
+
+--- API Resources & Discovery ---
+kubectl api-resources
+kubectl api-versions
+kubectl explain pod
+kubectl explain pod.spec.containers
+
+--- JSON / YAML Output ---
+kubectl get pod <pod> -o yaml
+kubectl get pod <pod> -o json
+kubectl get pods -o custom-columns=NAME:.metadata.name,STATUS:.status.phase
+
+--- Patch Resources ---
+kubectl patch deployment nginx -p '{"spec":{"replicas":5}}'
+
+--- Port Forwarding ---
+kubectl port-forward pod/nginx 8080:80
+kubectl port-forward svc/nginx 8080:80
+
+--- Taints & Tolerations ---
+kubectl taint nodes node1 key=value:NoSchedule
+kubectl taint nodes node1 key=value:NoSchedule-
+
+--- Node Maintenance ---
+kubectl cordon node1
+kubectl drain node1 --ignore-daemonsets
+kubectl uncordon node1
+
+
+=====================================
+TROUBLESHOOTING / DEBUGGING (CRITICAL)
+=====================================
+
+--- Cluster Health ---
+kubectl get componentstatuses
+kubectl get events
+kubectl get events --sort-by=.metadata.creationTimestamp
+
+--- Pod Debugging ---
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+kubectl logs <pod-name> --previous
+
+--- CrashLoopBackOff Debug ---
+kubectl describe pod <pod-name>
+kubectl logs <pod-name> --previous
+
+--- Node Issues ---
+kubectl describe node <node-name>
+journalctl -u kubelet -f
+
+--- Debug with Temporary Pod ---
+kubectl run debug --image=busybox -it --rm -- sh
+
+--- DNS Debug ---
+kubectl exec -it <pod> -- nslookup kubernetes.default
+kubectl get pods -n kube-system | grep coredns
+
+
+=========================
+KUBEADM (Cluster Admin)
+=========================
+
+kubeadm init
+kubeadm reset -f
+kubeadm token create --print-join-command
+kubeadm join <master-ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+
+
+=========================
+ONE-LINE MEMORY MAP
+=========================
+
+kubectl              → Manage Kubernetes resources
+kubeadm              → Create / Join cluster
+kubelet              → Runs pods on node
+etcd                 → Stores cluster state
+controller-manager   → Maintains desired state
+scheduler            → Selects node for pods
