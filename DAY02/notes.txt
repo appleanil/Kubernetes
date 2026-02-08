@@ -224,7 +224,7 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-in master plz check once kubectl get all -m kube-system
+in master plz check once kubectl get all -n kube-system
 
 we can see in K8S architecture names all are in running state by default
 
@@ -292,6 +292,7 @@ later run this command kubectl get nodes then status is ready
 
 =========In Master Node End====================
 
+kubeadm join 172.31.46.122:6443 --token 0l59go.sw6g259pyw1bu2b2 --discovery-token-ca-cert-hash sha256:e5daeda33e3230830e3c705c97f6b1679085d18de0e3f91ec0c3f8cebb1f0bb7
 
 
 
