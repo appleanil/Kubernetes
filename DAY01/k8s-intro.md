@@ -22,6 +22,7 @@ Kubernetes (often abbreviated as K8s) is an open-source container orchestration 
   - how to do upgrade latest version
 
 ---
+Node lo Pods deploy cheystamu and Pods lo containers deploy cheystamu simple understand
 
 ## Kubernetes Key Features
 
@@ -37,10 +38,11 @@ Kubernetes (often abbreviated as K8s) is an open-source container orchestration 
 - Supports rollback in case of failure
 
 ### 4. Horizontal Scaling and Load Balancing
-- Applications can be scaled up/down based on CPU usage or other metrics
-- Kubernetes load-balances traffic across containers using built-in services
-- Verictal scaling means increasing the memory and cpu for example first pod as 4gb, 2 cpu later we want scaling then inceasing 8gb memory and 4 cpu
-- 70 node machines and 55+ micro services asked in interview question
+- Applications can be scaled up/down based on CPU usage or other metrics.
+- Kubernetes load-balances traffic across containers using built-in services.
+- Horizontal scaling means pod as 4gb memory, 2 core cpu if load increasing then launch another ec2 machine with same configuration. side by side
+- Verictal scaling means increasing the memory and cpu for example first pod as 4gb, 2 cpu later we want scaling then inceasing 8gb memory and 4 cpu. top by top
+- 70 node machines and 55+ micro services asked in interview question.
 
 ### 5. Service Discovery and Load Balancing
 - Assigns IP addresses and a DNS name for each set of containers
