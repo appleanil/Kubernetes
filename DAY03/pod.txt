@@ -1,3 +1,13 @@
+Class Explaination:
+-------------------
+1. Create a yaml file example nginx, tomcat, jenkins, mongodb
+2. make some changes yaml file image name check 
+3. yaml syntax, kubectl apply -f, kubectl delete po, kubectl context path, kubectl edit, namespace commands
+
+
+
+
+
 what is a pod?
 ===============
 --> A pod is the smallest building block or basic unit of scheduling in Kubernetes.
@@ -15,8 +25,8 @@ what is a pod?
 
 
 
-Pod Lifecycle-interview question
---------------------------------
+Pod Lifecycle-interview question or K8S architecture
+----------------------------------------------------
 let me try to explain a pod life cycle for that we writing a simple yaml file configuration then we try to apply the pod defination
 in my local once i apply the kubectl apply -f then request go to the API server that API server stores the entire information etcd that key value data pairs
 once the API server stored into the in the master machine scheduler is running that scheduler keep on watching unschedule pods into the etcd database 
