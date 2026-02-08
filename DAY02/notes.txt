@@ -442,19 +442,20 @@ It is group of k8s servers/nodes.
 
 what is node?
 =============
+A node is a worker machine in Kubernetes that runs pods and is managed by the control plane.
+A node is a machine (VM or physical server) where containers (pods) actually run. A node is the host, not the container.
+Two type of nodes:
+
+1️⃣ Control Plane(master) Node --> Responsible for managing the cluster (not user apps), kube-apiserver, controller-manager, scheduler, etcd 
+
+2️⃣ Worker Node --> Responsible for running application workloads. kubelet, container runtime (containerd), kube-proxy, application pods
+
 
 
 How to list all k8s resources?
 ==============================
 
 kubectl api-resources
-
-
-
-
-kubectl create namespace <NN>
-
-kubectl create ns testing-ns
 
 
 
@@ -489,7 +490,6 @@ and also check once some more pods are running by default in kube-system -------
 kubectl get po --all-namespaces  (or) kubectl get po -A  ------> it will show u all default pod namespaces
 
 
-
 Here are some key commands and YAML examples related to Kubernetes namespaces:
 
 1. Creating a Namespace
@@ -512,46 +512,36 @@ kubectl apply -f namespace.yaml
 
 kubectl create namespace prod
 
+kubectl create namespace <NN>
 
+kubectl create ns testing-ns
 
 
 
 2. Listing Namespaces
 ---------------------
-
 kubectl get namespaces  or kubectl get ns
 
 
 3. Viewing Namespace Details
 -----------------------------
-
 To get detailed information about a specific namespace:
 
 kubectl describe ns my-namespace
 
 
 
-
-
-
-
 4. Deleting a Namespace
 -----------------------
-
 To delete a namespace (along with all the resources within it):
 
 kubectl delete namespace my-namespace
 
 
 
-
-
 5. Using Namespaces in Resource Definitions
 ---------------------------------------------
-
-
 When defining resources (like Pods, Services, Deployments) in YAML files, you specify the namespace under the metadata section:
-
 
 apiVersion: v1
 kind: Pod
@@ -562,7 +552,6 @@ spec:
   containers:
   - name: ngnix123
     image: nginx
-
 
 
 kubectl apply -f pod.yaml
@@ -589,4 +578,3 @@ spec:
 
 
 kubectl apply -f quota.yaml
-
