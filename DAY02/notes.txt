@@ -311,6 +311,7 @@ kubectl get po -n kube-system
 
 5. kube-controller-manager-ip-172-31-36-44
    → Runs controllers that maintain desired state (nodes, pods, replicas).
+     min/max yanni undali nodes, pods, replicas,deploy and crash ina automatcally up avvali 
 
 6. kube-proxy-6n97q
    → Manages network rules to enable service-to-pod communication on this node.
