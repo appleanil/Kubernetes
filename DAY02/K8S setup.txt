@@ -205,6 +205,12 @@ sudo su -
 
 # Initialize Kubernates master by executing below commond.
 
+apt-get update
+apt-get install -y conntrack
+which conntrack
+/usr/sbin/conntrack
+
+
 kubeadm init
 
 # If you want to initialize kubernetes on Public EndPoint(Not recommended in real time). You can use below option
