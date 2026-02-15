@@ -84,6 +84,8 @@ which conntrack
 /usr/sbin/conntrack
 kubeadm init
 
+#from here to we can only master node
+
 #!/bin/bash
 
 # Configure kubectl for root user
