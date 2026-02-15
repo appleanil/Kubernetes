@@ -78,4 +78,10 @@ systemctl daemon-reload
 systemctl enable kubelet
 systemctl start kubelet
 
+apt-get install -y conntrack
+apt-get install -y conntrack socat ebtables ipset
+which conntrack
+/usr/sbin/conntrack
+kubeadm init
+
 echo "========== Kubernetes Common Setup Completed =========="
