@@ -547,8 +547,11 @@ metadata:
   namespace: my-namespace
 spec:
   containers:
-  - name: ngnix123
+  - name: nginx123
     image: nginx
+    ports:
+    - containerPort: 80
+
 
 
 kubectl apply -f pod.yaml
