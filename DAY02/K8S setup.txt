@@ -306,6 +306,7 @@ kubectl get po -n kube-system
 
 3. etcd-ip-172-31-36-44
    → Key-value store that holds all Kubernetes cluster state and configuration.
+     Nodes, Pods, Deployments, ConfigMaps, Secrets, Cluster state, these type of values will be stored
 
 4. kube-apiserver-ip-172-31-36-44
    → Central API server that handles all kubectl and component requests.
@@ -314,8 +315,8 @@ kubectl get po -n kube-system
    → Runs controllers that maintain desired state (nodes, pods, replicas).
      min/max yanni undali nodes, pods, replicas,deploy and crash ina automatcally up avvali 
 
-6. kube-proxy-6n97q
-   → Manages network rules to enable service-to-pod communication on this node.
+6. kube-scheduler-ip-172-31-36-44
+   → Decides which node new pods should run on based on resources and policies.
 
 7. kube-proxy-ps5bf
    → kube-proxy instance running on another node to handle service networking.
@@ -323,8 +324,8 @@ kubectl get po -n kube-system
 8. kube-proxy-tnf8n
    → Ensures Kubernetes Services routing works on its respective node.
 
-9. kube-scheduler-ip-172-31-36-44
-   → Decides which node new pods should run on based on resources and policies.
+9. kube-proxy-6n97q
+   → Manages network rules to enable service-to-pod communication on this node.
 
 10. weave-net-67x9s
     → Weave CNI pod providing pod-to-pod networking on a node.
@@ -342,8 +343,11 @@ kubectl get po -n kube-system
 2. coredns-7c65d6cfc9-xsctr
    → DNS సేవ ఆగకుండా ఉండేందుకు రెండవ CoreDNS pod.
 
-3. etcd-ip-172-31-36-44
+3. etcd-ip-172-31-36-44  etc → A traditional Linux directory that stores configuration files
+
+                         “d” → Stands for daemon (a background service)
    → Kubernetes క్లస్టర్‌కు సంబంధించిన అన్ని డేటా మరియు సెట్టింగ్స్‌ని స్టోర్ చేస్తుంది.
+     Nodes, Pods, Deployments, ConfigMaps, Secrets, Cluster state, these type of values will be stored
 
 4. kube-apiserver-ip-172-31-36-44
    → kubectl మరియు అన్ని components మధ్య కమ్యూనికేషన్‌ను హ్యాండిల్ చేస్తుంది.
@@ -351,8 +355,8 @@ kubectl get po -n kube-system
 5. kube-controller-manager-ip-172-31-36-44
    → Pods, Nodes, Replicas సరైన స్థితిలో ఉన్నాయా లేదా చూసుకుంటుంది.
 
-6. kube-proxy-6n97q
-   → ఈ నోడ్‌లో Services నుండి Pods‌కు నెట్‌వర్క్ కనెక్షన్ సరిగ్గా పనిచేసేలా చేస్తుంది.
+6. kube-scheduler-ip-172-31-36-44
+   → కొత్త Pod ఏ నోడ్‌లో రన్ అవ్వాలో నిర్ణయిస్తుంది.
 
 7. kube-proxy-ps5bf
    → మరో నోడ్‌లో Services నెట్‌వర్క్ ట్రాఫిక్‌ను నిర్వహిస్తుంది.
@@ -360,8 +364,8 @@ kubectl get po -n kube-system
 8. kube-proxy-tnf8n
    → తన నోడ్‌లో Kubernetes Services routing సరిగ్గా జరిగేలా చూస్తుంది.
 
-9. kube-scheduler-ip-172-31-36-44
-   → కొత్త Pod ఏ నోడ్‌లో రన్ అవ్వాలో నిర్ణయిస్తుంది.
+9. kube-proxy-6n97q
+   → ఈ నోడ్‌లో Services నుండి Pods‌కు నెట్‌వర్క్ కనెక్షన్ సరిగ్గా పనిచేసేలా చేస్తుంది.
 
 10. weave-net-67x9s
     → ఈ నోడ్‌లో Pods ఒకదానితో ఒకటి మాట్లాడుకునేలా నెట్‌వర్క్ ఇస్తుంది.
@@ -416,19 +420,12 @@ ReplicaSet
 DaemonSet
 Deployment
 StatefulSet
-
 namespace
-
-
-
 ConfigMap
 Secret
-
 Service
 NetworkPolicies
 Ingress
-
-
 PersistentVolumeClaim
 PersistentVolume
 
