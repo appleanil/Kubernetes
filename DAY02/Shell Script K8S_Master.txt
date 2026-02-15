@@ -84,4 +84,18 @@ which conntrack
 /usr/sbin/conntrack
 kubeadm init
 
+#!/bin/bash
+
+# Configure kubectl for root user
+mkdir -p $HOME/.kube
+cp /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Install Weave CNI
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+# Generate join command
+kubeadm token create --print-join-command
+
+
 echo "========== Kubernetes Common Setup Completed =========="
