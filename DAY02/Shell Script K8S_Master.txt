@@ -78,13 +78,15 @@ systemctl daemon-reload
 systemctl enable kubelet
 systemctl start kubelet
 
+#from here to we can only master node
+
 apt-get install -y conntrack
 apt-get install -y conntrack socat ebtables ipset
 which conntrack
 /usr/sbin/conntrack
 kubeadm init
 
-#from here to we can only master node
+
 
 #!/bin/bash
 
