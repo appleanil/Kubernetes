@@ -15,8 +15,8 @@ Instead, they are created and managed directly by the Kubelet on the node where 
 
 2. Node-Specific: 
 -----------------
-Static Pods are defined on a specific node, and they cannot be scheduled or moved between nodes by the Kubernetes scheduler. They are "node-local" 
-and are only visible to the Kubelet on that node.
+Static Pods are defined on a specific node, and they cannot be scheduled or moved between nodes by the Kubernetes scheduler.
+They are "node-local" and are only visible to the Kubelet on that node.
 
 3. Self-Healing:  ********
 ----------------
@@ -137,4 +137,3 @@ Additionally, if you remove the static pod YAML file from the `/etc/kubernetes/m
 2. Hard to Manage at Scale: Since static pods are not managed by the API server, 
    they are harder to manage in larger clusters where you might want higher-level abstractions.
 
- 
