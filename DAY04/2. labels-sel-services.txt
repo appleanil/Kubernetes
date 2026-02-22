@@ -7,9 +7,13 @@ Labels
 it’s like tag things in kubernetes  For e.g.
 
 labels:
-	app: nginx  
-	role: web  
-	env: dev
+  app: payment-service
+  env: production
+  tier: backend
+  version: v2
+  managed-by: kubectl
+  createdby: opsteam
+  owner: devops-team
 
 Selectors
 ---------
