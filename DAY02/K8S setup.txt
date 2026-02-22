@@ -40,7 +40,7 @@ Agenda: Kubernetes Setup Using Kubeadm In AWS EC2 Ubuntu Servers Container-D As 
 Prerequisite:
 =============
 
-3 - Ubuntu Serves
+3 - Ubuntu Servers
 
 1 - master  (4GB RAM , 2 Core) t2.medium
 in realtime 64gb, 128gb ++ and 4 core cpu, 8 core cpu
