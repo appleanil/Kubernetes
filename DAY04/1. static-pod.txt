@@ -46,10 +46,10 @@ Static Pods are used to run critical components of Kubernetes, like the `kube-ap
 1. Pod Specification File: The static pod specification is a YAML or JSON file that is saved directly to a specific directory on the node's filesystem.
 
 2. Kubelet Monitors Directory: The Kubelet continuously watches the directory for any changes to static pod specifications. 
-When it detects a change (like a new pod specification), it will create or update the pod accordingly.
+   When it detects a change (like a new pod specification), it will create or update the pod accordingly.
 
 3. Pod Lifecycle: The Kubelet manages the lifecycle of static pods. If a static pod crashes or is deleted,
-the Kubelet will automatically recreate the pod based on the specification file.
+   the Kubelet will automatically recreate the pod based on the specification file.
 
  Example of a Static Pod
  =======================
@@ -131,8 +131,10 @@ Additionally, if you remove the static pod YAML file from the `/etc/kubernetes/m
 
  Disadvantages of Static Pods:
  ==============================
-1. No Scheduler: Static Pods are not scheduled, meaning you cannot use the regular scheduling mechanisms like Deployments, ReplicaSets, or StatefulSets to scale them or ensure distribution across nodes.
+1. No Scheduler: Static Pods are not scheduled, meaning you cannot use the regular scheduling mechanisms like
+   Deployments, ReplicaSets, or StatefulSets to scale them or ensure distribution across nodes.
 
-2. Hard to Manage at Scale: Since static pods are not managed by the API server, they are harder to manage in larger clusters where you might want higher-level abstractions.
+2. Hard to Manage at Scale: Since static pods are not managed by the API server, 
+   they are harder to manage in larger clusters where you might want higher-level abstractions.
 
  
