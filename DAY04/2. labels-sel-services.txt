@@ -190,8 +190,8 @@ A Service identifies Pods by its LabelSelector.
 
 service Types
 =============
-1. ClusterIP
-2. NodePort
+1. ClusterIP [pod to pod connection without internet expose]
+2. NodePort 
 3. Load balancer
 
 
