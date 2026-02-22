@@ -1,10 +1,33 @@
+Class brief explaination:
+-------------------------
+1️⃣ Create 2 pods (one with labels, one without)
+2️⃣ Install ping (iputils-ping)
+3️⃣ Get pod IP using kubectl get pods -o wide -n prod in which node we can see, kubectl get po <pod name> -o wide -n prod --show-labels
+4️⃣ Exec into one pod
+5️⃣ Ping other pod IP
+
+here prblm is always by manual check the connection between two pods so we are going to "selectors"  
+
+1️⃣ Create Pods with labels
+2️⃣ Create Service with selector
+3️⃣ kubectl get po -o wide -n prod --show-labels
+4️⃣ kubectl describe svc demo-service
+5️⃣ kubectl get ep demo-service ---------------> We can see Endpoints having connections with multiple pod IP_address
+
+
+
+
+
+
+
 Labels and selectors 
 ==================
 Labels
 ------
 --> When One thing in k8s needs to find another things in k8s, it uses labels.  Labels are key/value pairs attached to Object
 --> You can make your own and apply it.
-it’s like tag things in kubernetes  For e.g.
+it’s like tag things in kubernetes  
+For e.g.
 
 labels:
   app: payment-service
@@ -90,6 +113,8 @@ kubectl get po -n test-ns -o wide
 
 How to go inside of pod?
 -------------------------
+sudo apt update
+sudo apt install -y iputils-ping
 
 kubectl exec -it -n test-ns javawebapptest -- sh
                 (or)
@@ -150,13 +175,16 @@ spec:
     ports:
     - containerPort: 27017
 
+sudo apt update
+sudo apt install -y iputils-ping
 
 kubectl exec -it -n test-ns javawebapp -- sh
 
 ping 10.44.0.1
 
 
-service: A service is responsible for making our Pods discoverable inside the network or exposing them to the internet. A Service identifies Pods by its LabelSelector.
+service: A service is responsible for making our Pods discoverable inside the network or exposing them to the internet.
+A Service identifies Pods by its LabelSelector.
 
 
 
@@ -172,7 +200,8 @@ service Types
 
 --> Exposes the service on a cluster-internal IP. Service is only reachable from within the cluster. This is the default Type.
 
---> When we create a service we will get one Virtual IP (Cluster IP) it will get registered to the DNS(kube-dns). Using this Other PODS can find and talk the pods of this service using service name.
+--> When we create a service we will get one Virtual IP (Cluster IP) it will get registered to the DNS(kube-dns). 
+    Using this Other PODS can find and talk the pods of this service using service name.
 
 --> Service is just a logical concept, the real work is being done by the “kube-proxy” pod that is running on each node.
 
@@ -228,9 +257,8 @@ kubectl get svc -n prod -o wide --show-labels    we did not define labels in ser
 
 NOTE: create one more pod with same labels and see the endpoints.
 
-
 Example 2:
-
+----------
 apiVersion: v1
 kind: Pod
 metadata:
@@ -258,7 +286,6 @@ spec:
   type: ClusterIP  # This is the default type for services
 
 
-
 curl http://10.110.231.227:80 --> From outside pod
 
 
@@ -267,12 +294,11 @@ curl http://10.110.231.227:80 --> From outside pod
 
 Exposes the service on each Node’s IP at a static port. 
 
---> A ClusterIP service, to which the NodePort service will route,  is automatically created. 
+--> A ClusterIP service, to which the NodePort service will route, is automatically created. 
 
--->You’ll be able to contact the NodePort service, from outside the cluster, by using     “<NodeIP>:<NodePort>”.
+--> You’ll be able to contact the NodePort service, from outside the cluster, by using “<NodeIP>:<NodePort>”.
 
---> Note: If we don’t define nodePort value for NodePort Service. K8’s will randomly
-Allocate a nodePort with in 30000—32767.
+--> Note: If we don’t define nodePort value for NodePort Service. K8’s will randomly Allocate a nodePort with in 30000—32767.
 
 
 
