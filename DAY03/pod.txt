@@ -42,9 +42,8 @@ will try to schedule a particular node
 
 Pod Concepts
 -------------
---> Pod is ephemeral(lasting for a very short time) and won’t be rescheduled to a  new node once it dies.
---> You should not directly create/use Pod for deployment, Kubernetes have  controllers like Replica Sets, Deployment,
-    Deamon sets to keep pod alive.
+--> Pod is ephemeral(lasting for a very short time) and won’t be rescheduled to a new node once it dies.
+--> You should not directly create/use Pod for deployment, Kubernetes have controllers like Replica Sets, Deployment, Deamon sets to keep pod alive.
 
 
 
@@ -131,7 +130,7 @@ metadata:
 spec:
   containers:
   - name: javawebapp1
-    image: kkeducation123456/maven-web-app:1.2
+    image: anildocker11/maven:0.0.2
     ports:
     - containerPort: 8080
 
@@ -192,11 +191,9 @@ kubectl describe po <podName> -n <NameSpace>
 
 
 IQ] Before starting pod, i need to do sanity how to do?
-
 Ans: yes, kubectl apply -f <pod_name> -v=8
 
 IQ] in which worker node my pod is running how to check?
-
 Ans: yes, kubectl get po -o wide
 
 IQ] can we edit the any yaml file 
@@ -211,15 +208,11 @@ Ans: yes, kubectl config get-contexts
 CURRENT   NAME              CLUSTER        AUTHINFO           NAMESPACE
 *         kubernetes-admin  kubernetes      kubernetes-admin   prod
 
-
-
 IQ] can we delete the any pod 
 Ans: yes, kubectl delete po nginxpod -n prod
 
 IQ] can we delete the any yaml pod file
 Ans: yes, kubectl delete -f pod.yaml
-
-
 
 IQ] what is the meaning of 1/1, 2/2, 1/2, 0/2 ?
 
@@ -229,13 +222,4 @@ Ans:  1/1 means inside a pod we have a one container and that is running
 
 
 
-Assignment : pls create a pods 
-==========
-
-tomcat
-
-Jenkins
-
-mongo
-
-
+Assignment : pls create a pods ----------> tomcat, Jenkins, mongo
