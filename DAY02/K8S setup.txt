@@ -455,12 +455,6 @@ Two type of nodes:
 
 
 
-How to list all k8s resources?
-==============================
-
-kubectl api-resources
-
-
 
 k8s nameSpaces
 ==============
@@ -497,8 +491,6 @@ Here are some key commands and YAML examples related to Kubernetes namespaces:
 
 1. Creating a Namespace
 ------------------------
-
-
 Create a namespace using a YAML file, as shown earlier:
 
 apiVersion: v1
@@ -559,18 +551,13 @@ spec:
     - containerPort: 80
 
 
-
 kubectl apply -f pod.yaml
 
 
-6. Switching Namespaces in kubectl Context
---------------------------------------------
-
-kubectl config set-context --current --namespace=test
+6. Switching Namespaces in kubectl Context -----------> kubectl config set-context --current --namespace=test
 
 7. Namespace Resource Quotas
 -----------------------------
-
 You can define resource quotas and limits per namespace to control the usage of resources:
 
 apiVersion: v1
