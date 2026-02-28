@@ -1,5 +1,17 @@
- What is a Static Pod?
- ======================
+Class Breif Explaination:
+-------------------------
+1. Create a yaml file configuration with any nginx, tomcat, jenkins/jenkins:lts, sonarqube
+2. sudo vi /etc/kubernetes/manifests/pod.yaml
+3. Go and check in master node by kubectl get po --all-namespaces
+4. kubectl get po or kubectl get po -n prod
+
+
+
+
+
+
+What is a Static Pod?
+======================
 
 A Static Pod in Kubernetes is a pod that is not managed by the Kubernetes API server directly, but rather is managed by the Kubelet on a specific node.
 These pods are defined by configuration files that are placed directly on the node’s filesystem (typically in a specific directory), 
