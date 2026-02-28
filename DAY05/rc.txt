@@ -11,6 +11,8 @@ ReplicationController
 
 --> Creating “RC” with count of 1 ensure that a POD is always available.
 
+--> when they ask down the application then dnt delete the RC. Do relicas scale zero kubectl scale rc <rc-name> --replicas=0
+
 
 
 Example:
@@ -20,7 +22,10 @@ kind: ReplicationController
 metadata:
   name: javawebapprc
   namespace: test-ns
-spec:
+  labels:
+    rcapp: javaapprc
+    env: prod # we can define no:of labels
+spec: # replicationcontroller spec from replicas to app
   replicas: 2
   selector:
     app: javawebapp
@@ -29,7 +34,7 @@ spec:
       name: javawebapprcpod
       labels:
         app: javawebapp
-    spec: 
+    spec: #pod spec
       containers:
       - name: javawebapprccon
         image: kkeducationb2/java-webapp:1.1
