@@ -17,7 +17,7 @@ here prblm is always by manual check the connection between two pods so we are g
 
 
 Interview Question --> my application ki everthing is fine health, cpu, memory but im not accessing whst might be the reason 
- plz check security inbound and give the port number for that application.
+ plz check security inbound and give the crt port number, check service name, check the endpoints for that application.
 
 
 
