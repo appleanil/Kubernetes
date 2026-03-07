@@ -332,3 +332,4 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
+    nodePort: 30000 #nodeport range ---> 30000 – 32767
