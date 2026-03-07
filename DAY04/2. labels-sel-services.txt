@@ -223,7 +223,7 @@ metadata:
 spec:
   containers:
   - name: javawebapp
-    image: kkeducationb2/java-webapp:1.1
+    image: anildocker11/maven:0.0.2
     ports:
     - containerPort: 8080
 ---
@@ -314,7 +314,7 @@ metadata:
 spec:
   containers:
   - name: javawebapp
-    image: kkeducationb2/java-webapp:1.1
+    image: anildocker11/maven:0.0.2
     ports:
     - containerPort: 8080
 ---
