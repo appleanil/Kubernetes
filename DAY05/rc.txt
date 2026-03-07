@@ -13,6 +13,8 @@ ReplicationController
 
 --> when they ask down the application then dnt delete the RC. Do relicas scale zero kubectl scale rc <rc-name> --replicas=0
 
+--> When u want to expose the internet then write yaml file for service
+
 
 
 Example:
