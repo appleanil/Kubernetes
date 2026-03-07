@@ -19,6 +19,8 @@ kubectl get ns
 kubectl create ns dev
 kubectl delete ns dev
 kubectl config set-context --current --namespace=dev
+kubectl config current-context <------  Command to Check Current Context 
+kubectl config get-contexts    <------  Command to See All Contexts
 
 --- Pods ---
 kubectl get pods
