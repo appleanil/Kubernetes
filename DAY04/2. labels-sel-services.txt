@@ -14,6 +14,8 @@ here prblm is always by manual check the connection between two pods so we are g
 4️⃣ kubectl describe svc demo-service
 5️⃣ kubectl get ep demo-service ---------------> We can see Endpoints having connections with multiple pod IP_address
 
+create yaml for ClusterTP and NodePort also
+
 
 
 Interview Question --> my application ki everthing is fine health, cpu, memory but im not accessing whst might be the reason 
