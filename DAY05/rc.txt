@@ -34,6 +34,8 @@ spec: # replicationcontroller spec from replicas to app
       name: javawebapprcpod
       labels:
         app: javawebapp
+        env: prod
+        team: devops
     spec: #pod spec
       containers:
       - name: javawebapprccon
