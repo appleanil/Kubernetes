@@ -193,6 +193,9 @@ kubectl describe po <podName> -n <NameSpace>
 IQ] Before starting pod, i need to do sanity how to do?
 Ans: yes, kubectl apply -f <pod_name> -v=8
 
+Before starting a pod, we perform sanity checks like verifying cluster status, checking nodes, confirming context and namespace, validating the YAML file using dry-run,
+and ensuring resources are available.
+
 IQ] in which worker node my pod is running how to check?
 Ans: yes, kubectl get po -o wide
 
