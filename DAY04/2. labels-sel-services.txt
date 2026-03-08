@@ -134,7 +134,18 @@ ping 10.0.1.9
 
 IQ] why we are going for k8s service object?
 ============================================
+Kubernetes Service to provide stable IP, load balancing, and service discovery for Pods whose IP addresses change dynamically.
+Kubernetes Service is used to provide a stable network endpoint to access a group of Pods.
 
+Why We Use Kubernetes Service
+
+1️⃣ Stable IP Address ------> Pods change IP but Service IP remains constant.
+
+2️⃣ Load Balancing ---------> Traffic is distributed across multiple Pods.
+
+3️⃣ Service Discovery ------> Pods can communicate using DNS name instead of IP.
+
+4️⃣ Expose Application -----> You can expose Pods to ------> Inside cluster, Outside cluster
 
 NOTE: one pod can communicate with another pod through IP, But is not suggestable why?
 
@@ -212,7 +223,7 @@ service Types
 
 
 Example 1:
-
+----------
 
 apiVersion: v1
 kind: Pod
