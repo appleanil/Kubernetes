@@ -59,12 +59,7 @@ key in(value1,value2)
 key not in(value1,value2)
 
 
-
-
 --> RC selector is an optional , in RS selector is mandatory.
-
-
-
 
 
 Syntax
@@ -78,9 +73,9 @@ metadata:
 spec:
   replicas: <number-of-pods>
   selector:
-    matchLabels:
+    matchLabels: #equlity based selector
       <key>: <value>
-    matchExpressions:
+    matchExpressions: #set based selector
       - key: <key>
         operator: In
         values:
@@ -121,7 +116,7 @@ spec:
       containers:
       - name: javawebapp
         image: kkeducationb2/java-webapp:1.1 #anildocker11/springwebapp:0.0.2 or 0.0.1 / anildocker11/maven:0.0.1 / 0.0.2 / 0.0.3 or anildocker11/docker-maven:0.0.0
-        ports:
+        ports:                                
         - containerPort: 8080
 ---
 apiVersion: v1
@@ -183,4 +178,3 @@ spec:
     - port: 80
       targetPort: 8080
       nodePort: 30080
-     
