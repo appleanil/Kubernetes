@@ -32,6 +32,7 @@ once i apply the kubectl apply -f then request go to the API server that API ser
 once the API server stored into the master machine scheduler is running that scheduler keep on watching unschedule pods into the etcd database 
 will try to schedule a particular node
 
+--> key value data pairs means odes, Pods, Deployments, ConfigMaps, Secrets, Cluster state, these type of values will be stored
 --> Make a Pod request to API server using a local pod defination file
 --> The API server saves the info for the pod in ETCD
 --> The scheduler finds the unscheduled pod and shedules it to node.
