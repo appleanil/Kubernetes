@@ -13,6 +13,11 @@ kubectl version
 kubectl get nodes
 kubectl describe node <node-name>
 
+--- Force Delete the Pod ---
+kubectl delete pod anilwebapp -n prod --force --grace-period=0 ------> delete particular pod
+kubectl delete pods --all -n prod --force --grace-period=0 ----------> delete all pods 
+
+
 --- Namespaces ---
 kubectl get namespaces
 kubectl get ns
