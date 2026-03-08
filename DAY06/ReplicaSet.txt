@@ -9,6 +9,26 @@ ReplicaSet supports the new set-based selector requirements as described in the 
 Replication Controller only supports equality-based selector requirements.
 
 
+IQ. What is defference between ReclicaController and ReplicaSets
+
+┌───────────────────────────────┬──────────────────────────────────────────────────────────────┐
+│ ReplicationController (RC)    │ ReplicaSet (RS)                                              | 
+├───────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Not used with Deployment      │ Used with Deployment                                         | 
+├───────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Selector is optional          │ Selector is mandatory                                        | 
+├───────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Supports equality-based       │ Supports set-based selectors (In, NotIn, Exists) and         │
+│ selector (key=value)          │ equality-based selectors                                     | 
+├───────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Older controller              │ New and improved controller                                  | 
+├───────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Rarely used in modern K8s     │ Mostly used in real-time through Deployment                  | 
+└───────────────────────────────┴──────────────────────────────────────────────────────────────┘                             
+
+
+
+
 
 k8s RepicationController
 ========================
