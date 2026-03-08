@@ -53,30 +53,29 @@ Syntax
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
- name: <RS-Name>
- namespace: <NS>
+  name: <rs-name>
+  namespace: <namespace>
 spec:
- replicas: 3
- selector:
- 	matchLabels:
- 	  <key>: <value>
- 	MatchExpressions:
- 	 - key: <key>
- 	   operators: <in / not in>
- 	   values:
- 	   - <value1>
- 	   - <value2>
- 	template:
- 		metadata: 
- 			name: <pod-Name>
- 			labels:
- 			  <key> : <value>
- 	    spec:  
- 	     containers:
- 	     	- name: <containerName>
- 	     	  image: <image-details>
- 	     	  ports:
- 	     	  - containerPort: <CP>
+  replicas: <number-of-pods>
+  selector:
+    matchLabels:
+      <key>: <value>
+    matchExpressions:
+      - key: <key>
+        operator: In
+        values:
+          - <value1>
+          - <value2>
+  template:
+    metadata:
+      labels:
+        <key>: <value>
+    spec:
+      containers:
+        - name: <container-name>
+          image: <image-name>
+          ports:
+            - containerPort: <container-port>
 
 
 
