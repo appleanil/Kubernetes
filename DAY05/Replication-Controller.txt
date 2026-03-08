@@ -13,7 +13,9 @@ ReplicationController
 
 --> when they ask down the application then dnt delete the RC. Do relicas scale zero kubectl scale rc <rc-name> --replicas=0
 
---> When u want to expose the internet then write yaml file for service
+--> When u want to expose the internet then write yaml file for service with NodePort
+
+--> In ReplicationController selector is optional. If not specified, Kubernetes automatically uses the labels defined in the Pod template.
 
 
 
