@@ -100,7 +100,7 @@ spec:
     spec:
       containers:
       - name: javawebapp
-        image: kkeducationb2/java-webapp:1.1
+        image: kkeducationb2/java-webapp:1.1 #anildocker11/springwebapp:0.0.2 or 0.0.1 / anildocker11/maven:0.0.1 / 0.0.2 / 0.0.3 or anildocker11/docker-maven:0.0.0
         ports:
         - containerPort: 8080
 ---
@@ -146,7 +146,7 @@ spec:
     spec:
       containers:
         - name: javawebapp
-          image: kkeducationb2/java-webapp:1.1
+          image: kkeducationb2/java-webapp:1.1 ##anildocker11/springwebapp:0.0.2 or 0.0.1 / anildocker11/maven:0.0.1 / 0.0.2 / 0.0.3 or anildocker11/docker-maven:0.0.0
           ports:
             - containerPort: 8080
 ---
