@@ -1,7 +1,7 @@
 ReplicationController
 =====================
 --> Replication Controller is one of the key features of Kubernetes, which is responsible for managing the pod lifecycle.
-    It is responsible for make sure that the specified number of pod replicas are running at any point of time.
+    And make sure that the specified no:of pod replicas are running at any point of time.
 
 --> A Replication Controller is a structure that enables you to easily create multiple pods, then make sure that number of pods always exists. 
     If a pod does crash, the Replication Controller replaces it.
@@ -11,7 +11,7 @@ ReplicationController
 
 --> Creating “RC” with count of 1 ensure that a POD is always available.
 
---> when they ask down the application then dnt delete the RC. Do relicas scale zero kubectl scale rc <rc-name> --replicas=0
+--> when they ask down the application then dnt delete the RC. Do replicas scale zero ---> kubectl scale rc <rc-name> --replicas=0
 
 --> When u want to expose the internet then write yaml file for service with NodePort
 
