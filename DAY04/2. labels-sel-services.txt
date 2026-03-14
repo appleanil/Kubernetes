@@ -116,8 +116,8 @@ kubectl get po -n test-ns -o wide
 
 How to go inside of pod?
 -------------------------
-sudo apt update
-sudo apt install -y iputils-ping
+apt update
+apt install -y iputils-ping
 
 kubectl exec -it -n test-ns javawebapptest -- sh
                 (or)
