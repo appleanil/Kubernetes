@@ -5,6 +5,69 @@ Class Explaination:
 3. yaml syntax, kubectl apply -f, kubectl delete po, kubectl context path, kubectl edit, namespace commands
 
 
+CrashLoopBackOff
+-----------------
+CrashLoopBackOff means the container starts, crashes, and Kubernetes keeps restarting it repeatedly.
+
+Common reasons 
+1. Application error, 
+
+2. Wrong command in container, 
+
+3. Missing environment variables,
+
+4. Database connection failure, 
+
+5. Port already in use
+
+
+ImagePullBackOff
+----------------
+ImagePullBackOff means Kubernetes cannot download the container image.
+
+CommonReasons  
+1. Wrong image name, 
+
+2. Image does not exist, 
+
+3. Private registry authentication failure, 
+
+4. Network issue
+
+
+ErrImagePull
+------------
+ErrImagePull happens when Kubernetes tries to pull the image but fails immediately. After multiple retries, it usually changes to ImagePullBackOff.
+
+Comman Reasons 
+1. Wrong repository, 
+
+2. Wrong tag, 
+
+3. Image deleted from registry.
+
+
+ContainerCreating.
+-----------------
+ContainerCreating means Kubernetes is preparing the container. 
+1. Pulling the container image,
+
+2. Setting up volumes
+
+3. Configuring networking
+
+4. Starting container runtime
+
+
+Terminating
+-----------
+1. Kubernetes sends SIGTERM to containers
+
+2. Application gets time to shutdown
+
+3. After timeout Kubernetes kills the container
+
+
 
 
 
