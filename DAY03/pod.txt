@@ -28,9 +28,8 @@ what is a pod?
 Pod Lifecycle-interview question or K8S architecture
 ----------------------------------------------------
 let me try to explain a pod life cycle for that we writing a simple yaml file configuration then we try to apply the pod defination in my local 
-once i apply the kubectl apply -f then request go to the API server that API server stores the entire information etcd that key value data pairs
-once the API server stored into the master machine scheduler is running that scheduler keep on watching unschedule pods into the etcd database 
-will try to schedule a particular node
+once i apply the kubectl apply -f pod.yaml, the request goes to the Kubernetes API Server. The API Server validates the request and stores the pod information in ETCD. 
+The scheduler continuously watches for pods without a node assignment and selects a suitable node based on resource availability. After scheduling, the kubelet on the selected node pulls the container image and creates the pod using the container runtime.
 
 --> key value data pairs means odes, Pods, Deployments, ConfigMaps, Secrets, Cluster state, these type of values will be stored
 --> Make a Pod request to API server using a local pod defination file
