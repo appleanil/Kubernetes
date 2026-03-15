@@ -1,7 +1,37 @@
 we need to check for rolling update search in youtube
 
 
+Should be same name
+-------------------
+Deployment selector          Pod template labels            Service selector
+-------------------          -------------------            ----------------
+selector:                    template:                      selector:
+  matchLabels:                 metadata:                      app: anilweb
+    app: anilweb                 labels:
+                                   app: anilweb
 
+
+Deployment selector ina pod template tho match avvali and
+Service selector ina pod template tho match avvali
+Deployment ani kadu all ReplicationController, ReplicaSets, DaemonSet, StatefulSet
+
+Controller
+(Deployment / RS / RC / DaemonSet / StatefulSet)
+          │
+          │ selector
+          ▼
+       Pods
+      (labels)
+          │
+          │ selector
+          ▼
+        Service
+
+
+
+
+1. I created one deployment k8s object then it will automatically create ReplicaSet and Pods.
+2. Then if i delete deployment then automatically delete the ReplicaSet and Pods also.
 
 Example:
 --------
@@ -27,7 +57,7 @@ spec:
     metadata:
       name: javawebapp
       labels:
-        app: javawebapp
+        app: javawebapp #should be matched with labels and svc selector
     spec:
       containers:
       - name: javawebapp
