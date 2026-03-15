@@ -24,7 +24,7 @@ Kubernetes (often abbreviated as K8s) is an open-source container orchestration 
 ---
 Node lo Pods deploy cheystamu and Pods lo containers deploy cheystamu simple understand
 
-## Kubernetes Key Features
+## Kubernetes Key Features ---------> For interview purpose get more info on chtgpt
 
 ### 1. Automated Scheduling
 - Kubernetes includes an advanced scheduler that automatically places containers based on resource requirements and constraints without compromising availability.
