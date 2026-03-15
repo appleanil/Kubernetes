@@ -33,7 +33,7 @@ metadata:
 spec: # replicationcontroller spec from replicas to app
   replicas: 2
   selector:
-    app: javawebapp
+    app: javawebapp # here app: javawebapp same in temp meta app:javawebapp
   template:
     metadata: 
       name: javawebapprcpod
