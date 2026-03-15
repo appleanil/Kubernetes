@@ -449,10 +449,10 @@ In Kubernetes, namespaces are a way to organize and manage resources within a cl
 They help you divide cluster resources between multiple users or teams and can be useful for managing resource quotas, network policies, and access control.
 
 kubectl get ns
-1. default
-2. kube-node-lease
-3. kube-public
-4. kube-system
+1. default -------------------> for user workloads
+2. kube-node-lease -----------> Stores node heartbeat lease objects.
+3. kube-public ---------------> Publicly readable cluster information.
+4. kube-system ---------------> Stores control plane and cluster services. kube-apiserver, kube-scheduler, kube-controller-manager, CoreDNS, etcd
 
 without mentioning namespaces then the application go and sit in default namespace ---------> kubectl get po (status is running)
 
