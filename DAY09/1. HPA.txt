@@ -1,7 +1,9 @@
 pod scaling in Kubernetes
 =========================
 
---> increase/dec the pods manually is called a manual scaling[replicas 2 to 3, 3 to 4, 4 to 2]
+--> increase/dec the pods manually is called a manual scaling [replicas 2 to 3, 3 to 4, 4 to 2]
+
+--> When we are creating the HorizonatalPodAutoScale background it will automatically created service [if we define], ReplicaSets, Deployment and hpa beacause of hpa
 
     HorizontalPodAutoscaler --> k8s object
 
