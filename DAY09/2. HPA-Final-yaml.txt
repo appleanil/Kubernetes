@@ -6,7 +6,7 @@ metadata:
   labels:
     name: hpadeployment
 spec:
-  replicas: 1
+  replicas: 1   #just reference, its optainals also and not mandatory and first priority is hpa replicas only
   selector:
     matchLabels:
       name: hpapod
@@ -37,10 +37,10 @@ metadata:
   name: hpadeploymentautoscaler
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1
+    apiVersion: apps/v1 #This section refer to above deployment and should be same "name hpdeployment"
     kind: Deployment
     name: hpadeployment
-  minReplicas: 2
+  minReplicas: 2   # first priority hpa, controll should be in hpa only, that deployment replicas 1 is just for formal
   maxReplicas: 4
   metrics:
   - type: Resource
@@ -48,7 +48,7 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 30
+        averageUtilization: 30  #in realtime it should be 80,85
   - type: Resource
     resource:
       name: memory
