@@ -1,4 +1,118 @@
-we need to check for rolling update search in youtube
+Class Breif Explaination
+------------------------
+ReplicaSet vs Deployment – Image Update Behavior
+
+1. First, create a YAML file using a **ReplicaSet** with image version ------------> anildocker11/maven:0.0.1
+2. Apply the ReplicaSet --------> kubectl apply -f rs.yaml
+3. Pods are created and running with image version **0.0.1**
+4. Later, the developer updates the application and pushes a new image: -----------> anildocker11/maven:0.0.2
+5. Now update the same `rs.yaml` file with the new image version: -----------------> anildocker11/maven:0.0.2
+6. Apply the updated YAML --------> kubectl apply -f rs.yaml
+7. Even after applying, the **existing Pods still run the old version (0.0.1)**.
+   You can verify using: ----------> kubectl get pods -----------> kubectl describe pod <pod-name>
+8. This happens because:
+   * ReplicaSet only ensures the desired number of Pods
+   * It does NOT update existing Pods when the image changes
+
+----------------------------------------------------------------------------------------------------------------------
+
+Solution: Use Deployment
+------------------------
+
+9. To overcome this limitation, we use a **Deployment**
+10. Create a Deployment YAML with image: ---------------> anildocker11/maven:0.0.1
+11. Apply the Deployment: ----------------> kubectl apply -f deploy.yaml
+12. Now update the image to: -------------> anildocker11/maven:0.0.2
+13. Apply again: -------------------------> kubectl apply -f deploy.yaml
+14. kubernetes will automatically:
+    * Create a new ReplicaSet
+    * Create new Pods with version **0.0.2**
+    * Gradually terminate old Pods (0.0.1)
+15. You can verify rollout using: ---------> kubectl rollout status deployment <deployment-name>
+    kubectl get pods
+
+Conclusion
+----------
+* ReplicaSet → Maintains number of Pods only
+* Deployment → Manages updates, rolling updates, and rollbacks
+
+👉 That is why **Deployment is used in real-time production instead of ReplicaSet**.
+
+===============================================================================================================================
+
+2. RollingUpdate -----------> RollingUpdate Strategy
+
+
+1. First, create a YAML file using a **Deployment** with image version: ----------> anildocker11/maven:0.0.1
+
+2. Apply the Deployment: ----------------> kubectl apply -f deploy.yaml
+
+3. Pods are created and running with image version **0.0.1**.
+
+4. Later, the developer updates the application and pushes a new image: -----------> anildocker11/maven:0.0.2
+
+5. Now update the same `deploy.yaml` file with the new image version: -------------> image: anildocker11/maven:0.0.2
+
+6. Ensure strategy is set (default is RollingUpdate):
+   strategy:
+     type: RollingUpdate
+
+7. Apply the updated YAML: -----------------> kubectl apply -f deploy.yaml
+
+8. Kubernetes performs a **Rolling Update**:
+
+   * Creates new Pods with version **0.0.2**
+   * Gradually deletes old Pods (0.0.1)
+   * Ensures minimum downtime (almost zero downtime)
+
+
+How RollingUpdate Works Internally
+
+9. Deployment creates a **new ReplicaSet** with updated image.
+
+10. Then it follows this process:
+
+* Step 1 → Create 1 new Pod (0.0.2)
+* Step 2 → Delete 1 old Pod (0.0.1)
+* Step 3 → Repeat until all Pods are updated
+
+
+Optional Configuration
+----------------------
+
+11. You can control update behavior:
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 1
+
+maxUnavailable -----------> How many Pods can be unavailable during update
+maxSurge -----------------> Extra Pods created temporarily during update
+
+Verification Commands
+---------------------
+12. Check rollout status ------------> kubectl rollout status deployment <deployment-name>
+13. Check Pods: ---------------------> kubectl get pods
+14. Check ReplicaSets: --------------> kubectl get rs
+
+
+Benefits of RollingUpdate
+-------------------------
+* No downtime (zero downtime deployment)
+* Smooth transition from old version to new version
+* Automatic scaling during update
+* Safe and reliable for production systems
+
+Conclusion
+----------
+* RollingUpdate updates Pods **gradually**
+* Ensures application is always available
+* Default and most used strategy in Kubernetes
+
+👉 That is why **RollingUpdate is the preferred strategy in real-time production deployments**.
+
+
 
 
 Should be same name
@@ -157,4 +271,46 @@ View specific revision           kubectl rollout history deployment/javawebappde
 Describe deployment              kubectl describe deployment javawebappdep -n test-ns
 
 Rollback to previous revision    kubectl rollout undo deployment/javawebappdep -n test-ns --to-revision=1
+
+======================================================================================================================================
+
+2. Rolling Stagety
+------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javawebappdep
+  namespace: test
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: javawebapp
+  template:
+    metadata:
+      labels:
+        app: javawebapp
+    spec:
+      containers:
+        - name: javawebapp
+          image: kkeducation12345/spring-app:1.0.4
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javawebappsvc
+  namespace: test
+spec:
+  type: NodePort
+  selector:
+    app: javawebapp
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30007   # optional (you can change/remove)
 
