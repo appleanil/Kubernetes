@@ -78,11 +78,11 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hpadeployment
+  name: hpadeployment              #name should be same in hpa scaleTargetRef metadata
   labels:
     name: hpadeployment
 spec:
-  replicas: 1 #just reference, its optainals also and not mandatory and first priority is hpa replicas only
+  replicas: 1                      #just reference, its optainal also and not mandatory and first priority is hpa replicas only
   selector:
     matchLabels:
       name: hpapod
@@ -93,10 +93,10 @@ spec:
     spec:
       containers:
       - name: hpacontainer
-        image: k8s.gcr.io/hpa-example
+        image: registry.k8s.io/hpa-example
         ports:
         - name: http
-          containerPort: 80
+          containerPort: 80           #port should be same in service port also
         resources:
           requests:
             cpu: "100m"
@@ -115,7 +115,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1      #This section refer to above deployment and should be same "name hpdeployment"
     kind: Deployment
-    name: hpadeployment
+    name: hpadeployment      #name should be same in deploy pod
   minReplicas: 2             # first priority hpa, controll should be in hpa only, that deployment replicas 1 is just for formalty
   maxReplicas: 4
   metrics:
@@ -144,7 +144,7 @@ metadata:
     name: hpaservice
 spec:
   ports:
-  - port: 80
+  - port: 80                  #port should be same in hpa port also
     targetPort: 80
   selector:
     name: hpapod
@@ -159,12 +159,12 @@ spec:
 Now, we will see how the auto scaler reacts to increased load. We will start a container, and send an infinite loop of queries to the php-apache service .
 Create A Temp Pod in interactive mod to access app using service name
 
-  $ kubectl run -i --tty load-generator --rm --image=busybox /bin/sh	
+kubectl run -i --tty load-generator --rm --image=busybox /bin/sh	
 Execute below command in Temp Pod
  
-  $ while true;
-   do wget -q -O- http://hpaclusterservice;
-   done	
+while true;
+do wget -q -O- http://hpa-svc; #service yaml file lo service ki yee name tho untundo ade name ivvali ekkada
+done	
 
 Open kubectl terminal in another tab and watch kubectl get pods or kubect get hpa to see how the auto scaler reacts to increased load.
 
