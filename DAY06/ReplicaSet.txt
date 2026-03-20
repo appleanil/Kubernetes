@@ -3,6 +3,8 @@ ReplicaSet
 
 --> ReplicaSet is the next-generation Replication Controller.
 
+--> “ReplicaSet ensures the desired number of pods are always running. If a pod is deleted, it automatically creates a new one to maintain the replica count.”
+
 --> The only difference between a ReplicaSet and Replication Controller right now is the selector support.
 
 ReplicaSet supports the new set-based selector requirements as described in the labels user guide whereas 
