@@ -151,13 +151,13 @@ spec:
 ========================================================
 
 
-# ==== Execute below commands to increase load====
+==== Execute below commands to increase load====
 
 Now, we will see how the auto scaler reacts to increased load. We will start a container, and send an infinite loop of queries to the php-apache service .
-# Create A Temp Pod in interactive mod to access app using service name
+Create A Temp Pod in interactive mod to access app using service name
 
   $ kubectl run -i --tty load-generator --rm --image=busybox /bin/sh	
-# Execute below command in Temp Pod
+Execute below command in Temp Pod
  
   $ while true;
    do wget -q -O- http://hpaclusterservice;
@@ -166,6 +166,3 @@ Now, we will see how the auto scaler reacts to increased load. We will start a c
 Open kubectl terminal in another tab and watch kubectl get pods or kubect get hpa to see how the auto scaler reacts to increased load.
 
   $ watch kubectl get hpa
-
-
-
