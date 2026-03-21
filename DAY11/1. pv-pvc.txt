@@ -17,8 +17,8 @@ PV and PVC
 
 --> Pod(mongodb) is connected to PVC, then create PVC, also pod in pending, then create PV.
 --> Pod is directly connected with PVC, not with PV. If u have PV but pod cannot connect to PV without PVC.
---> Pod and Pv is there and PVC applied then firstly go with the PV bcz of access modes, requests, capacity and storage.
---> Even though  PV is avaiable and Pod, PVC also not bounding then access modes and capacity are mismatched.
+--> Pod and PV is there and PVC applied then firstly go with the PV bcz of access modes, requests, capacity and storage.
+--> Even though PV is avaiable and Pod, PVC also not bounding then access modes(RWX,RWO) and capacity are mismatched.
 --> We can "kubectl describe pod <pod-name>"  --- reason it shows bcz there is no PVC.
 --> Again "kubectl describe pvc <pvc-name>"   --- reason its shows bcz thers is no PV.
 --> PVC is connected to PV
@@ -45,10 +45,6 @@ Binding between PV and PVC is label-less but based on storage class, access mode
 
 “If PVC is created without an available PV, it remains in Pending state, which causes the Pod to also stay in Pending. 
 Once a matching PV is created, it binds automatically and the Pod starts running.”
-
-
-
-
 
 
 
@@ -99,7 +95,7 @@ spec:
     spec:
       containers:
       - name: mongocon
-        image: mongo
+        image: mongo:8.0.9-noble
         ports:
         - containerPort: 27017
         env:
@@ -131,20 +127,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sprinapp
+  name: springwebapp
   namespace: prod
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: springapp
+      app: springwebapp
   template:
     metadata:
       labels:
-        app: springapp
+        app: springwebapp
     spec:
       containers:
-      - name: springapp
+      - name: springwebapp-con
         image: kkeducation12345/spring-app:1.0.0
         ports:
         - containerPort: 8080
