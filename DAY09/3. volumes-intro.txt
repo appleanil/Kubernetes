@@ -38,7 +38,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo-svc
+  name: mongo-svc #here in ReplicaSet it should be match with Deployment spec, container, env, value 
   namespace: prod
 spec:
   type: ClusterIP
@@ -78,7 +78,7 @@ spec:
         - containerPort: 8080
         env:
         - name: MONGO_DB_HOSTNAME
-          value: mongo-svc
+          value: mongo-svc        #here in Deployment it should be match with ReplicaSet Service yaml file name 
         - name: MONGO_DB_USERNAME
           value: devdb
         - name: MONGO_DB_PASSWORD
