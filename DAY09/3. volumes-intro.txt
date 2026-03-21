@@ -10,17 +10,17 @@ metadata:
   name: mongo-pod
   namespace: prod
   labels:
-    app: mongodb
+    app: mongodb             #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
     env: prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongodb
+      app: mongodb          #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
   template:
     metadata:
       labels:
-        app: mongodb
+        app: mongodb        #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
         env: prod
     spec:
       containers:
@@ -38,12 +38,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo-svc #here in ReplicaSet it should be match with Deployment spec, container, env, value 
+  name: mongo-svc           #here in ReplicaSet it should be match with Deployment spec, container, env, value 
   namespace: prod
 spec:
   type: ClusterIP
   selector:
-    app: mongodb
+    app: mongodb             #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
   ports:
   - port: 27017
     targetPort: 27017
@@ -58,17 +58,17 @@ metadata:
   name: springwebapp
   namespace: prod
   labels:
-    app: springwebappvol
+    app: springwebappvol           #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
     env: prod
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: springwebappvol
+      app: springwebappvol         #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
   template:
     metadata:
       labels:
-        app: springwebappvol
+        app: springwebappvol        #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
         env: prod
     spec:
       containers:
@@ -88,12 +88,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: springwebapp-svc
+  name: springwebapp-svc        #selector and labels yee name tho untado aa name tho ivvali last -svc add cheyvchu
   namespace: prod
 spec:
   type: NodePort
   selector:
-    app: springwebappvol
+    app: springwebappvol        #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
   ports:
   - port: 8080
     targetPort: 8080
@@ -126,11 +126,11 @@ spec:
   replicas: 1
   selector: 
     matchLabels:
-      app: mongodb
+      app: mongodb       #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
   template:
     metadata:
       labels:
-        app: mongodb
+        app: mongodb     #dnt use mongo-pod it doesnt take bcz service pod ever up and running so better to use only mongodb, mongopod
     spec:
       containers:
       - name: mongocon
