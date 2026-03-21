@@ -46,6 +46,10 @@ Binding between PV and PVC is label-less but based on storage class, access mode
 “If PVC is created without an available PV, it remains in Pending state, which causes the Pod to also stay in Pending. 
 Once a matching PV is created, it binds automatically and the Pod starts running.”
 
+1. kubectl exec -it <mongo-pod> -n prod -- ls /data/db in master node
+2. cd /mnt/nfs_share
+   ls -lrth in 
+
 
 
 
