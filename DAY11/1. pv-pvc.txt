@@ -1,5 +1,45 @@
---> PV and PVC
-=================
+PV and PVC
+==========
+
+--> Pod(mongodb) is connected to PVC, then create PVC, also pod in pending, then create PV.
+--> Pod is directly connected with PVC, not with PV. If u have PV but pod cannot connect to PV without PVC.
+--> Pod and Pv is there and PVC applied then firstly go with the PV bcz of access modes, requests, capacity and storage.
+--> Even though  PV is avaiable and Pod, PVC also not bounding then access modes and capacity are mismatched.
+--> We can "kubectl describe pod <pod-name>"  --- reason it shows bcz there is no PVC.
+--> Again "kubectl describe pvc <pvc-name>"   --- reason its shows bcz thers is no PV.
+--> PVC is connected to PV
+--> Then create PV yaml, so that PV is bound with PVC, PVC is bound with pod
+
+PV (storage)
+   ↓
+PVC (request)
+   ↓
+Pod (uses PVC)
+
+
+1.Correct Explanation (Interview Perfect Answer) Scenario-Based Answer
+----------------------------------------------------------------------
+
+In Kubernetes, storage binding works between PV and PVC. If a Pod is created before the PVC is bound to a PV, the Pod will remain in Pending state. 
+When we describe the Pod, it shows that the PVC is not available. Then, describing the PVC shows that no matching PV is available. 
+Once we create a PV that satisfies the PVC request, it gets bound, and the Pod starts running.
+Binding between PV and PVC is label-less but based on storage class, access modes, and capacity matching.
+
+
+2.Final Correct Statement (Memorize This)
+-----------------------------------------
+
+“If PVC is created without an available PV, it remains in Pending state, which causes the Pod to also stay in Pending. 
+Once a matching PV is created, it binds automatically and the Pod starts running.”
+
+
+
+
+
+
+
+
+
 
 apiVersion: v1
 kind: PersistentVolume
@@ -12,21 +52,21 @@ spec:
     - ReadWriteMany  # NFS supports this
   nfs:
     server: 172.31.11.218  # Your NFS server IP
-    path: /mnt/nfs_share  # Path on your NFS server
+    path: /mnt/nfs_share   # Path on your NFS server
 
 
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mongodb-pvc
+  name: mongodb-pvc  #Must match the mongodb-pvc spec, containers, volumes Claimname should be same
   namespace: prod # This is correct
 spec:
   accessModes:
-    - ReadWriteMany  # Must match the PV's access mode
+    - ReadWriteMany  #Must match the PV's access mode
   resources:
     requests:
-      storage: 1Gi  # Must match or be less than the PV's size
+      storage: 1Gi  #Must match or be less than the PV's size
 ---
 apiVersion: apps/v1
 kind: ReplicaSet
@@ -55,16 +95,16 @@ spec:
           value: devdb@123
         volumeMounts:
         - name: mongonfsvol
-          mountPath: /data/db
+          mountPath: /data/db       #for mongodb default location /data/db, then SQL database /var/lib/mysql
       volumes:
       - name: mongonfsvol
         persistentVolumeClaim:
-          claimName: mongodb-pvc  
+          claimName: mongodb-pvc   #we need to define the, for which PVC bound. Must match the mongodb-pvc, PVC yaml lo metadata name should be same
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongosvc
+  name: mongosvc                #Must match with springwebapp spec,container, env value: mongosvc should be same
   namespace: prod
 spec:
   type: ClusterIP
@@ -96,7 +136,7 @@ spec:
         - containerPort: 8080
         env:
         - name: MONGO_DB_HOSTNAME
-          value: mongosvc
+          value: mongosvc           #Must match with mongo service name mongosvc should be same
         - name: MONGO_DB_USERNAME
           value: devdb
         - name: MONGO_DB_PASSWORD
@@ -106,7 +146,7 @@ spec:
             cpu: 300m
             memory: 256Mi
           limits:
-            cpu: 500m
+            cpu: 300m
             memory: 512Mi
 ---
 apiVersion: v1
