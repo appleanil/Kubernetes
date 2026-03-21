@@ -3,8 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hpadeployment
+  namespace: prod
   labels:
-    name: hpadeployment
+    app: hpadeployment
+    env: prod
 spec:
   replicas: 1   #just reference, its optainals also and not mandatory and first priority is hpa replicas only
   selector:
@@ -17,7 +19,7 @@ spec:
     spec:
       containers:
       - name: hpacontainer
-        image: k8s.gcr.io/hpa-example
+        image: registry.k8s.io/hpa-example
         ports:
         - name: http
           containerPort: 80
@@ -35,6 +37,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: hpadeploymentautoscaler
+  namespace: prod
 spec:
   scaleTargetRef:
     apiVersion: apps/v1 #This section refer to above deployment and should be same "name hpdeployment"
