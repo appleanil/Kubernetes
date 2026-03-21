@@ -1,6 +1,20 @@
 PV and PVC
 ==========
 
+1️⃣ PV First
+👉 Actual storage is created
+
+2️⃣ PVC Next
+👉 Requests storage from PV
+
+3️⃣ Mongo Pod
+👉 Uses PVC
+👉 Starts only when PVC is Bound
+
+4️⃣ WebApp Pod
+👉 Connects to Mongo service
+
+
 --> Pod(mongodb) is connected to PVC, then create PVC, also pod in pending, then create PV.
 --> Pod is directly connected with PVC, not with PV. If u have PV but pod cannot connect to PV without PVC.
 --> Pod and Pv is there and PVC applied then firstly go with the PV bcz of access modes, requests, capacity and storage.
