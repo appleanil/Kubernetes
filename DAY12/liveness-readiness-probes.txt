@@ -44,6 +44,7 @@ During this time:
 ❌ Liveness = FAIL → container restart
 
 Liveness probe restarts unhealthy containers, while readiness probe controls whether a pod receives traffic.
+If the image is error then restarts which we give 5,3 later it will CrashLoopBackOff
 
 
 
@@ -72,7 +73,7 @@ spec:
     spec:
       containers:
       - name: javawebapp
-        image: kkeducation123456/maven-web-app:1.2  # anildocker11/springwebapp:0.0.2
+        image: kkeducation123456/maven-web-app:1.2  # anildocker11/maven:0.0.1
         ports:
         - containerPort: 8080
         livenessProbe:
