@@ -102,3 +102,65 @@ kubeadm token create --print-join-command
 
 
 echo "========== Kubernetes Common Setup Completed =========="
+
+
+
+
+
+
+====================================================================================================================
+
+
+
+
+setup the NFS server -------> By default NFS server port number is 2049
+====================
+
+step 1: launch an ec2 m/c and connect to that machine
+
+step 2: update the package manager.
+
+sudo apt update -y
+
+step 3: Allow the traffic to 2049 port.
+
+step 4: install the nfs software
+
+sudo apt install nfs-kernel-server -y
+
+step 5: create nfs shared directory
+
+sudo mkdir -p /mnt/nfs_share
+
+sudo chown nobody:nogroup -R /mnt/nfs_share/
+
+sudo chmod 777 -R /mnt/nfs_share/
+
+step 6: Assign the server access to the clients through NFS export file.
+
+
+sudo vi /etc/exports
+
+/mnt/nfs_share/ *(rw,sync,no_subtree_check,no_root_squash)
+
+
+step 7: export the shared directory
+
+sudo exportfs -a
+
+sudo systemctl restart nfs-kernel-server
+
+step 8: check the nfs process is running or not
+
+ps -ef|grep -i "nfs"
+
+
+
+configuring the nfs client machine
+==================================
+
+--> Install in all the machines of k8s cluster
+
+sudo apt update -y
+
+sudo apt install nfs-common -y
