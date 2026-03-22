@@ -146,7 +146,7 @@ spec:
       volumes:
       - name: mongovol
         hostPath:
-          path: /mongobkp
+          path: /mongobkp         #kubectl exec -it <pod-name> -- /bin/bash, ls -lrth we can see mongobkp
 ---
 apiVersion: v1
 kind: Service
