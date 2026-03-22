@@ -1,6 +1,7 @@
 Reclaim policies
 ----------------
- Retain: When a PV is released from a PVC with a "Retain" reclaim policy, the volume is not automatically deleted. Instead, it remains in the cluster in a released state.            The underlying storage is preserved, allowing you to manually reclaim or manage the data.
+ Retain: When a PV is released from a PVC with a "Retain" reclaim policy, the volume is not automatically deleted. Instead, it remains in the cluster in a released state.
+         The underlying storage is preserved, allowing you to manually reclaim or manage the data.
 
  --> Default Reclaim policy 
 
