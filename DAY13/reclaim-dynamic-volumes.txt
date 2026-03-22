@@ -1,24 +1,20 @@
-Reclaim policies
-----------------
- Retain: When a PV is released from a PVC with a "Retain" reclaim policy, the volume is not automatically deleted. Instead, it remains in the cluster in a released state.
-         The underlying storage is preserved, allowing you to manually reclaim or manage the data.
+Reclaim policies --> Default Reclaim policy
+--------------------------------------------
+ 1. Retain: When a PV is released from a PVC with a "Retain" reclaim policy, the volume is not automatically deleted. Instead,it remains in the cluster in a released state.
+            The underlying storage is preserved, allowing you to manually reclaim or manage the data.
+My mongo pod and PVC is deleted, PV is in released state and data is safe
 
- --> Default Reclaim policy 
-
-
-
- Delete: With the "Delete" reclaim policy, when a PVC is deleted, the associated PV is also deleted, along with the underlying storage. 
-         This means that all data is lost.
+  
+ 2. Delete: With the "Delete" reclaim policy, when a PVC is deleted, the associated PV is also deleted, along with the underlying storage.This means that all data is lost.
+ My mongo pod and PVC is deleted, PV is in Error state and data is not safe
 
 
-
- Recycle(Deprecated): The "Recycle" policy allowed for a PV to be scrubbed (data deleted) and then made available again when released.
-                      However, this feature has been deprecated in favor of more explicit data management practices. 
+ 3. Recycle(Deprecated): The "Recycle" policy allowed for a PV to be scrubbed (data deleted) and then made available again when released.
+                          However, this feature has been deprecated in favor of more explicit data management practices. 
 
 
 Example: PersistentVolume
 -------------------------
-
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -32,9 +28,6 @@ spec:
     server: 172.31.40.109  # Your NFS server IP
     path: /mnt/nfs_share  # Path on your NFS server
   persistentVolumeReclaimPolicy: Delete  # or Delete, depending on your use case
-
-
-
 
 
 
@@ -154,11 +147,7 @@ parameters:
 
 
 
-
-
 kubeclt apply -f nfsProviser.yaml
-
-
 
 NOTE: to understand the concept delete rs, pvc and pv in the system.
 
@@ -177,9 +166,10 @@ spec:
     requests:
       storage: 1Gi  # Must match or be less than the PV's size
 
+
+
 Mongodb
 -------
-
 ---
 apiVersion: apps/v1
 kind: ReplicaSet
@@ -229,7 +219,6 @@ spec:
 
 springwebapp
 ------------
-
 ---
 apiVersion: apps/v1
 kind: Deployment
