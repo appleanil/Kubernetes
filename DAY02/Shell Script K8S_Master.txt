@@ -116,44 +116,48 @@ echo "========== Kubernetes Common Setup Completed =========="
 setup the NFS server -------> By default NFS server port number is 2049
 ====================
 
-step 1: launch an ec2 m/c and connect to that machine
+#!/bin/bash
 
-step 2: update the package manager.
+# Exit if any command fails
+set -e
 
+echo "🔹 Updating system..."
 sudo apt update -y
 
-step 3: Allow the traffic to 2049 port.
-
-step 4: install the nfs software
-
+echo "🔹 Installing NFS Kernel Server..."
 sudo apt install nfs-kernel-server -y
 
-step 5: create nfs shared directory
-
+echo "🔹 Creating NFS shared directory..."
 sudo mkdir -p /mnt/nfs_share
 
-sudo chown nobody:nogroup -R /mnt/nfs_share/
+echo "🔹 Setting permissions..."
+sudo chown nobody:nogroup -R /mnt/nfs_share
+sudo chmod 777 -R /mnt/nfs_share
 
-sudo chmod 777 -R /mnt/nfs_share/
+echo "🔹 Configuring /etc/exports..."
+EXPORT_LINE="/mnt/nfs_share *(rw,sync,no_subtree_check,no_root_squash)"
 
-step 6: Assign the server access to the clients through NFS export file.
+# Add only if not already present
+grep -qxF "$EXPORT_LINE" /etc/exports || echo "$EXPORT_LINE" | sudo tee -a /etc/exports
 
-
-sudo vi /etc/exports
-
-/mnt/nfs_share/ *(rw,sync,no_subtree_check,no_root_squash)
-
-
-step 7: export the shared directory
-
+echo "🔹 Applying export configuration..."
 sudo exportfs -a
 
+echo "🔹 Restarting NFS service..."
 sudo systemctl restart nfs-kernel-server
 
-step 8: check the nfs process is running or not
+echo "🔹 Enabling NFS service on boot..."
+sudo systemctl enable nfs-kernel-server
 
-ps -ef|grep -i "nfs"
+echo "🔹 Verifying NFS service status..."
+sudo systemctl status nfs-kernel-server --no-pager
 
+echo "🔹 Checking running NFS processes..."
+ps -ef | grep -i nfs | grep -v grep
+
+echo "✅ NFS Server setup completed successfully!"
+
+save chmod +x nfs-setup.sh./nfs-setup.sh
 
 
 configuring the nfs client machine
