@@ -1,37 +1,220 @@
+Class Brief Explaination
+------------------------
+1. Retain Claim Policy
+----------------------
+
+1. kubectl apply -f pv.yaml            RETAIN + AVAILABLE
+
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mongodb-pv1  1Gi        RWX            Retain           Available  <none>  <unset>        <unset>                 7m17s
+
+2. kubectl apply -f pvc.yaml
+3. kubectl apply -f configmaps.yaml
+4. kubectl apply -f secrets.yaml
+5. kubectl apply -f mongo.yaml
+6. kubectl apply -f springwebapp.yaml
+7. Then go and check PV STATUS IN BOUND STATE ------> kubectl get pv
+
+                        ----------------RETAIN + BOUND------------------
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM               STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mongodb-pv1  1Gi        RWX            Retain           Bound   prod/mongodb1-pvc      <unset>        <unset>                 7m17s
+
+1. kubectl delete -f springwebapp.yaml
+2. kubectl delete -f mongo.yaml
+3. kubectl delete -f pvc.yaml
+4. Here iam not deleting -----------------------------------> kubectl delete -f pv.yaml
+5. kubectl delete -f configmaps.yaml
+6. kubectl delete -f secrets.yaml
+7. Then go and check PV STATUS IS RELEASED STATE ------> kubectl get pv
+
+                        ---------------RETAIN + RELEASED----------------
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM               STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mongodb-pv1  1Gi        RWX            Retain           Released   prod/mongodb1-pvc    <unset>        <unset>                 7m17s
+
+===================================================================================================================================================================
+
+2. Delete Claim Policy -------------> Add this line in pv.yaml ---------> persistenvolumeclaim: delete 
+----------------------
+1. kubectl apply -f pv.yaml            
+                        ---------------Delete + AVAILABLE---------------
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mongodb-pv1  1Gi        RWX            Delete           Available  <none>  <unset>        <unset>                 7m17s
+
+2. kubectl apply -f pvc.yaml
+3. kubectl apply -f configmaps.yaml
+4. kubectl apply -f secrets.yaml
+5. kubectl apply -f mongo.yaml
+6. kubectl apply -f springwebapp.yaml
+7. Then go and check PV STATUS IN BOUND STATE ------> kubectl get pv
+                        ----------------Delete + BOUND------------------
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM               STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mongodb-pv1  1Gi        RWX            Delete           Bound   prod/mongodb1-pvc      <unset>        <unset>                 7m17s
+
+1. kubectl delete -f springwebapp.yaml
+2. kubectl delete -f mongo.yaml
+3. kubectl delete -f pvc.yaml
+4. Here iam not deleting -----------------------------------> kubectl delete -f pv.yaml
+5. kubectl delete -f configmaps.yaml
+6. kubectl delete -f secrets.yaml
+7. Then go and check PV STATUS IS RELEASED STATE ------> kubectl get pv
+
+                        ----------------Delete + Failed---------------              
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM               STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mongodb-pv1  1Gi        RWX            Delete           Failed   prod/mongodb1-pvc   <unset>        <unset>                 7m17s
+
+Even though we delete and re-apply mongo-cm-secrets.yaml and pvc.yaml, the Mongo pod and PVC remain in Pending state because the existing PersistentVolume is in Failed state and cannot be reused. This failure can happen when using the Delete reclaim policy with NFS, where Kubernetes is unable to clean up the storage. The Pending state is due to the unusable PV, not directly because of the reclaim policy.
+persistenvolumeclaim: delete in pv.yaml
+
+
+
+
 Reclaim policies --> Default Reclaim policy
 --------------------------------------------
- 1. Retain: When a PV is released from a PVC with a "Retain" reclaim policy, the volume is not automatically deleted. Instead,it remains in the cluster in a released state.
+1. Retain: When a PV is released from a PVC with a "Retain" reclaim policy, the volume is not automatically deleted. Instead,it remains in the cluster in a released state.
             The underlying storage is preserved, allowing you to manually reclaim or manage the data.
-My mongo pod and PVC is deleted, PV is in released state and data is safe
+My mongo pod and PVC is deleted, PV is in released state and data is safe(NFS-Server).
+For long time we have data then use "Retain"
 
   
- 2. Delete: With the "Delete" reclaim policy, when a PVC is deleted, the associated PV is also deleted, along with the underlying storage.This means that all data is lost.
- My mongo pod and PVC is deleted, PV is in Error state and data is not safe
-
+2. Delete: With the "Delete" reclaim policy, when a PVC is deleted, the associated PV is also deleted, along with the underlying storage.This means that all data is lost.
+   My mongo pod and PVC is deleted, PV is in Failed state and data is not safe(NFS-Server).
+   For short term or sanitary check use "Delete"
 
  3. Recycle(Deprecated): The "Recycle" policy allowed for a PV to be scrubbed (data deleted) and then made available again when released.
                           However, this feature has been deprecated in favor of more explicit data management practices. 
 
-
 Example: PersistentVolume
 -------------------------
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolume  
 metadata:
-  name: mongodb-pv
+  name: mongodb-pv   # here we do use namespace bcz its cluster level object kubectl get pv
 spec:
   capacity:
-    storage: 1Gi  # Adjust as necessary
+    storage: 1Gi     # Adjust as necessary
   accessModes:
     - ReadWriteMany  # NFS supports this
   nfs:
     server: 172.31.40.109  # Your NFS server IP
-    path: /mnt/nfs_share  # Path on your NFS server
-  persistentVolumeReclaimPolicy: Delete  # or Delete, depending on your use case
+    path: /mnt/nfs_share   # Path on your NFS server
+  persistentVolumeReclaimPolicy: Delete  # while practicing we need to delete this line, later use this line or depending on your use case
+
+PersistentVolumeClaim
+---------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc  # should be same as mongodb spec, volumes persistentVolumeClaim: mongodb-pvc 
+  namespace: prod    # This is correct
+spec:
+  accessModes:
+    - ReadWriteMany  # Must match the PV's access mode
+  resources:
+    requests:
+      storage: 1Gi   # Must match or be less than the PV's size
+
+Mongodb + Service
+-----------------
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mongodb-pod
+  namespace: prod
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongocon
+        image: mongo
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: devdb
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: devdb@123
+        volumeMounts:
+        - name: mongonfsvol
+          mountPath: /data/db
+      volumes:
+      - name: mongonfsvol
+        persistentVolumeClaim:
+          claimName: mongodb-pvc  # Use the PVC should be as persistentVolumeClaim name mongodb-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-svc
+  namespace: prod
+spec:
+  type: ClusterIP
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+
+
+springwebapp + Service
+----------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprinapp
+  namespace: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: springapp
+  template:
+    metadata:
+      labels:
+        app: springapp
+    spec:
+      containers:
+      - name: springapp
+        image: kkeducation12345/spring-app:1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MONGO_DB_HOSTNAME
+          value: mongo-svc
+        - name: MONGO_DB_USERNAME
+          value: devdb
+        - name: MONGO_DB_PASSWORD
+          value: devdb@123
+        resources:
+          requests:
+            cpu: 300m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springapp-svc
+  namespace: prod
+spec:
+ type: NodePort
+ selector:
+   app: springapp
+ ports:
+ - port: 80
+   targetPort: 8080
 
 
 
-
+=======================================================================================================================================================================
 Dynamic volumes with nfs
 ========================
 ---
@@ -146,124 +329,57 @@ parameters:
   archiveOnDelete: "false"
 
 
+kubeclt apply -f nfsProviser.yaml 
+kubectl get sc
+             ---------------by default Delete RECLAIMPOLICY---------------
+NAME               PROVISIONER     RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+nfs-storageclass   nfs-provisioner Delete          Immediate           false                  18s
 
-kubeclt apply -f nfsProviser.yaml
 
-NOTE: to understand the concept delete rs, pvc and pv in the system.
+kubectl get pv
 
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM               STORAGECLASS        VOLUMEATTRIBUTESCLASS
+pvc-11277eaf-e1cf-4072-9226-b59171e1ebd2   1Gi        RWX            Delete           Bound    prod/mongodb1-pvc  nfs-storageclass    <unset>
 
-PersistentVolumeClaim
----------------------
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mongodb-pvc
-  namespace: prod  # This is correct
-spec:
-  accessModes:
-    - ReadWriteMany  # Must match the PV's access mode
-  resources:
-    requests:
-      storage: 1Gi  # Must match or be less than the PV's size
+NOTE: To understand the concept delete rs, pvc and pv in the system.
 
 
 
-Mongodb
--------
----
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: mongodb
-  namespace: prod
-spec:
-  selector:
-    matchLabels:
-      app: mongodb
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: mongodb
-    spec:
-      containers:
-      - name: mongocon
-        image: mongo
-        ports:
-        - containerPort: 27017
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          value: devdb
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          value: devdb@123
-        volumeMounts:
-        - name: mongonfsvol
-          mountPath: /data/db
-      volumes:
-      - name: mongonfsvol
-        persistentVolumeClaim:
-          claimName: mongodb-pvc  # Use the PVC
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongosvc
-  namespace: prod
-spec:
-  type: ClusterIP
-  selector:
-    app: mongodb
-  ports:
-    - port: 27017
-      targetPort: 27017
 
-springwebapp
-------------
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sprinapp
-  namespace: test-ns
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: springapp
-  template:
-    metadata:
-      labels:
-        app: springapp
-    spec:
-      containers:
-      - name: springapp
-        image: kkeducation12345/spring-app:1.0.0
-        ports:
-        - containerPort: 8080
-        env:
-        - name: MONGO_DB_HOSTNAME
-          value: mongosvc
-        - name: MONGO_DB_USERNAME
-          value: devdb
-        - name: MONGO_DB_PASSWORD
-          value: devdb@123
-        resources:
-          requests:
-            cpu: 300m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: springappsvc
-  namespace: test-ns
-spec:
- type: NodePort
- selector:
-   app: springapp
- ports:
- - port: 80
-   targetPort: 8080
+Dynamic volumes with nfs  bring our springwebapp and insert some data and later delete the PV plz check out data is safe?
+========================
+Dynamic provisioning with NFS allows Kubernetes to automatically create PersistentVolumes using a StorageClass and NFS provisioner when a PVC is requested,
+no need to create manually PV. And by default in dynamic vol with nfs Reclaim policy is "Delete"
+In this also we loss the data just for short time use, but real time use only Retain.
+
+NFS Provisioner
+Runs as a pod
+Talks to NFS server
+Creates volumes dynamically
+No PV defined manually
+
+When PVC is deleted:
+NFS folder is deleted
+PV is deleted automatically
+
+Earlier: --------------> Manual PV → Failed.
+
+Now: Dynamic PV ------->  auto managed and No Failed state issues.
+
+Advantages
+----------
+| Feature              | Benefit            |
+| -------------------- | ------------------ |
+| No manual PV         | Saves time         |
+| Auto scaling storage | Easy               |
+| Works with RWX       | Multiple pods      |
+| Less errors          | No mismatch issues |
+
+
+                  ------------------------------- PVC → triggers → NFS provisioner → creates PV automatically ------------------------------------
+
+Common Issues
+-------------
+NFS server not reachable 
+Wrong provisioner name 
+Permissions issue 
