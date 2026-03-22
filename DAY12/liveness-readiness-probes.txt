@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
       - name: javawebapp
-        image: kkeducation123456/maven-web-app:1.2
+        image: kkeducation123456/maven-web-app:1.2  # anildocker11/springwebapp:0.0.2
         ports:
         - containerPort: 8080
         livenessProbe:
