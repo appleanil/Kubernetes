@@ -1,25 +1,50 @@
 Liveness probe and Readiness probe
 ==================================
 
---> Liveness and Readiness Probes are mechanisms in Kubernetes used to check the health and status of containers within a Pod. They help ensure that applications are running as expected and can serve traffic.
-
-
+--> Liveness and Readiness Probes are mechanisms in Kubernetes used to check the health and status of containers within a Pod. 
+    They help ensure that applications are running as expected and can serve traffic.
 
 IP:NodePort/maven-web-application  
 
 
 Liveness Probe
 -----------------
-Suppose that a Pod is running our application inside a container, but due to some reason let’s say memory leak, cpu usage, application deadlock etc the
-application is not responding to our requests, and stuck in error state.
+Suppose that a Pod is running our application inside a container, but due to some reason let’s say memory leak, cpu usage, 
+application deadlock etc the application is not responding to our requests, and stuck in error state.
 
-Liveness probe checks the container health as we tell it do, and if  some reason the liveness probe fails, it restarts the container.
+Liveness probe checks the container health as we tell it do, and if some reason the liveness probe fails, it restarts the container.
 
 Readiness Probe
 ---------------
-This type of probe is used to detect if a container is ready to accept traffic. You can use this probe to manage which pods are used as backends for load balancing services. 
+This type of probe is used to detect if a container is ready to accept traffic. 
+You can use this probe to manage which pods are used as backends for load balancing services. 
 
 If a pod is not ready,  then be removed from the list of load balancers.
+
+
+| Feature        | Liveness Probe        | Readiness Probe          |
+| -------------- | --------------------- | ------------------------ |
+| Purpose        | Check if app is alive | Check if app is ready    |
+| Failure action | Restart container 🔁  | Stop traffic 🚫         |
+| Use case       | Deadlock / crash      | Startup / dependency     |
+| Impact         | Pod restarts          | Pod stays but no traffic |
+
+
+Real DevOps Scenario
+
+👉 Example:
+
+Your app starts → takes 20 seconds to connect DB
+During this time:
+❌ Readiness = FAIL → no traffic
+✅ Liveness = PASS → no restart
+
+👉 If app hangs later:
+
+❌ Liveness = FAIL → container restart
+
+Liveness probe restarts unhealthy containers, while readiness probe controls whether a pod receives traffic.
+
 
 
 
@@ -80,10 +105,7 @@ spec:
     targetPort: 8080
     
 
-==========================
-
-
-
+=======================================================================================================================
 
         livenessProbe:
           httpGet:
