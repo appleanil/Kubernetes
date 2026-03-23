@@ -1,1 +1,80 @@
 https://medium.com/@subhasmitadas696/kubernetes-cluster-setup-on-amazon-eks-11506e462929
+
+
+#!/bin/bash
+
+set -e
+
+echo "=============================="
+echo "Installing EKS Required Tools"
+echo "=============================="
+
+# -----------------------------
+
+# Step 1: Check AWS CLI Version
+
+# -----------------------------
+
+echo "👉 Checking AWS CLI version..."
+aws --version || echo "AWS CLI not installed"
+
+# -----------------------------
+
+# Step 2: Install/Update AWS CLI v2
+
+# -----------------------------
+
+echo "👉 Installing/Updating AWS CLI v2..."
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install --update
+
+echo "✅ AWS CLI Version After Update:"
+aws --version
+
+# -----------------------------
+
+# Step 3: Install kubectl (EKS version specific)
+
+# -----------------------------
+
+echo "👉 Installing kubectl..."
+
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.4/2023-05-11/bin/linux/amd64/kubectl
+
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+echo "✅ kubectl Version:"
+kubectl version --client
+
+# -----------------------------
+
+# Step 4: Install eksctl
+
+# -----------------------------
+
+echo "👉 Installing eksctl..."
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv /tmp/eksctl /usr/local/bin
+
+echo "✅ eksctl Version:"
+eksctl version
+
+echo "=============================="
+echo "🎉 Installation Completed!"
+echo "=============================="
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+eksctl create cluster \
+  --name my-demo-cluster \
+  --region ap-south-1 \
+  --node-type t2.medium \
+  --nodes-min 1 \
+  --nodes-max 4
+
+eksctl delete cluster my-k8s-cluster --region ap-soth-1
