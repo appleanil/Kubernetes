@@ -70,11 +70,23 @@ echo "=============================="
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-eksctl create cluster \
-  --name my-demo-cluster \
-  --region ap-south-1 \
-  --node-type t2.medium \
-  --nodes-min 1 \
-  --nodes-max 4
+1. Goto IAM role
+2. In left side select Roles and create Roles
+3. Select AWS Service and down side select EC2 --> next
+4. Add permission lo search Administrative Access and down side --> next
+5. Select EKSCTL_Role --> update IAM Role
+6. Goto ec2 instance tab and select Actions --> Security --> IAM modify role
+7. EKSCTL_Role
+8. eksctl create cluster \
+   --name my-k8s-cluster \
+   --region ap-south-1 \
+   --node-type t2.medium \
+   --nodes-min 2 \
+   --nodes-max 4
+9. Goto eks and select my demo cluster and click on it to check status created or not
+10. kubectl get nodes
 
-eksctl delete cluster my-k8s-cluster --region ap-soth-1
+11. "eksctl delete cluster my-k8s-cluster --region ap-south-1"
+
+
+
