@@ -1,6 +1,5 @@
 request and limits
 ------------------
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,10 +24,10 @@ spec:
         resources:
           requests:
             memory: "512Mi"  # Minimum memory required
-            cpu: "1"      # Minimum CPU required
+            cpu: "1"         # Minimum CPU required
           limits:
             memory: "1Gi"    # Maximum memory allowed
-            cpu: "1"      # Maximum CPU allowed
+            cpu: "1"         # Maximum CPU allowed
 
 ---
 apiVersion: v1
@@ -48,9 +47,11 @@ spec:
 NOTE: increase the resources and see, no new nodes are coming eventhough we defined min and max
 
 EKS Cluster Auto scaler
-======================
-
-The Cluster Autoscaler in Amazon EKS (Elastic Kubernetes Service) automatically adjusts the size of your EKS cluster based on the demands of your workloads. It helps manage the scaling of worker nodes in your cluster, adding nodes when there are pending pods that cannot be scheduled due to insufficient resources and removing nodes when they are underutilized.
+=======================
+The Cluster Autoscaler in Amazon EKS (Elastic Kubernetes Service) automatically adjusts the size of your EKS cluster based on the demands of your workloads. 
+It helps manage the scaling of worker nodes in your cluster, adding nodes when there are pending pods that cannot be scheduled due to insufficient
+resources and removing nodes when they are underutilized.
+Okka node resources over indi ante appude po another node loki deploy pod
 
 
 How to set-up
@@ -103,16 +104,13 @@ step 2:
 
 attach the policy to eks cluster IAM role.
 
-
 select the EKS IAM role --> permissions --> add permissions --> Attach policies --> select ClusterAutoScalerpolicy--> add permissions 
 
 
-
 step 3: Install the clusterAutoAscaller
--------
+---------------------------------------
 
 link: https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md
-
 
 kubectl apply -f examples/cluster-autoscaler-autodiscover.yaml
 
@@ -272,7 +270,7 @@ spec:
             - --cloud-provider=aws
             - --skip-nodes-with-local-storage=false
             - --expander=least-waste
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/my-demo-cluster
+            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/my-k8s-cluster
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -287,8 +285,6 @@ spec:
           hostPath:
             # for Ubuntu/Debian nodes. For Amazon Linux, use /etc/ssl/certs/ca-bundle.crt
             path: /etc/ssl/certs/ca-bundle.crt
-
-
 
 
 
