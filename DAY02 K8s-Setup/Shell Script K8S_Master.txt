@@ -1,0 +1,170 @@
+#!/bin/bash
+
+set -e
+
+echo "========== Kubernetes Common Setup Started =========="
+
+# 1. Switch to root check
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root (sudo su -)"
+  exit
+fi
+
+echo "1. Disabling Swap..."
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+echo "2. Loading Kernel Modules..."
+cat <<EOF | tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+modprobe overlay
+modprobe br_netfilter
+
+echo "3. Setting sysctl parameters..."
+cat <<EOF | tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+sysctl --system
+
+echo "4. Installing Containerd..."
+apt-get update -y
+apt-get install -y ca-certificates curl gnupg lsb-release
+
+mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) stable" | \
+tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt-get update -y
+apt-get install -y containerd.io
+
+echo "Generating default containerd config..."
+mkdir -p /etc/containerd
+containerd config default | tee /etc/containerd/config.toml
+
+sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
+
+systemctl restart containerd
+systemctl enable containerd
+
+echo "5. Installing kubeadm, kubelet, kubectl..."
+
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | \
+gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /" | \
+tee /etc/apt/sources.list.d/kubernetes.list
+
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+apt-mark hold kubelet kubeadm kubectl
+
+systemctl daemon-reload
+systemctl enable kubelet
+systemctl start kubelet
+
+apt-get install -y conntrack
+apt-get install -y conntrack socat ebtables ipset
+which conntrack
+/usr/sbin/conntrack
+
+#from here to we can only master node
+
+kubeadm init
+
+#!/bin/bash
+
+# Configure kubectl for root user
+mkdir -p $HOME/.kube
+cp /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Install Weave CNI
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+# Generate join command
+kubeadm token create --print-join-command
+
+
+echo "========== Kubernetes Common Setup Completed =========="
+
+
+
+
+
+
+====================================================================================================================
+
+
+
+
+setup the NFS server -------> By default NFS server port number is 2049
+====================
+
+#!/bin/bash
+
+# Exit if any command fails
+set -e
+
+echo "🔹 Updating system..."
+sudo apt update -y
+
+echo "🔹 Installing NFS Kernel Server..."
+sudo apt install nfs-kernel-server -y
+
+echo "🔹 Creating NFS shared directory..."
+sudo mkdir -p /mnt/nfs_share
+
+echo "🔹 Setting permissions..."
+sudo chown nobody:nogroup -R /mnt/nfs_share
+sudo chmod 777 -R /mnt/nfs_share
+
+echo "🔹 Configuring /etc/exports..."
+EXPORT_LINE="/mnt/nfs_share *(rw,sync,no_subtree_check,no_root_squash)"
+
+# Add only if not already present
+grep -qxF "$EXPORT_LINE" /etc/exports || echo "$EXPORT_LINE" | sudo tee -a /etc/exports
+
+echo "🔹 Applying export configuration..."
+sudo exportfs -a
+
+echo "🔹 Restarting NFS service..."
+sudo systemctl restart nfs-kernel-server
+
+echo "🔹 Enabling NFS service on boot..."
+sudo systemctl enable nfs-kernel-server
+
+echo "🔹 Verifying NFS service status..."
+sudo systemctl status nfs-kernel-server --no-pager
+
+echo "🔹 Checking running NFS processes..."
+ps -ef | grep -i nfs | grep -v grep
+
+echo "✅ NFS Server setup completed successfully!"
+
+save chmod +x nfs-setup.sh./nfs-setup.sh
+
+
+configuring the nfs client machine
+==================================
+
+--> Install in all the machines of k8s cluster
+
+sudo apt update -y
+
+sudo apt install nfs-common -y
