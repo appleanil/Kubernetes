@@ -1,0 +1,560 @@
+Kubernetes cluster
+==================
+
+1. self managed k8s cluster
+===========================
+
+   1. minikube [single node k8s cluster]
+
+   2. kubeadm [multi node k8s cluster]
+
+--> If any failure in the pod, It will taken care by k8s. If any failure in the nodes, k8s will not handle manually. we need to fix it
+
+
+2. cloud managed k8s cluster
+============================
+
+1. AWS ---> EKS [Elastic k8s service]
+
+2. Azure --> AKS [Azure k8s service]
+
+3. Google --> GKE [Google k8s engine]
+
+
+--> If any failure in the pod, It will taken care by k8s. If any failure in the nodes, cloud will handle manually. we need to fix it
+nodes -------------> 70+
+microservices -----> 55+
+pods --------------> 240+
+
+
+
+
+
+=============================================================================================================================
+KK FUNDA  Ph: 863980177/9676831734
+==============================================================================================================================
+
+Agenda: Kubernetes Setup Using Kubeadm In AWS EC2 Ubuntu Servers Container-D As Runtime
+=======
+
+Prerequisite:
+=============
+
+3 - Ubuntu Servers
+
+1 - master  (4GB RAM , 2 Core) t2.medium
+in realtime 64gb, 128gb ++ and 4 core cpu, 8 core cpu
+
+2 - Workers(slave machines)  (1 GB, 1 Core)     t3.micro or t2.micro
+
+
+Note: Open Required Ports In AWS Security Groups. For now we will open All trafic.
+
+==========COMMON FOR MASTER & SLAVES START ====
+
+1) Switch to root user
+   
+sudo su -
+
+
+2) Disable swap & add kernel settings
+
+#https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+=======================================================================================
+
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+
+3) Add  kernel settings & Enable IP tables(CNI Prerequisites)-Communication b/w POD to POD
+
+https://kubernetes.io/docs/setup/production-environment/container-runtimes/
+============================================================================
+
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+
+modprobe overlay
+modprobe br_netfilter
+
+
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+
+sysctl --system
+
+4) Install containerd run time
+
+https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
+=======================================================================================
+
+https://github.com/containerd/containerd/blob/main/docs/getting-started.md
+==========================================================================
+
+https://docs.docker.com/engine/install/ubuntu/
+==============================================
+
+#To install containerd, first install its dependencies.
+
+apt-get update -y 
+apt-get install ca-certificates curl gnupg lsb-release -y
+
+
+
+Note: We are not installing Docker Here.Since containerd.io package is part of docker apt repositories hence we added docker repository &
+it's key to download and install containerd.
+
+
+# Add Docker’s official GPG key:
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+#Use follwing command to set up the repository:
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  
+  
+# Install containerd
+
+apt-get update -y
+apt-get install containerd.io -y
+
+# Generate default configuration file for containerd
+
+Note: Containerd uses a configuration file located in /etc/containerd/config.toml for specifying daemon level options.
+The default configuration can be generated via below command.
+
+containerd config default > /etc/containerd/config.toml
+
+# Run following command to update configure cgroup as systemd for contianerd.
+
+sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
+
+# Restart and enable containerd service
+
+systemctl restart containerd
+systemctl enable containerd
+
+
+5) Installing kubeadm, kubelet and kubectl 
+
+# Update the apt package index and install packages needed to use the Kubernetes apt repository:
+
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports
+===========================================================================================================
+
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl
+
+# Download the Google Cloud public signing key:
+
+
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# Add the Kubernetes apt repository:
+
+
+
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+
+
+# Update apt package index, install kubelet, kubeadm and kubectl, and pin their version:
+
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+
+# apt-mark hold will prevent the package from being automatically upgraded or removed.
+apt-mark hold kubelet kubeadm kubectl
+
+
+# Enable and start kubelet service
+
+systemctl daemon-reload 
+systemctl start kubelet 
+systemctl enable kubelet.service
+
+
+==========COMMON FOR MASTER & SLAVES END ====
+
+
+
+   
+===========In Master Node Start====================
+
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+==============================================================================================
+
+
+# Steps Only For Kubernetes Master
+
+# Switch to the root user.
+
+sudo su -
+
+# Initialize Kubernates master by executing below commond.
+
+apt-get update
+apt-get install -y conntrack
+which conntrack
+/usr/sbin/conntrack
+
+
+kubeadm init
+
+# If you want to initialize kubernetes on Public EndPoint(Not recommended in real time). You can use below option
+Replace PUBLIC_IP with actual public ip of your kubernetes master node (Recommended to use Elastic 
+(Create and assign elastic IP to master node and use that Elastic IP below)).Replace PORT with 6443 (API Server Port). 
+
+#kubeadm init --control-plane-endpoint "PUBLIC_IP:PORT"
+
+IF Error
+#sudo kubeadm init --cri-socket /run/containerd/containerd.sock
+
+
+# Configure kubectl  exit as root user & exeucte as normal ubuntu user
+exit
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+in master plz check once kubectl get all -n kube-system
+
+we can see in K8S architecture names all are in running state by default
+
+1. pods/etcd
+2. pods/kube-apiserver-<IP-address>
+3. pods/kube-controller-manager-<IP-address>
+4. pods/kube-proxy-<IP-address>
+5. pods/kube-scheduler-<IP-address>
+
+
+# To verify, if kubectl is working or not, run the following command.
+
+kubectl get nodes
+
+kubectl get pods -o wide -n kube-system
+
+#You will notice from the previous command, that all the pods are running except one: ‘core-dns’. For resolving this we will install a 
+# pod network addon like Calico or Weavenet ..etc. 
+
+
+Note: Install any one network addon don't install both. Install either weave net or calico.
+
+https://kubernetes.io/docs/concepts/cluster-administration/addons/
+==================================================================
+
+
+To install Weave net run the following command.
+
+https://www.weave.works/docs/net/latest/kubernetes/kube-addon/ ---------> to create weave network
+==============================================================
+plz check once kubectl get all nodes then we can see our node status in not ready
+
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+after this some more objects will create like 
+1. serviceaccount/weave-net created
+2. clusterrole.rbac.authorization.k8s.io/weave-net created
+3. clusterrolebinding.rbac.authorization.k8s.io/weave-net created
+4. role.rbac.authorization.k8s.io/weave-net created
+5. rolebinding.rbac.authorization.k8s.io/weave-net created
+6. daemonset.apps/weave-net created
+
+
+plz enter kubectl get all nodes then node status ready state
+
+Or To install the calico network addon, run the following command:
+
+#kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml 
+
+
+# Get token
+
+kubeadm token create --print-join-command
+
+by this command we have to connect node 1 and node 2 for master machine
+so later copy the data and paste it in node 1 and node 2 
+later run this command kubectl get nodes then status is ready
+
+=========In Master Node End====================
+
+kubeadm join 172.31.46.122:6443 --token 0l59go.sw6g259pyw1bu2b2 --discovery-token-ca-cert-hash sha256:e5daeda33e3230830e3c705c97f6b1679085d18de0e3f91ec0c3f8cebb1f0bb7
+
+
+
+kubectl get po -n kube-system
+
+1. coredns-7c65d6cfc9-45jbh
+   → Provides DNS resolution so pods and services can discover each other.
+
+2. coredns-7c65d6cfc9-xsctr
+   → Second CoreDNS replica for high availability of cluster DNS.
+
+3. etcd-ip-172-31-36-44
+   → Key-value store that holds all Kubernetes cluster state and configuration.
+     Nodes, Pods, Deployments, ConfigMaps, Secrets, Cluster state, these type of values will be stored
+
+4. kube-apiserver-ip-172-31-36-44
+   → Central API server that handles all kubectl and component requests.
+
+5. kube-controller-manager-ip-172-31-36-44
+   → Runs controllers that maintain desired state (nodes, pods, replicas).
+     min/max yanni undali nodes, pods, replicas,deploy and crash ina automatcally up avvali 
+
+6. kube-scheduler-ip-172-31-36-44
+   → Decides which node new pods should run on based on resources and policies.
+
+7. kube-proxy-ps5bf
+   → kube-proxy instance running on another node to handle service networking.
+
+8. kube-proxy-tnf8n
+   → Ensures Kubernetes Services routing works on its respective node.
+
+9. kube-proxy-6n97q
+   → Manages network rules to enable service-to-pod communication on this node.
+
+10. weave-net-67x9s
+    → Weave CNI pod providing pod-to-pod networking on a node.
+
+11. weave-net-kdgdg
+    → Another Weave Net daemon ensuring networking across cluster nodes.
+
+12. weave-net-tcvb5
+    → Maintains overlay network so pods can communicate across nodes.
+
+
+1. coredns-7c65d6cfc9-45jbh
+   → Pods మరియు Services ఒకదానిని ఒకటి కనుగొనడానికి DNS సేవ ఇస్తుంది.
+
+2. coredns-7c65d6cfc9-xsctr
+   → DNS సేవ ఆగకుండా ఉండేందుకు రెండవ CoreDNS pod.
+
+3. etcd-ip-172-31-36-44  etc → A traditional Linux directory that stores configuration files
+
+                         “d” → Stands for daemon (a background service)
+   → Kubernetes క్లస్టర్‌కు సంబంధించిన అన్ని డేటా మరియు సెట్టింగ్స్‌ని స్టోర్ చేస్తుంది.
+     Nodes, Pods, Deployments, ConfigMaps, Secrets, Cluster state, these type of values will be stored
+
+4. kube-apiserver-ip-172-31-36-44
+   → kubectl మరియు అన్ని components మధ్య కమ్యూనికేషన్‌ను హ్యాండిల్ చేస్తుంది.
+
+5. kube-controller-manager-ip-172-31-36-44
+   → Pods, Nodes, Replicas సరైన స్థితిలో ఉన్నాయా లేదా చూసుకుంటుంది.
+
+6. kube-scheduler-ip-172-31-36-44
+   → కొత్త Pod ఏ నోడ్‌లో రన్ అవ్వాలో నిర్ణయిస్తుంది.
+
+7. kube-proxy-ps5bf
+   → మరో నోడ్‌లో Services నెట్‌వర్క్ ట్రాఫిక్‌ను నిర్వహిస్తుంది.
+
+8. kube-proxy-tnf8n
+   → తన నోడ్‌లో Kubernetes Services routing సరిగ్గా జరిగేలా చూస్తుంది.
+
+9. kube-proxy-6n97q
+   → ఈ నోడ్‌లో Services నుండి Pods‌కు నెట్‌వర్క్ కనెక్షన్ సరిగ్గా పనిచేసేలా చేస్తుంది.
+
+10. weave-net-67x9s
+    → ఈ నోడ్‌లో Pods ఒకదానితో ఒకటి మాట్లాడుకునేలా నెట్‌వర్క్ ఇస్తుంది.
+
+11. weave-net-kdgdg
+    → క్లస్టర్‌లోని మరో నోడ్‌కు నెట్‌వర్క్ కనెక్టివిటీ ఇస్తుంది.
+
+12. weave-net-tcvb5
+    → అన్ని నోడ్స్ మధ్య Pods కమ్యూనికేషన్ స్మూత్‌గా జరిగేలా చూస్తుంది.
+
+
+
+
+
+
+
+Add Worker Machines to Kubernates Master
+=========================================
+
+Copy kubeadm join token from and execute in Worker Nodes to join to cluster
+
+
+kubectl commonds has to be executed in master machine.
+
+
+
+Deploy Sample Application
+==========================
+
+kubectl run nginx-demo --image=nginx --port=80 
+
+kubectl create ns test
+
+
+
+
+===================================================================================================
+
+
+Kubernetes Objects  / API resources [kubectl api-resources]
+====================================
+
+Pod
+ReplicationController
+ReplicaSet
+DaemonSet
+Deployment
+StatefulSet
+namespace
+ConfigMap
+Secret
+Service
+NetworkPolicies
+Ingress
+PersistentVolumeClaim
+PersistentVolume
+
+
+
+
+what is cluster?
+================
+
+It is group of k8s servers/nodes.
+
+what is node?
+=============
+A node is a worker machine in Kubernetes that runs pods and is managed by the control plane.
+A node is a machine (VM or physical server) where containers (pods) actually run. A node is the host, not the container.
+Two type of nodes:
+
+1️⃣ Control Plane(master) Node --> Responsible for managing the cluster (not user apps), kube-apiserver, controller-manager, scheduler, etcd 
+
+2️⃣ Worker Node --> Responsible for running application workloads. kubelet, container runtime (containerd), kube-proxy, application pods
+
+
+
+
+k8s nameSpaces
+==============
+In Kubernetes, namespaces are a way to organize and manage resources within a cluster.
+They help you divide cluster resources between multiple users or teams and can be useful for managing resource quotas, network policies, and access control.
+
+kubectl get ns
+1. default -------------------> for user workloads
+2. kube-node-lease -----------> Stores node heartbeat lease objects.
+3. kube-public ---------------> Publicly readable cluster information.
+4. kube-system ---------------> Stores control plane and cluster services. kube-apiserver, kube-scheduler, kube-controller-manager, CoreDNS, etcd
+
+without mentioning namespaces then the application go and sit in default namespace ---------> kubectl get po (status is running)
+
+and also check once some more pods are running by default in kube-system --------> kubectl get po -n kube-system
+
+1. coredns-7c65d6cfc9-45jbh
+2. coredns-7c65d6cfc9-xsctr
+3. etcd-ip-172-31-36-44
+4. kube-apiserver-ip-172-31-36-44
+5. kube-controller-manager-ip-172-31-36-44
+6. kube-proxy-6n97q
+7. kube-proxy-ps5bf
+8. kube-proxy-tnf8n
+9. kube-scheduler-ip-172-31-36-44
+10. weave-net-67x9s
+11. weave-net-kdgdg
+12. weave-net-tcvb5
+
+kubectl get po --all-namespaces  (or) kubectl get po -A  ------> it will show u all default pod namespaces
+
+
+Here are some key commands and YAML examples related to Kubernetes namespaces:
+
+1. Creating a Namespace
+------------------------
+Create a namespace using a YAML file, as shown earlier:
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-namespace
+  labels:
+    name: my-namespace
+
+kubectl apply -f namespace.yaml
+
+
+--> Alternatively, you can create a namespace directly from the command line:
+
+kubectl create namespace prod
+
+kubectl create namespace <NN>
+
+kubectl create ns testing-ns
+
+
+
+2. Listing Namespaces
+---------------------
+kubectl get namespaces  or kubectl get ns
+
+
+3. Viewing Namespace Details
+-----------------------------
+To get detailed information about a specific namespace:
+
+kubectl describe ns my-namespace
+
+
+
+4. Deleting a Namespace
+-----------------------
+To delete a namespace (along with all the resources within it):
+
+kubectl delete namespace my-namespace
+
+
+
+5. Using Namespaces in Resource Definitions
+---------------------------------------------
+When defining resources (like Pods, Services, Deployments) in YAML files, you specify the namespace under the metadata section:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  namespace: my-namespace
+spec:
+  containers:
+  - name: nginx123
+    image: nginx
+    ports:
+    - containerPort: 80
+
+
+kubectl apply -f pod.yaml
+
+
+6. Switching Namespaces in kubectl Context -----------> kubectl config set-context --current --namespace=test
+
+7. Namespace Resource Quotas
+-----------------------------
+You can define resource quotas and limits per namespace to control the usage of resources:
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: my-resource-quota
+  namespace: test
+spec:
+  hard:
+    pods: "10"
+
+
+kubectl apply -f quota.yaml
