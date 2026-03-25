@@ -1,13 +1,13 @@
-
-
+Authentication ---> AccessKey and SecurityKey (to connect)
+Authorization ----> Login with password (for some objects only access like cluster, namespace(prod,test,stg), deployment, ReplicasController, ReplicaSets, Configmaps like...)
 
 RBAC
 ====
-
-
-RBAC (Role-Based Access Control) in Kubernetes is a powerful method for regulating access to the Kubernetes API based on the roles of individual users or groups. Here's a breakdown of its key components and how it works:
+RBAC (Role-Based Access Control) in Kubernetes is a powerful method for regulating access to the Kubernetes API based on the roles of individual users or groups.
+Here's a breakdown of its key components and how it works:
 
 Key Components
+--------------
 
 Role: Defines a set of permissions within a specific namespace. It grants access to resources like pods, deployments, etc.
 
@@ -15,13 +15,11 @@ RoleBinding: Grants the permissions defined in a Role to a user or a group withi
 
 ClusterRole: Similar to a Role but applies across the entire cluster. It can be used for non-namespaced resources or for cluster-wide permissions.
 
-
 ClusterRoleBinding: Grants the permissions defined in a ClusterRole to a user or a group across the entire cluster.
 
 
 Practical
 =========
-
 step 1: install kubectl in your system(windows)
 ------
 
@@ -35,22 +33,18 @@ curl.exe -LO "https://dl.k8s.io/release/v1.32.0/bin/windows/amd64/kubectl.exe"
 
      or 
 
-
 curl.exe -LO "https://dl.k8s.io/release/v1.33.0/bin/windows/amd64/kubectl.exe"
 
-
      or
+
 curl.exe -LO "https://dl.k8s.io/release/v1.34.0/bin/windows/amd64/kubectl.exe"
-
-
 
 add the environment details.
 
 C:\Users\gpras\OneDrive\Desktop\rbac-practise  --> add env path
 
 step 2: Install aws cli
--------
-
+-----------------------
 link: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
 Download and run the AWS CLI MSI installer for Windows (64-bit):
@@ -58,34 +52,21 @@ Download and run the AWS CLI MSI installer for Windows (64-bit):
 https://awscli.amazonaws.com/AWSCLIV2.msi
 
 
-
-
-
 step 3: create IAM user and create a access and seceret key for that user
 ------
-
-
 https://gobidesi.signin.aws.amazon.com/console
 
 uname:   kkfunda
 
-
 pwd:    Vision@2031
-
 
 AK: AK
 
 SK: lg
 
 
-
-
-
-
-
 step 4: we need aws permissions
 -------
-
 aws configure
 
 access key: 
@@ -94,16 +75,13 @@ region: ap-south-1
 format: table
 
 aws sts get-caller-identity
-
 aws eks list-clusters
 aws eks update-kubeconfig --name my-demo-cluster --region ap-south-1
 
 
 step 5: create eks read-only policy and attach to the user
 -------
-
 aws sts get-caller-identity
-
 aws eks list-clusters
 aws eks update-kubeconfig --name my-demo-cluster --region ap-south-1
 
@@ -112,10 +90,8 @@ cat /c/Users/gpras/.kube/config
 But we are not able to list kubectl get po, etc
 
 
-
 step 6: connect to linux machine where we have k8s admin cli access.
 -------
-
 kubectl get cm -n kube-system
 
 cm: aws-auth
@@ -148,13 +124,12 @@ metadata:
 
 kubectl get pods --> we dont have permission
 
-
 srihari --> RBAC
 
 sai --> admin
 
 
-=================================
+==============================================================================================================================
 
 --> Now create Role and RoleBinding
 
@@ -182,10 +157,7 @@ roleRef:
   name: pod-reader
   apiGroup: rbac.authorization.k8s.io
 
-
-
-
-=========
+==============================================================================================================================
 
 
 apiVersion: rbac.authorization.k8s.io/v1
@@ -210,28 +182,5 @@ roleRef:
   kind: ClusterRole
   name: fullaccesscr
   apiGroup: rbac.authorization.k8s.io
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
