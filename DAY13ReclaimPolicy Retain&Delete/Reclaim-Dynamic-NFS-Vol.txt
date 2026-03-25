@@ -32,7 +32,7 @@ mongodb-pv1  1Gi        RWX            Retain           Bound   prod/mongodb1-pv
 NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM               STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
 mongodb-pv1  1Gi        RWX            Retain           Released   prod/mongodb1-pvc    <unset>        <unset>                 7m17s
 
-===================================================================================================================================================================
+=============================================================================================================================================================
 
 2. Delete Claim Policy -------------> Add this line in pv.yaml ---------> persistenvolumeclaim: delete 
 ----------------------
@@ -63,7 +63,8 @@ mongodb-pv1  1Gi        RWX            Delete           Bound   prod/mongodb1-pv
 NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM               STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
 mongodb-pv1  1Gi        RWX            Delete           Failed   prod/mongodb1-pvc   <unset>        <unset>                 7m17s
 
-Even though we delete and re-apply mongo-cm-secrets.yaml and pvc.yaml, the Mongo pod and PVC remain in Pending state because the existing PersistentVolume is in Failed state and cannot be reused. This failure can happen when using the Delete reclaim policy with NFS, where Kubernetes is unable to clean up the storage. The Pending state is due to the unusable PV, not directly because of the reclaim policy.
+Even though we delete and re-apply mongo-cm-secrets.yaml and pvc.yaml, the Mongo pod and PVC remain in Pending state because the existing PersistentVolume 
+is in Failed state and cannot be reused. This failure can happen when using the Delete reclaim policy with NFS, where Kubernetes is unable to clean up the storage. The Pending state is due to the unusable PV, not directly because of the reclaim policy.
 persistenvolumeclaim: delete in pv.yaml
 
 
@@ -215,7 +216,7 @@ spec:
 
 
 
-=======================================================================================================================================================================
+========================================================================================================================================================
 Dynamic volumes with nfs
 ========================
 ---
