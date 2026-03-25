@@ -15,17 +15,19 @@ Key Concepts of Network Policies
 ---------------------------------
 Namespaces: Network Policies are applied within a specific namespace. You can create different policies for different namespaces.
 
-Selectors: Network Policies use selectors to define the pods they apply to:
+Selectors: Network Policies use selectors to define the pods they apply to
 
 Pod Selector: Specifies which pods the policy affects.
+
 Namespace Selector: Specifies which namespaces the policy can affect.
 
 
 Types of Rules:
+---------------
 
-Ingress Rules (Inbound) ------> Control incoming traffic to the selected pods.
+Ingress Rules (Inbound) ------> Control incoming traffic from the selected pods.
 Egress Rules (Outbound) ------> Control outgoing traffic from the selected pods.
-Policy Types ------> Each Network Policy can specify rules for ingress, egress, or both.
+Policy Types ------> Each Network Policy can specify rules for ingress, egress or both.
 
 
 
@@ -132,7 +134,7 @@ spec:
 kubectl apply -f springwebapp.yaml
 
 
-maven-web-app and service
+maven-web-app and service -----> create another namespace is test
 -------------------------
 apiVersion: apps/v1
 kind: Deployment
@@ -175,17 +177,19 @@ kubectl apply -f mavenwebapp.yaml
 
 step 1:
     kubectl exec -it javawebappdep-95fd6f796-bjsbs -n test-ns -- /bin/bash or -- sh
+	apt update && apt install curl -y
     apk add curl -------> install the curl command or check ping
     curl -v telnet://mongo-svc:27017   --> connected
 
 step 2:
     kubectl exec -it sprinapp-6c6b6dfbbb-94qdr -n test-ns -- sh
+	apt update && apt install curl -y
     apk add curl
-    curl -v telnet://mongo-svc:27017
+    curl -v telnet://mongo-svc.prod.svc.cluster.local:27017
 
 step 3: -------> deploy nginx in default ns and check the connectivity
 
-create one yaml in default namespace -- kubectl apply -f nginx.yaml
+create one yaml in default namespace --> kubectl apply -f nginx.yaml
 ------------------------------------
 apiVersion: v1
 kind: Pod
@@ -207,48 +211,8 @@ curl -v telnet://mongo-svc.prod.svc.cluster.local:27017  ------------> check wit
 IQ: How to check connecton one Namespace to another Namespace -------> Fully Qualified Domain Name
 ============================================================================================================================================
 
-Now apply the networkPolicies  ignore this
------------------------------
 
-Example 1: SYNTAX
-----------
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: test-network-policy
-  namespace: prod
-spec:
-  podSelector:
-    matchLabels:
-      app: springapp
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:   # inbound traffic
-  - from:
-    - ipBlock:
-        cidr: 172.17.0.0/16
-        except:
-        - 172.17.1.0/24
-    - namespaceSelector:
-        matchLabels:
-          project: myproject
-    - podSelector:
-        matchLabels:
-          role: frontend
-    ports:
-    - protocol: TCP
-      port: 6379
-  egress:   # outbound traffic
-  - to:
-    - ipBlock:
-        cidr: 10.0.0.0/24
-    ports:
-    - protocol: TCP
-      port: 5978
-
-
-Example 2: for our application
+Example 1: for our application
 ------------------------------
 
 apiVersion: networking.k8s.io/v1
@@ -322,7 +286,74 @@ kubectl get netpol  -n test-ns
 
 NOTE: add namespace selector and check the connection
 
-
    - namespaceSelector:
 	matchLabels:
 	 ns=test-ns
+
+
+Pod + Namespace Selector (Combined)
+-----------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pod-namespace-selector-policy
+  namespace: prod
+spec:
+  podSelector:
+    matchLabels:
+      app: default
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          team: test
+      podSelector:
+        matchLabels:
+          app: prod
+
+
+
+
+==========================================================================================================================================================
+
+Now apply the networkPolicies  ignore this
+-----------------------------
+
+Example 1: SYNTAX
+----------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+  namespace: prod
+spec:
+  podSelector:
+    matchLabels:
+      app: springapp
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:   # inbound traffic
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+    - namespaceSelector:
+        matchLabels:
+          project: myproject
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:   # outbound traffic
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+    ports:
+    - protocol: TCP
+      port: 5978
