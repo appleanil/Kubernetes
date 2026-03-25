@@ -165,7 +165,7 @@ kind: ClusterRole
 metadata:
   name: fullaccesscr
 rules:
-- apiGroups: ["*"]
+- apiGroups: ["*"]   #by default v1 later apps/v1, autoscaling
   resources: ["*"]
   verbs: ["*"]
 
