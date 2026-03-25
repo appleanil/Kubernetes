@@ -41,7 +41,10 @@ curl.exe -LO "https://dl.k8s.io/release/v1.34.0/bin/windows/amd64/kubectl.exe"
 
 add the environment details.
 
-C:\Users\gpras\OneDrive\Desktop\rbac-practise  --> add env path
+C:\Users\gpras\OneDrive\Desktop\rbac-practise  --> search env --> add goto env variables --> click on path and edit --> select our path copy and paste --> click on ok
+
+close the bash and again open bash terminal checl kubectl version
+
 
 step 2: Install aws cli
 -----------------------
@@ -51,16 +54,21 @@ Download and run the AWS CLI MSI installer for Windows (64-bit):
 
 https://awscli.amazonaws.com/AWSCLIV2.msi
 
+paste in google and download it later open that file click next, next... later go and check bash terminal
+
 
 step 3: create IAM user and create a access and seceret key for that user
 ------
+goto IAM in another tab --> select user in left side --> enter username anildevops and ignore change password --> next --> permission AWS user to grp --> next
+--> take unsername and password --> go and check another browser for user having access
+select user and open --> security Credantails --> select command line interface --> next --> decrition add username --> next --> take AccessKey and SecurityKey
 https://gobidesi.signin.aws.amazon.com/console
 
 uname:   kkfunda
 
 pwd:    Vision@2031
 
-AK: AK
+AK: AKfef
 
 SK: lg
 
@@ -74,32 +82,36 @@ secret key:
 region: ap-south-1
 format: table
 
-aws sts get-caller-identity
-aws eks list-clusters
-aws eks update-kubeconfig --name my-demo-cluster --region ap-south-1
-
 
 step 5: create eks read-only policy and attach to the user
 -------
-aws sts get-caller-identity
-aws eks list-clusters
-aws eks update-kubeconfig --name my-demo-cluster --region ap-south-1
-
-cat /c/Users/gpras/.kube/config
+1. aws sts get-caller-identity
+2. aws eks list-clusters
+3. aws eks update-kubeconfig --name my-demo-cluster --region ap-south-1
+4. cat /c/Users/gpras/.kube/config
+5. kubectl get po (error vasthundi)
 
 But we are not able to list kubectl get po, etc
+
+1. open user --> Add Permission --> Attach Policies directly --> search s3fullaccess, ec2fullaccess
+2. aws sts get-caller-identity
+3. aws eks list-clusters
+4. aws eks update-kubeconfig --name my-k8s-cluster --region ap-south-1
+5. go IAM create Policy --> Create policy --> click visual --> search eks --> give all read and list permissions --> resources --> next
+6. give policy name(eks-policy) --> next --> goto user --> Add Permissions --> Attach policy --> customised manages or search eks-policy --> next --> Add Permissions
+7. run above commands (1 to 5) check once for access.
+
 
 
 step 6: connect to linux machine where we have k8s admin cli access.
 -------
-kubectl get cm -n kube-system
+1. kubectl get cm -n kube-system
 
 cm: aws-auth
 
 NOTE: add users
 
-kubectl edit cm aws-auth -n kube-system
-
+2. kubectl edit cm aws-auth -n kube-system
 
 apiVersion: v1
 data:
@@ -110,8 +122,8 @@ data:
       rolearn: arn:aws:iam::418295704475:role/EKS-worker-role-class
       username: system:node:{{EC2PrivateDNSName}}
   mapUsers: |
-    - userarn: arn:aws:iam::418295704475:user/prasanth
-      username: prasanth
+    - userarn: arn:aws:iam::418295704475:user/prasanth          # open IAM user and copy ARN and paste it
+      username: anildevops                                      # add IAM user name
 kind: ConfigMap
 metadata:
   creationTimestamp: "2024-10-11T07:12:50Z"
@@ -123,6 +135,7 @@ metadata:
 
 
 kubectl get pods --> we dont have permission
+kubectl get po -n prod
 
 srihari --> RBAC
 
@@ -131,17 +144,18 @@ sai --> admin
 
 ==============================================================================================================================
 
---> Now create Role and RoleBinding
+---> Now create Role and RoleBinding    
+kubectl apply -f role.yaml and kubectl apply -f rolebinding.yaml (or) kubectl apply -f role-rolebinding.yaml(combine 2 yaml files)
 
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: default
-  name: pod-reader
+  namespace: prod      # permission denied for another namespace like default, test, stg, utg if u want create check once
+  name: pod-reader     # name should be same in Role and RoleBinding
 rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["pods"]
-  verbs: ["get", "watch", "list"]
+- apiGroups: [""]      # "" indicates all the core API group
+  resources: ["pods"]  # we can define Pods, Service, PVC, PV, Configmaps, Secret, Deployment, ReplicaController, ReplicaSet
+  verbs: ["get", "watch", "list"]   # practice once give all permissions like Read, list, check below
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -150,12 +164,34 @@ metadata:
   namespace: prod
 subjects:
 - kind: User
-  name: kkfunda1
+  name: anildevops
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
-  name: pod-reader
+  name: pod-reader   # name should be same in Role and RoleBinding
   apiGroup: rbac.authorization.k8s.io
+
+go and check kubectl get po -n prod
+kubectl get svc -n prod
+if u want Service, PVC, PV, Configmaps, Secret, Deployment, ReplicaController, ReplicaSet
+then kubectl get po -n prod
+take pod name pod-reader kubectl edit po pod-reader -n prod
+apiGroups
+- ""  ---> for all
+- v1
+- apps/v1
+add resource
+- ""  ---> for all 
+- pods
+- Services
+- ReplicaController like this
+verbs (permission)
+- ""  ---> for all
+- read
+- list
+- get
+- delete
+- watch
 
 ==============================================================================================================================
 
@@ -163,24 +199,65 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: fullaccesscr
+  name: fullaccesscr # name should be same in ClusterRole and ClusterRoleBinding
 rules:
-- apiGroups: ["*"]   #by default v1 later apps/v1, autoscaling
-  resources: ["*"]
-  verbs: ["*"]
+- apiGroups: ["*"]   # by default v1 later apps/v1, autoscaling, like some other
+  resources: ["*"]   # we can define Pods, Service, PVC, PV, Configmaps, Secret, Deployment, ReplicaController, ReplicaSet
+  verbs: ["*"]       # practice once permissions like Read, list, write, watch, check below
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: fullaccess
+  name: fullaccess   # name should be same in ClusterRole and ClusterRoleBinding
 subjects:
 - kind: User
-  name: kkfunda
+  name: anildevops
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
-  name: fullaccesscr
+  name: fullaccesscr  # name should be same in ClusterRole and ClusterRoleBinding
   apiGroup: rbac.authorization.k8s.io
+
+kubectl create ns prod
+kubectl get ns
+go and check officals doc in krs search for Role, RoleBinding, ClusterRole, ClusterRoleBinding
+create multiple users and then practise
+
+=============================================================================================================================
+
+verbs:
+- get        # read single resource
+- list       # list resources
+- watch      # monitor changes
+- create     # create resource
+- update     # modify existing
+- patch      # partial update
+- delete     # delete resource
+- deletecollection # delete multiple
+
+resources:
+- pods
+- services
+- deployments
+- replicasets
+- configmaps
+- secrets
+- persistentvolumeclaims
+- persistentvolumes
+- namespaces
+- nodes
+- jobs
+- cronjobs
+- ingresses
+
+
+apiGroups:
+- ""                 # core (pods, services)
+- apps               # deployments, replicasets
+- batch              # jobs, cronjobs
+- networking.k8s.io  # ingress, network policies
+- rbac.authorization.k8s.io
+- autoscaling        # HPA
 
 
