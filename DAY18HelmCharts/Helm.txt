@@ -5,16 +5,20 @@ Helm in k8s
 Helm is a package manager for Kubernetes applications that helps you define, install, and manage Kubernetes applications similar to yum/apt for linux distributions. 
 
 
-It uses a concept called "charts" to package all the resources(pod,rs,deploy,pv,pvc.....) needed for an application into a single unit. Here’s a detailed breakdown of Helm and its components:
+It uses a concept called "charts" to package all the resources(pod,rs,deploy,pv,pvc.....) needed for an application into a single unit.
+Here’s a detailed breakdown of Helm and its components:
 
 
 1. Key Concepts
 ---------------
-Charts: A Helm chart is a collection of files that describe a related set of Kubernetes resources. Each chart contains templates for Kubernetes manifests, a Chart.yaml file (metadata), and optionally a values.yaml file for configuration.
+Charts: A Helm chart is a collection of files that describe a related set of Kubernetes resources. Each chart contains templates for Kubernetes manifests, 
+a Chart.yaml file (metadata), and optionally a values.yaml file for configuration.
 
-Releases: A release is an instance of a chart running in a Kubernetes cluster. When you install a chart, you create a release. Each release can have multiple versions, and you can upgrade or roll back to previous versions.
+Releases: A release is an instance of a chart running in a Kubernetes cluster. When you install a chart, you create a release. Each release can have multiple versions, 
+and you can upgrade or roll back to previous versions.
 
-Repository: Helm charts can be stored in repositories, which are collections of charts. You can create your own chart repositories or use public ones like the official Helm Hub or Artifact Hub.
+Repository: Helm charts can be stored in repositories, which are collections of charts. You can create your own chart repositories or
+use public ones like the official Helm Hub or Artifact Hub.
 
 
 2. Architecture
@@ -23,11 +27,14 @@ Helm operates in a client-server model:
 
 helm 2:
 
-https://www.google.com/search?q=helm+in+k8s+2&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWIK4Xt_7ap01lm4VoujMDzvZC5TY6Q%3A1728902469006&ei=RfUMZ5ILsZ7j4Q__5ILIAg&ved=0ahUKEwjSwZDM142JAxUxzzgGHX-yACkQ4dUDCBA&uact=5&oq=helm+in+k8s+2&gs_lp=Egxnd3Mtd2l6LXNlcnAiDWhlbG0gaW4gazhzIDJIpQ5Q7AJYkgxwAXgAkAEAmAFhoAGRBaoBATe4AQPIAQD4AQGYAgWgAq8DwgIKEAAYgAQYQxiKBcICBRAAGIAEwgIEECMYJ8ICBhAAGAcYHsICCBAAGAUYBxgewgIIEAAYBxgIGB7CAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwMyLjOgB_wd&sclient=gws-wiz-serp#vhid=CnN5ezLxGwlb8M&vssid=mosaic
+https://www.google.com/search?q=helm+in+k8s+2&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWIK4Xt_7ap01lm4VoujMDzvZC5TY6Q%3A1728902469006&ei=RfUMZ5ILsZ7j4Q
+__5ILIAg&ved=0ahUKEwjSwZDM142JAxUxzzgGHXyACkQ4dUDCBA&uact=5&oq=helm+in+k8s+2&gs_lp=Egxnd3Mtd2l6LXNlcnAiDWhlbG0gaW4gazhzIDJIpQ5Q7AJYkgxwAXgAkAEAmAFhoAGRBaoBATe4AQPIAQD
+4AQGYAgWgAq8DwgIKEAAYgAQYQxiKBcICBRAAGIAEwgIEECMYJ8ICBhAAGAcYHsICCBAAGAUYBxgewgIIEAAYBxgIGB7CAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwMyLjOgB_wd&sclient=gws-wiz-serp#vhid=CnN5ezLxGwlb8M&vssid=mosaic
 
 helm 3:
 
-https://www.google.com/search?q=helm+in+k8s+3+archetecture&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWILeu84H6o3S6g8w1f-ITRaOqfA84Q%3A1728902522703&ei=evUMZ9jNKsKW4-EPmq6auQs&ved=0ahUKEwjY8t3l142JAxVCyzgGHRqXJrcQ4dUDCBA&uact=5&oq=helm+in+k8s+3+archetecture&gs_lp=Egxnd3Mtd2l6LXNlcnAiGmhlbG0gaW4gazhzIDMgYXJjaGV0ZWN0dXJlSJ8lUOEBWPojcAF4AJABAJgB0QGgAZkMqgEFNS43LjG4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8kE&sclient=gws-wiz-serp#vhid=HShMz9xvTEjAwM&vssid=mosaic
+https://www.google.com/search?q=helm+in+k8s+3+archetecture&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWILeu84H6o3S6g8w1f-ITRaOqfA84Q%3A1728902522703&ei=evUMZ9jNKsKW4EPmq6auQs&ved=0ahUKEwjY8t3l142JAxVCyzgGHRqXJrcQ4dUDCBA&uact=5&oq=helm+in+k8s+3+archetecture&gs_lp=Egxnd3Mtd2l6LXNlcnAiG
+mhlbG0gaW4gazhzIDMgYXJjaGV0ZWN0dXJlSJ8lUOEBWPojcAF4AJABAJgB0QGgAZkMqgEFNS43LjG4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8kE&sclient=gws-wiz-serp#vhid=HShMz9xvTEjAwM&vssid=mosaic
 
 
 3. Installation
@@ -50,17 +57,67 @@ rm get_helm.sh
 
 5. Chart Structure
 ------------------
+IQ. Plz explain helm chart structure
+
+Helm chart is a package of Kubernetes resources. It contains Chart.yaml for metadata, values.yaml for configuration, templates folder for Kubernetes manifests,
+and charts folder for dependencies.
+
 
 A typical Helm chart structure looks like this:
 
 jio-stg-om-chart/
-  ├── Chart.yaml        # Metadata about the chart
-  ├── values.yaml       # Default configuration values for templates
-  ├── charts/           # Subcharts (if any)
-  └── templates/        # Template files for Kubernetes resources
-      ├── deployment.yaml   
-      ├── service.yaml
-      └── pv.yaml
+  mychart/
+├── Chart.yaml          # Metadata about the chart (or) Info about project apiVersion, Name, Description, Version, appVersion
+├── values.yaml         # Default configuration values harcode cheykunda undali ante values.yaml lo paste cheyali like app, env, name, replicas, secrets, ports, image
+├── charts/             # Subcharts (if any)  (or) Dependencies
+└── templates/          # Kubernetes resource templates (or) Kubernetes YAML
+    ├── deployment.yaml
+    ├── service.yaml
+    ├── pv.yaml
+    ├── pvc.yaml
+    ├── configmap.yaml
+    ├── secret.yaml
+    ├── ingress.yaml
+    ├── hpa.yaml
+    ├── serviceaccount.yaml
+    ├── role.yaml
+    ├── rolebinding.yaml
+    ├── statefulset.yaml
+    ├── daemonset.yaml
+    ├── job.yaml
+    ├── cronjob.yaml
+    ├── networkpolicy.yaml
+    ├── poddisruptionbudget.yaml
+    ├── resourcequota.yaml
+    ├── limitrange.yaml
+
+Example for deployment
+----------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    env: {{ .Values.env }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+        env: {{ .Values.env }}
+    spec:
+      containers:
+      - name: {{ .Values.name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        env:
+        - name: APP_MODE
+          value: "{{ .Values.config.appMode }}"
 
 
 
@@ -68,16 +125,16 @@ jio-stg-om-chart/
 
 6. Templating
 --------------
-Helm uses Go templates to generate Kubernetes manifests dynamically. You can use placeholders in your templates, which get replaced by values from values.yaml or from command-line parameters when deploying.
+Helm uses Go templates to generate Kubernetes manifests dynamically. You can use placeholders in your templates, which get replaced by values from values.yaml or
+from command-line parameters when deploying.
 
 
 7. Values.yaml 
 ---------------
-
 You can customize deployments by creating your own values.yaml file, overriding default values in the chart:
 
 stgvalues.yaml
-----
+--------------
 replicaCount: 2
 image:
   repository: my-repo/my-app
@@ -89,9 +146,9 @@ request:
  cpu: 1
  memory: 12Gi
 
-prod-values.yaml
------
 
+prod-values.yaml
+----------------
 replicaCount: 5
 image:
   repository: my-repo/my-app-prod
@@ -105,14 +162,13 @@ request:
 
 
 
-
 8. Best Practices
 -----------------
-
 Version Control: Store your charts in a version control system.
 Reusable Charts: Create charts that can be reused across different environments.
 Testing: Use the helm test command to verify chart functionality.
 Security: Keep your charts and values secure, especially sensitive data.
+
 
 9. Common Charts
 -----------------
@@ -129,23 +185,19 @@ jenkins
 You can find these charts in public repositories like the Helm Hub.
 
 
+==============================================================================================================================================
 
 
-
-===============================================
-
-
-How to deploy third party applications like metrics server, prometheus, etc ?
-
-EX: metrics server
-
-kubectl config current-context  --> to check the correct environment 
-
+kubectl config current-context  --> to check the correct environment
+kubectl config get-context      --> shows all clusters env
 kubectl top nodes
 kubectl top pods
 
+USEFUL IN SELF MANAGED K8S CLUSTER ONLY NOT IN EKS K8S CLUSTER
 
-url: https://artifacthub.io/
+How to deploy third party applications like metrics server, prometheus, etc ?
+
+EX: metrics server, serach in aritfacthub website --> https://artifacthub.io/
 
 search metrics-server
 
@@ -177,8 +229,8 @@ How to see the template(all yaml files) ?
 helm template metrics-server/metrics-server
 
 
+===================================================================================================================================================
 
-----------------------
 
 How to install/deploy the chart?
 
@@ -196,31 +248,26 @@ helm ls -n kube-system
 
 
 
-------
-
-increased to 2 replicas???
---------------------------
-
+Increased to 2 replicas
+-----------------------
 helm upgrade --install metrics-server metrics-server/metrics-server --set replicas=3
 
-How to rollback?
------------------
 
-helm ls
-
-helm rollback metrics-server
-
-How to uninsatll?
+How to rollback
 ----------------
+helm ls
+helm rollback metrics-server ---> previous version
 
+
+How to uninstall
+----------------
 helm uninstall metrics-server
 
 
 
-================================
+=================================================================================================================================================
 
 NOTE: If you want to pass more values through --set is not a good practise, so we need to use values.yaml
-
 
 helm show values metrics-server/metrics-server
 
@@ -241,38 +288,35 @@ kubectl describe po <pod-name> --> to see the updated values
 --> create a production cluster separate values.yaml and deploy
 
 
-====================================
+===============================================================================================================================================
 
-
-
-
---> To deploy your Kubernetes resources as a Helm chart, you'll need to create a basic Helm chart structure. Here’s a step-by-step guide to help you set up your Helm chart with the provided Deployment and Service configurations.
-
+To deploy your Kubernetes resources as a Helm chart, you'll need to create a basic Helm chart structure.
+Here’s a step-by-step guide to help you set up your Helm chart with the provided Deployment and Service configurations.
+IQ.] Where is ur yaml files
+ans: templates section
 
 Step 1: Create a Helm Chart
--------
+---------------------------
 First, create a new Helm chart:
 
 helm create javawebapp
 
+yum install tree -y 
+
 This will create a directory structure like this:
 
-javawebapp/
+javawebapp/ (or) ordermanagement (or) billing like this
 ├── Chart.yaml
 ├── templates/
 │   ├── deployment.yaml
 │   ├── service.yaml
-│   └── ...
+│   └── PVC.yaml
 └── values.yaml
 
 
 
-
-
-
 Step 2: Modify the Chart.yaml
-
-
+-----------------------------
 Edit the Chart.yaml file to provide metadata for your chart. Here’s an example:
 
 apiVersion: v2
@@ -283,7 +327,7 @@ appVersion: "1.0.1"
 
 
 Step 3: Update the values.yaml
-------
+------------------------------
 In values.yaml, set default values that can be customized when deploying. For example:
 
 replicaCount: 2
@@ -298,17 +342,18 @@ service:
   port: 80
   targetPort: 8080
 
+namespace: prod
+
 
 Step 4: Edit the Deployment Template
--------
-
-
+------------------------------------
 In templates/deployment.yaml, replace its content with your Deployment configuration, making use of Helm templates:
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}
+  namespace: {{ .values.namespace }}     #we can define this as values.yaml
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -327,14 +372,14 @@ spec:
 
 
 Step 5: Edit the Service Template
--------
-
+---------------------------------
 In templates/service.yaml, modify it to use values from values.yaml:
 
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-service
+  namespace: {{ .values.namespace }}
 spec:
   type: {{ .Values.service.type }}
   selector:
@@ -345,7 +390,7 @@ spec:
 
 
 Step 6: Deploy the Helm Chart
--------
+-----------------------------
 
 Now that you have created your Helm chart, you can install it using the following command:
 
@@ -355,9 +400,28 @@ helm upgrade --install javawebapp ./javawebapp  --dry-run
 
 helm upgrade --install javawebapp ./javawebapp
 
-========
+helm ls
+                ---------Revision----------
+NAME         NAMESPACE   REVISION   UPDATED                              STATUS     CHART              APP VERSION
+javawebapp   default     1          2025-09-08 02:04:33.886808897 +0000   deployed   javawebapp-1.0.0   1.0.1
 
+helm upgrade --install javawebapp --set replicacount=3
 
+helm ls
+                ---------Revision----------
+NAME         NAMESPACE   REVISION   UPDATED                              STATUS     CHART              APP VERSION
+javawebapp   default     2          2025-09-08 02:04:33.886808897 +0000   deployed   javawebapp-1.0.0   1.0.1
+
+helm rollback javawebapp --------> previous version
+
+helm ls 
+
+                ---------Revision----------
+NAME         NAMESPACE   REVISION   UPDATED                              STATUS     CHART              APP VERSION
+javawebapp   default     3          2025-09-08 02:04:33.886808897 +0000   deployed   javawebapp-1.0.0   1.0.1
+================================================================================================================================================
+
+helm ls -n prod
 
 helm create <chartName>
 
@@ -365,36 +429,113 @@ helm lint <chartName> --> for validation
 
 helm package javawebapp  --> to create a tar file
 
-helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz -n prod
+helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz -n prod --------> by this tar file also we can deploy helm charts
 
-helm show values javawebapp-1.0.0.tgz
+helm show values javawebapp-1.0.0.tgz --------> to display the values.yaml
 
 helm status <resourceName> --show-resources
+helm status javawebapp --show-resources
+|
+|
+NAME: javawebapp
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
 
+RESOURCES:
+==> v1/Service
+NAME         TYPE       CLUSTER-IP     PORT(S)
+javawebapp   NodePort   10.96.10.10    80:30007/TCP
+
+==> apps/v1/Deployment
+NAME         READY   UP-TO-DATE   AVAILABLE
+javawebapp   2/2     2            2
 
 helm uninstall mavenwebapp -n <NS>
 
+well practise with help of chtgpt all yaml files
+======================================================================================================================================================
+1. Basic Helm Commands
+----------------------
+helm version
+helm help
+helm repo list
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm search repo nginx
+helm search hub nginx
 
+2. Working with Charts
+-----------------------
+helm create mychart
+helm lint mychart
+helm package mychart
+helm show chart mychart
+helm show values mychart
+helm show all mychart
 
+3. Install / Upgrade / Uninstall
+---------------------------------
+helm install myapp ./mychart
+helm install myapp bitnami/nginx
+helm install myapp ./mychart -f values.yaml
+helm install myapp ./mychart --set replicaCount=3
 
+helm upgrade myapp ./mychart
+helm upgrade myapp ./mychart -f values.yaml
+helm upgrade myapp ./mychart --set image.tag=2.0
 
+helm uninstall myapp
 
+4. Release Management
+---------------------
+helm list
+helm list -A
+helm list -n default
 
+helm status myapp
+helm history myapp
 
+5. Rollback & Debugging
+-----------------------
+helm rollback myapp 1
+helm rollback myapp 2
 
+helm get all myapp
+helm get values myapp
+helm get manifest myapp
 
+helm install myapp ./mychart --dry-run
+helm install myapp ./mychart --debug
 
+6. Advanced Commands
+--------------------
+helm template myapp ./mychart
+helm template myapp ./mychart -f values.yaml
 
+helm dependency update
+helm dependency build
 
+helm upgrade --install myapp ./mychart
 
+helm install myapp ./mychart --namespace dev --create-namespace
 
+helm upgrade myapp ./mychart --reuse-values
 
+helm uninstall myapp --keep-history
 
+7. Working with Values
+----------------------
+helm install myapp ./mychart -f custom-values.yaml
+helm install myapp ./mychart --set image.tag=latest
+helm install myapp ./mychart --set replicaCount=3
+helm upgrade myapp ./mychart --set service.type=NodePort
 
-
-
-
-
+8. Testing & Validation
+-----------------------
+helm lint mychart
+helm template myapp ./mychart
+helm install myapp ./mychart --dry-run --debug
 
 
 
