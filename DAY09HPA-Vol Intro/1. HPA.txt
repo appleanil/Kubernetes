@@ -148,13 +148,13 @@ spec:
     targetPort: 80
   selector:
     name: hpapod
-  type: ClusterIP
+  type: ClusterIP #NodePort optional (range: 30000-32767)
 
 
-========================================================
+=======================================================================================================================
 
 
-==== Execute below commands to increase load====
+                                 ====================== Execute below commands to increase load ====================
 
 Now, we will see how the auto scaler reacts to increased load. We will start a container, and send an infinite loop of queries to the php-apache service .
 Create A Temp Pod in interactive mod to access app using service name
