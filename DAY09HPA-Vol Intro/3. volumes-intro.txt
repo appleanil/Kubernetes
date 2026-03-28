@@ -164,7 +164,7 @@ spec:
       targetPort: 27017
 
 ======================================================================================
-
+go and checl in any node
 cd /mongobkp check there is data backup, go and check in mongopod in which node is deployed cd /root/backbkp
 delete mongo pod, then data will store in particular node only
 recreate again then pod will comes in another pod then insert some data
