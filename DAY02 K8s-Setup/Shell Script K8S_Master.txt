@@ -107,7 +107,8 @@ echo "========== Kubernetes Common Setup Completed =========="
 
 
 
-
+kubectl edit deploy metrics-server -n kube-system
+ - --kubelet-insecure-tls  ---> add this line at 45 line number
 ====================================================================================================================
 
 
