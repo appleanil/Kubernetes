@@ -1,4 +1,4 @@
-
+USEFUL IN SELF MANAGED K8S CLUSTER ONLY NOT IN EKS K8S CLUSTER
 
 Helm in k8s
 ===========
@@ -97,6 +97,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}   
   labels:
     env: {{ .Values.env }}
 spec:
@@ -115,11 +116,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: {{ .Values.service.port }}
-        env:
-        - name: APP_MODE
-          value: "{{ .Values.config.appMode }}"
-
-
 
 
 
@@ -425,9 +421,9 @@ helm ls -n prod
 
 helm create <chartName>
 
-helm lint <chartName> --> for validation
+helm lint <chartName> --------> for validation
 
-helm package javawebapp  --> to create a tar file
+helm package javawebapp  -----> to create a tar file
 
 helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz -n prod --------> by this tar file also we can deploy helm charts
 
@@ -454,7 +450,9 @@ javawebapp   2/2     2            2
 helm uninstall mavenwebapp -n <NS>
 
 well practise with help of chtgpt all yaml files
+
 ======================================================================================================================================================
+
 1. Basic Helm Commands
 ----------------------
 helm version
@@ -532,11 +530,7 @@ helm install myapp ./mychart --set replicaCount=3
 helm upgrade myapp ./mychart --set service.type=NodePort
 
 8. Testing & Validation
------------------------
+------------------------
 helm lint mychart
 helm template myapp ./mychart
 helm install myapp ./mychart --dry-run --debug
-
-
-
-
