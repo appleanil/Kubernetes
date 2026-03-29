@@ -44,14 +44,15 @@ spec:
       port: 80      
       targetPort: 8080 
 
-NOTE: increase the resources and see, no new nodes are coming eventhough we defined min and max
+NOTE: Increase the resources and see, now new nodes are coming eventhough we defined min and max
 
 EKS Cluster Auto scaler
 =======================
 The Cluster Autoscaler in Amazon EKS (Elastic Kubernetes Service) automatically adjusts the size of your EKS cluster based on the demands of your workloads. 
 It helps manage the scaling of worker nodes in your cluster, adding nodes when there are pending pods that cannot be scheduled due to insufficient
 resources and removing nodes when they are underutilized.
-Okka node resources over indi ante appude po another node loki deploy pod
+
+Okka node resources over indi ante appude pod another node loki deploy avthundi
 
 
 How to set-up
