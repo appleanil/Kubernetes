@@ -24,16 +24,13 @@ Namespace Selector: Specifies which namespaces the policy can affect.
 
 Types of Rules:
 ---------------
-
 Ingress Rules (Inbound) ------> Control incoming traffic from the selected pods.
 Egress Rules (Outbound) ------> Control outgoing traffic from the selected pods.
-Policy Types ------> Each Network Policy can specify rules for ingress, egress or both.
-
+Policy Types -----------------> Each Network Policy can specify rules for ingress, egress or both.
 
 
 Example without network policies
 =================================
-
 mongo db and service
 --------------------
 
@@ -212,8 +209,8 @@ IQ: How to check connecton one Namespace to another Namespace -------> Fully Qua
 ============================================================================================================================================
 
 
-Example 1: for our application
-------------------------------
+Example 1 This yaml define u only prod(ns) sprinapp and nginx is to allow traffic and ns(test) javawebapp not allow
+---------------------------------------------------------------------------------------------------------------------
 
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -230,13 +227,17 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: springapp    # should be same in app: springapp if u want connect another webapp so mention here app: mavenwebapp or else plz check below yaml file
+          app: springapp
+ 	- podSelector:
+        matchLabels:
+          app: nginx    # should be same in app: springapp if u want connect another webapp so mention here app: mavenwebapp or else plz check below yaml file
     ports:
     - protocol: TCP
       port: 27017
 
 kubectl apply -f networkpol.yaml
 kubectl get netpol
+curl -v telnet://mongo-svc.prod.svc.cluster.local:27017
 kubectl describe <netpol-name> -n prod
 kubectl get netpol  -n test-ns
 
@@ -252,15 +253,21 @@ kubectl exec -it javawebappdep-95fd6f796-bjsbs -n test-ns -- /bin/bash
 curl -v telnet://mongo-svc:27017    ---> no connection
 
 
-NOTE: please add one more app pod label and check
+Example-2 prod + test ---> This yaml define u only prod(ns) sprinapp and ns(test) javawebapp allow, and another ns(prod) nginx is not allow
+--------------------------------------------------------------------------------------------------------------------------------------------
+NOTE: add namespace selector and check the connection
 
-     app=javawebapp
+   - namespaceSelector:
+		matchLabels:
+	 		name: test
+
+NOTE: please add one more app pod label and check ----> app=javawebapp
 
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: test-network-policy
-  namespace: test-ns  
+  namespace: prod  
 spec:
   podSelector:
     matchLabels:
@@ -272,7 +279,10 @@ spec:
     - podSelector:
         matchLabels:
           app: springapp     # should be same in app: springapp if u want connect another webapp so mention here app: mavenwebapp or else plz check below yaml file
-    - podSelector:
+    - namespaceSelector:
+        matchLabels:
+          name: test
+      podSelector:
         matchLabels:
           app: javawebapp
     ports:
@@ -281,18 +291,13 @@ spec:
 
 kubectl apply -f networkpol.yaml
 kubectl get netpol
+curl -v telnet://mongo-svc.prod.svc.cluster.local:27017
 kubectl get netpol  -n test-ns
 
 
-NOTE: add namespace selector and check the connection
 
-   - namespaceSelector:
-	matchLabels:
-	 ns=test-ns
-
-
-Pod + Namespace Selector (Combined)
------------------------------------
+Example-3 Only Namespace Selector -------> This yaml define u only test(ns) of pod javawebapp is to allow traffic and another ns(prod) sprigwebapp and nginx not allow
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -301,20 +306,21 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: default
+      app: mongodb          #should be in app: mongodb 
   policyTypes:
   - Ingress
   ingress:
   - from:
-    - namespaceSelector:
+    - namespaceSelector:   # ns define cheyali ante ekkada unchi last varuku undi
         matchLabels:
-          team: test
+          name: test
       podSelector:
         matchLabels:
-          app: prod
+          app: javawebapp   # from test namespace
 
 
 
+curl -v telnet://mongo-svc.prod.svc.cluster.local:27017
 
 ==========================================================================================================================================================
 
