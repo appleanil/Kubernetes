@@ -12,13 +12,13 @@ Here’s a detailed breakdown of Helm and its components:
 1. Key Concepts
 ---------------
 Charts: A Helm chart is a collection of files that describe a related set of Kubernetes resources. Each chart contains templates for Kubernetes manifests, 
-a Chart.yaml file (metadata), and optionally a values.yaml file for configuration.
+        a Chart.yaml file (metadata), and optionally a values.yaml file for configuration.
 
 Releases: A release is an instance of a chart running in a Kubernetes cluster. When you install a chart, you create a release. Each release can have multiple versions, 
-and you can upgrade or roll back to previous versions.
+          and you can upgrade or roll back to previous versions.
 
 Repository: Helm charts can be stored in repositories, which are collections of charts. You can create your own chart repositories or
-use public ones like the official Helm Hub or Artifact Hub.
+            use public ones like the official Helm Hub or Artifact Hub.
 
 
 2. Architecture
@@ -28,17 +28,19 @@ Helm operates in a client-server model:
 helm 2:
 
 https://www.google.com/search?q=helm+in+k8s+2&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWIK4Xt_7ap01lm4VoujMDzvZC5TY6Q%3A17289024
-69006&ei=RfUMZ5ILsZ7j4Q__5ILIAg&ved=0ahUKEwjSwZDM142JAxUxzzgGHXyACkQ4dUDCBA&uact=5&oq=helm+in+k8s+2&gs_lp=Egxnd3Mtd2l6LXNlcnAiDWhlbG0gaW4gazhzIDJIpQ5Q7AJYkgxwAXgAkAEAmAFhoAGRBaoBATe4AQPIAQD4AQGYAgWgAq8DwgIKEAAYgAQYQxiKBcICBRAAGIAEwgIEECMYJ8ICBhAAGAcYHsICCBAAGAUYBxgewgIIEAAYBxgIGB7CAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwMyLjOgB_wd&sclient=gwswizserp#vhid=CnN5ezLxGwlb8M&vssid=mosaic
+69006&ei=RfUMZ5ILsZ7j4Q__5ILIAg&ved=0ahUKEwjSwZDM142JAxUxzzgGHXyACkQ4dUDCBA&uact=5&oq=helm+in+k8s+2&gs_lp=Egxnd3Mtd2l6LXNlcnAiDWhlbG0gaW4gazhzIDJIpQ5Q7AJYkgxwAXgAkAEAmAFhoA
+GRBaoBATe4AQPIAQD4AQGYAgWgAq8DwgIKEAAYgAQYQxiKBcICBRAAGIAEwgIEECMYJ8ICBhAAGAcYHsICCBAAGAUYBxgewgIIEAAYBxgIGB7CAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwMyLjOgB_wd&sclient=gwswizser
+#vhid=CnN5ezLxGwlb8M&vssid=mosaic
 
 helm 3:
 
-https://www.google.com/search?q=helm+in+k8s+3+archetecture&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWILeu84H6o3S6g8w1f-ITRaOqfA84Q%3A1728902522703&ei=evUMZ9jNKsKW4EPmq6auQs&ved=0ahUKEwjY8t3l142JAxVCyzgGHRqXJrcQ4dUDCBA&uact=5&oq=helm+in+k8s+3+archetecture&gs_lp=Egxnd3Mtd2l6LXNlcnAiG
+https://www.google.com/search?q=helm+in+k8s+3+archetecture&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWILeu84H6o3S6g8w1f-
+ITRaOqfA84Q%3A1728902522703&ei=evUMZ9jNKsKW4EPmq6auQs&ved=0ahUKEwjY8t3l142JAxVCyzgGHRqXJrcQ4dUDCBA&uact=5&oq=helm+in+k8s+3+archetecture&gs_lp=Egxnd3Mtd2l6LXNlcnAiG
 mhlbG0gaW4gazhzIDMgYXJjaGV0ZWN0dXJlSJ8lUOEBWPojcAF4AJABAJgB0QGgAZkMqgEFNS43LjG4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8kE&sclient=gws-wiz-serp#vhid=HShMz9xvTEjAwM&vssid=mosaic
 
 
 3. Installation
 ----------------
-
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 
 chmod 700 get_helm.sh
@@ -47,7 +49,6 @@ sh get_helm.sh
 
 4. How to unistall helm
 ------------------------
-
 sudo rm /usr/local/bin/helm
 
 rm -rf ~/.config/helm
@@ -67,8 +68,8 @@ A typical Helm chart structure looks like this:
 jio-stg-om-chart/
   mychart/
 ├── Chart.yaml          # Metadata about the chart (or) Info about project apiVersion, Name, Description, Version, appVersion
-├── values.yaml         # Default configuration values harcode cheykunda undali ante values.yaml lo paste cheyali like app, env, name, replicas, secrets, ports, image
-├── charts/             # Subcharts (if any)  (or) Dependencies
+├── values.yaml         # Default configuration values hardcode cheykunda undali ante values.yaml lo paste cheyali like app, env, name, replicas, secrets, ports, image
+├── charts/             # Subcharts (if any) (or) Dependencies
 └── templates/          # Kubernetes resource templates (or) Kubernetes YAML
     ├── deployment.yaml
     ├── service.yaml
@@ -95,27 +96,23 @@ Example for deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.name }}
-  namespace: {{ .Values.namespace }}   
-  labels:
-    env: {{ .Values.env }}
+  name: {{ .Release.Name }}
+  namespace: {{ .values.namespace }}     #we can define this as values.yaml
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.name }}
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.name }}
-        env: {{ .Values.env }}
+        app: {{ .Release.Name }}
     spec:
       containers:
-      - name: {{ .Values.name }}
+      - name: {{ .Release.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
-        - containerPort: {{ .Values.service.port }}
-
+        - containerPort: {{ .Values.service.targetPort }}
 
 
 6. Templating
@@ -179,9 +176,7 @@ jenkins
 
 You can find these charts in public repositories like the Helm Hub.
 
-
 ==============================================================================================================================================
-
 
 kubectl config current-context  --> to check the correct environment
 kubectl config get-context      --> shows all clusters env
@@ -211,17 +206,11 @@ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 
 helm repo ls
 
-How to search chart for that repo?
+How to search chart for that repo? ---------------> helm search repo metrics-server
 
-helm search repo metrics-server
+How to see the default values of that chart? -----> helm show values metrics-server/metrics-server
 
-How to see the default values of that chart?
-
-helm show values metrics-server/metrics-server
-
-How to see the template(all yaml files) ?
-
-helm template metrics-server/metrics-server
+How to see the template(all yaml files) ? --------> helm template metrics-server/metrics-server
 
 
 ===================================================================================================================================================
@@ -259,7 +248,6 @@ How to uninstall
 helm uninstall metrics-server
 
 
-
 =================================================================================================================================================
 
 NOTE: If you want to pass more values through --set is not a good practise, so we need to use values.yaml
@@ -287,7 +275,7 @@ kubectl describe po <pod-name> --> to see the updated values
 
 To deploy your Kubernetes resources as a Helm chart, you'll need to create a basic Helm chart structure.
 Here’s a step-by-step guide to help you set up your Helm chart with the provided Deployment and Service configurations.
-IQ.] Where is ur yaml files
+IQ.] Where is ur all yaml files
 ans: templates section
 
 Step 1: Create a Helm Chart
@@ -348,7 +336,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}
-  namespace: {{ .values.namespace }}     #we can define this as values.yaml
+  namespace: {{ .Values.namespace }}     #we can define this as values.yaml
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -386,56 +374,80 @@ spec:
 
 Step 6: Deploy the Helm Chart
 -----------------------------
-
 Now that you have created your Helm chart, you can install it using the following command:
-
+do in root
 helm install <release-name> ./javawebapp
+1. helm install javawebapp ./javawebapp
 
-helm upgrade --install javawebapp ./javawebapp  --dry-run
+NAME: javawebapp
+LAST DEPLOYED: Tue Mar 31 12:12:12 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
 
-helm upgrade --install javawebapp ./javawebapp
+2. helm upgrade --install javawebapp ./javawebapp  --dry-run ----> show all yaml files without hardcoded
 
-helm ls
+3. helm upgrade --install javawebapp ./javawebapp
+Release "javawebapp" has been upgraded. Happy Helming!
+NAME: javawebapp
+LAST DEPLOYED: Tue Mar 31 12:13:57 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+
+4. helm ls
                 ---------Revision----------
 NAME         NAMESPACE   REVISION   UPDATED                              STATUS     CHART              APP VERSION
 javawebapp   default     1          2025-09-08 02:04:33.886808897 +0000   deployed   javawebapp-1.0.0   1.0.1
 
-helm upgrade --install javawebapp --set replicacount=3
+5. helm upgrade --install javawebapp --set replicacount=3
 
-helm ls
+6. helm ls
                 ---------Revision----------
 NAME         NAMESPACE   REVISION   UPDATED                              STATUS     CHART              APP VERSION
 javawebapp   default     2          2025-09-08 02:04:33.886808897 +0000   deployed   javawebapp-1.0.0   1.0.1
 
-helm rollback javawebapp --------> previous version
+7. helm rollback javawebapp --------> previous version
 
-helm ls 
+8. helm ls 
 
                 ---------Revision----------
 NAME         NAMESPACE   REVISION   UPDATED                              STATUS     CHART              APP VERSION
 javawebapp   default     3          2025-09-08 02:04:33.886808897 +0000   deployed   javawebapp-1.0.0   1.0.1
 ================================================================================================================================================
 
-helm ls -n prod
+1. helm ls -n prod
 
-helm create <chartName>
+2. helm create <chartName>
 
-helm lint <chartName> --------> for validation
+3. helm lint <chartName> --------> for validation
+==> Linting javawebapp
+[INFO] Chart.yaml: icon is recommended
 
-helm package javawebapp  -----> to create a tar file
+1 chart(s) linted, 0 chart(s) failed
 
-helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz -n prod --------> by this tar file also we can deploy helm charts
 
-helm show values javawebapp-1.0.0.tgz --------> to display the values.yaml
+4. helm package javawebapp  -----> to create a tar file
+
+5. helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz -n prod --------> by this tar file also we can deploy helm charts
+
+6. helm show values javawebapp-1.0.0.tgz --------> to display the values.yaml
+
+helm template ./javawebapp > output.yaml
+kubectl apply -f output.yaml
 
 helm status <resourceName> --show-resources
 helm status javawebapp --show-resources
 |
 |
 NAME: javawebapp
+LAST DEPLOYED: Tue Mar 31 12:15:00 2026
 NAMESPACE: default
 STATUS: deployed
-REVISION: 1
+REVISION: 3
+TEST SUITE: None
 
 RESOURCES:
 ==> v1/Service
