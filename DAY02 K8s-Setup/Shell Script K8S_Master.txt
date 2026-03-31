@@ -82,6 +82,7 @@ apt-get install -y conntrack
 apt-get install -y conntrack socat ebtables ipset
 which conntrack
 /usr/sbin/conntrack
+apt update && apt install curl -y
 
 #from here to we can only master node
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
