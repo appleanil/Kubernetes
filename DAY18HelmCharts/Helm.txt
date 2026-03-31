@@ -27,9 +27,8 @@ Helm operates in a client-server model:
 
 helm 2:
 
-https://www.google.com/search?q=helm+in+k8s+2&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWIK4Xt_7ap01lm4VoujMDzvZC5TY6Q%3A1728902469006&ei=RfUMZ5ILsZ7j4Q
-__5ILIAg&ved=0ahUKEwjSwZDM142JAxUxzzgGHXyACkQ4dUDCBA&uact=5&oq=helm+in+k8s+2&gs_lp=Egxnd3Mtd2l6LXNlcnAiDWhlbG0gaW4gazhzIDJIpQ5Q7AJYkgxwAXgAkAEAmAFhoAGRBaoBATe4AQPIAQD
-4AQGYAgWgAq8DwgIKEAAYgAQYQxiKBcICBRAAGIAEwgIEECMYJ8ICBhAAGAcYHsICCBAAGAUYBxgewgIIEAAYBxgIGB7CAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwMyLjOgB_wd&sclient=gws-wiz-serp#vhid=CnN5ezLxGwlb8M&vssid=mosaic
+https://www.google.com/search?q=helm+in+k8s+2&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWIK4Xt_7ap01lm4VoujMDzvZC5TY6Q%3A17289024
+69006&ei=RfUMZ5ILsZ7j4Q__5ILIAg&ved=0ahUKEwjSwZDM142JAxUxzzgGHXyACkQ4dUDCBA&uact=5&oq=helm+in+k8s+2&gs_lp=Egxnd3Mtd2l6LXNlcnAiDWhlbG0gaW4gazhzIDJIpQ5Q7AJYkgxwAXgAkAEAmAFhoAGRBaoBATe4AQPIAQD4AQGYAgWgAq8DwgIKEAAYgAQYQxiKBcICBRAAGIAEwgIEECMYJ8ICBhAAGAcYHsICCBAAGAUYBxgewgIIEAAYBxgIGB7CAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwMyLjOgB_wd&sclient=gwswizserp#vhid=CnN5ezLxGwlb8M&vssid=mosaic
 
 helm 3:
 
