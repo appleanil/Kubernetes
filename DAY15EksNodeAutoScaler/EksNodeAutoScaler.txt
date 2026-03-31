@@ -113,7 +113,7 @@ step 3: Install the clusterAutoAscaller
 
 link: https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md
 
-kubectl apply -f examples/cluster-autoscaler-autodiscover.yaml
+kubectl apply -f cluster-autoscaler-autonodes.yaml
 
 ---
 apiVersion: v1
