@@ -240,12 +240,12 @@ helm upgrade --install metrics-server metrics-server/metrics-server --set replic
 How to rollback
 ----------------
 helm ls
-helm rollback metrics-server ---> previous version
+helm rollback metrics-server ------> previous version
 
 
 How to uninstall
 ----------------
-helm uninstall metrics-server
+helm uninstall metrics-server -----> appplication will delete, not helm uninstall
 
 
 =================================================================================================================================================
@@ -282,7 +282,7 @@ Step 1: Create a Helm Chart
 ---------------------------
 First, create a new Helm chart:
 
-helm create javawebapp
+helm create javawebapp ----------> to create one folder name with javawebapp
 
 yum install tree -y 
 
@@ -305,8 +305,8 @@ Edit the Chart.yaml file to provide metadata for your chart. Here’s an example
 apiVersion: v2
 name: javawebapp
 description: A Helm chart for deploying a Java web application
-version: 1.0.0
-appVersion: "1.0.1"
+version: 1.0.0          #helm version
+appVersion: "1.0.1"     #image version means application version
 
 
 Step 3: Update the values.yaml
@@ -318,7 +318,7 @@ replicaCount: 2
 image:
   repository: kkeducation123456/java-web-app
   pullPolicy: IfNotPresent
-  tag: "1.0.1"
+  tag: "1.0.1"          #image version means application version
 
 service:
   type: NodePort
@@ -362,7 +362,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-service
-  namespace: {{ .values.namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   type: {{ .Values.service.type }}
   selector:
@@ -375,8 +375,12 @@ spec:
 Step 6: Deploy the Helm Chart
 -----------------------------
 Now that you have created your Helm chart, you can install it using the following command:
-do in root
+
+"DO IN ROOT"
+BEFORE RUUNING BELOW COMMAND PLZ ADD --dry-run to check ----------> helm upgrade --install javawebapp ./javawebapp  --dry-run
+
 helm install <release-name> ./javawebapp
+
 1. helm install javawebapp ./javawebapp
 
 NAME: javawebapp
@@ -389,6 +393,7 @@ TEST SUITE: None
 2. helm upgrade --install javawebapp ./javawebapp  --dry-run ----> show all yaml files without hardcoded
 
 3. helm upgrade --install javawebapp ./javawebapp
+
 Release "javawebapp" has been upgraded. Happy Helming!
 NAME: javawebapp
 LAST DEPLOYED: Tue Mar 31 12:13:57 2026
@@ -397,7 +402,7 @@ STATUS: deployed
 REVISION: 2
 TEST SUITE: None
 
-4. helm ls
+4. helm ls ---------> helm chart version
                 ---------Revision----------
 NAME         NAMESPACE   REVISION   UPDATED                              STATUS     CHART              APP VERSION
 javawebapp   default     1          2025-09-08 02:04:33.886808897 +0000   deployed   javawebapp-1.0.0   1.0.1
@@ -431,7 +436,10 @@ javawebapp   default     3          2025-09-08 02:04:33.886808897 +0000   deploy
 
 4. helm package javawebapp  -----> to create a tar file
 
-5. helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz -n prod --------> by this tar file also we can deploy helm charts
+5. helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz -n prod --------> by this tar file also we can deploy "NEW" helm charts in "PROD ns
+   helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz ----------------> default namespace
+   helm ls -n prod
+   kubectl get all -n prod and kubectl get all -n default
 
 6. helm show values javawebapp-1.0.0.tgz --------> to display the values.yaml
 
@@ -458,7 +466,8 @@ javawebapp   NodePort   10.96.10.10    80:30007/TCP
 NAME         READY   UP-TO-DATE   AVAILABLE
 javawebapp   2/2     2            2
 
-helm uninstall mavenwebapp -n <NS>
+helm uninstall mavenwebapp -n <NS> ---------> delete the folder/directory
+helm ls
 
 well practise with help of chtgpt all yaml files
 
