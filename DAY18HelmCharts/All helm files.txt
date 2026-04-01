@@ -1,3 +1,80 @@
+yum install tree -y 
+
+helm create javawebapp
+
+tree javawebapp
+
+jio-stg-om-chart/
+  mychart/
+├── Chart.yaml          # Metadata about the chart (or) Info about project apiVersion, Name, Description, Version, appVersion
+├── values.yaml         # Default configuration values hardcode cheykunda undali ante values.yaml lo paste cheyali like app, env, name, replicas, secrets, ports, image
+├── charts/             # Subcharts (if any) (or) Dependencies
+└── templates/          # Kubernetes resource templates (or) Kubernetes YAML
+    ├── deployment.yaml # vi deployment.yaml
+    ├── service.yaml    # vi service.yaml
+    ├── pv.yaml         # vi pv.yaml
+    ├── pvc.yaml        # vi pvc.yaml
+    ├── configmap.yaml  # vi configmap.yaml
+    ├── secret.yaml     # vi secrete.yaml
+    ├── ingress.yaml   
+    ├── hpa.yaml        # vi hpa.yaml
+    ├── serviceaccount.yaml
+    ├── role.yaml
+    ├── rolebinding.yaml
+    ├── statefulset.yaml
+    ├── daemonset.yaml
+    ├── job.yaml
+    ├── cronjob.yaml
+    ├── networkpolicy.yaml
+    ├── poddisruptionbudget.yaml
+    ├── resourcequota.yaml
+    ├── limitrange.yaml
+
+1. helm upgrade --install javawebapp ./javawebapp --dry-run --debug ------> # shows all yaml files install/upgrade without applying (best for testing templates)
+
+2. helm install javawebapp ./javawebapp -n prod --create-namespace -------> # Install chart into 'prod' namespace (creates ns if not exists)
+
+3. helm ls -n prod -------------------------------------------------------> # List all releases in 'prod' namespace
+
+4. helm lint javawebapp --------------------------------------------------> # Validate chart structure & syntax
+
+5. helm package javawebapp -----------------------------------------------> # Creates packaged chart (javawebapp-1.0.0.tgz)
+
+6. helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz -n prod -------> # Deploy NEW release from packaged chart into 'prod'
+
+7. helm upgrade --install javawebapp2 javawebapp-1.0.0.tgz ---------------> # Deploy into default namespace
+
+8. helm ls -A
+   # List releases across all namespaces
+
+9. kubectl get all -n prod
+   # View all resources in prod namespace
+
+10. kubectl get all -n default
+    # View resources in default namespace
+
+11. helm show values javawebapp-1.0.0.tgz
+    # Display default values.yaml from packaged chart
+
+12. helm template ./javawebapp > output.yaml
+    # Render Kubernetes YAML (without deploying)
+
+13. kubectl apply -f output.yaml
+    # Apply rendered YAML manually
+
+14. helm status javawebapp --show-resources -n prod
+    # Show release status + all created resources
+
+15. helm uninstall javawebapp -n prod
+    # Delete Helm release
+
+16. helm history javawebapp -n prod
+    # Show revision history
+
+17. helm rollback javawebapp 1 -n prod
+    # Rollback to revision 1
+
+
 Pv.yaml
 -------
 apiVersion: v1
@@ -150,7 +227,110 @@ spec:
                 name: {{ .Release.Name }}-secret
                 key: DB_PASSWORD
 
----
+==========================================================================================================================
+"install = create" and "upgarde = exiting yaml changes"
+
+1. Basic Helm Commands
+----------------------
+helm version ------------------> Shows the installed Helm version
+
+helm help ---------------------> Displays help for Helm commands
+
+helm repo list ----------------> Lists all added repositories (shows repo URLs)
+
+helm repo add bitnami https://charts.bitnami.com/bitnami   # Adds Bitnami repository
+
+helm repo update --------------> Updates repo index (fetch latest charts)
+
+helm search repo nginx --------> Searches charts in added repositories
+
+helm search hub nginx ---------> Searches charts in Artifact Hub (online)
+
+
+2. Working with Charts
+-----------------------
+helm create mychart ----------------------> Creates a new Helm chart with default structure
+
+helm lint mychart ------------------------> Validates the chart for syntax and structural errors
+
+helm package mychart ---------------------> Packages the chart into a .tgz file
+
+helm show chart mychart ------------------> Displays metadata from Chart.yaml
+
+helm show values mychart ----------------> Shows default values from values.yaml
+
+helm show all mychart -------------------> Displays all chart information
+
+helm template myapp ./mychart -----------> Renders Kubernetes YAML without deploying
+
+
+3. Install / Upgrade / Uninstall
+---------------------------------
+helm install myapp ./mychart
+helm install myapp bitnami/nginx
+helm install myapp ./mychart -f values.yaml
+helm install myapp ./mychart --set replicaCount=3
+
+helm upgrade myapp ./mychart
+helm upgrade myapp ./mychart -f values.yaml
+helm upgrade myapp ./mychart --set image.tag=2.0
+helm uninstall myapp
+
+
+4. Release Management
+---------------------
+helm list -------------------------------> application info name, namespace, revision, chartname, status, decription and updated timings
+
+helm list -A ----------------------------> all application info name, namespace, revision, chartname, status, decription and updated timings
+
+helm list -n prod -----------------------> application info name, namespace, revision, chartname, status, decription and updated timings
+
+helm status myapp -n prod ---------------> application info name, namespace, deployed revision, last deployed
+
+helm history myapp -n prod --------------> application info revision, chartname, status, decription and updated timings
+
+
+5. Rollback & Debugging
+-----------------------
+helm rollback myapp 1
+helm rollback myapp 2
+
+helm get all myapp -n prod ----------------------> shows all yaml files chart.yaml, values.yaml and template folder deploy.yaml.service.yaml,hpa.yaml.....
+helm get values myapp -n prod -------------------> repliaCount show u
+helm get manifest myapp -n prod -----------------> shows template folder deploy.yaml.service.yaml,hpa.yaml.....
+
+helm install myapp ./mychart --dry-run ----------> check all values are correct or not
+helm install myapp ./mychart --debug ------------> before using --dry-run after use this bcz is shows errors and logs files
+
+6. Advanced Commands
+--------------------
+helm template myapp ./mychart
+
+helm template myapp ./mychart -f values.yaml
+
+helm dependency update
+
+helm dependency build
+
+helm upgrade --install myapp ./mychart
+
+helm install myapp ./mychart --namespace dev --create-namespace
+
+helm upgrade myapp ./mychart --reuse-values
+
+helm uninstall myapp --keep-history
+
+7. Working with Values
+----------------------
+helm install myapp ./mychart -f custom-values.yaml
+helm install myapp ./mychart --set image.tag=latest
+helm install myapp ./mychart --set replicaCount=3
+helm upgrade myapp ./mychart --set service.type=NodePort
+
+8. Testing & Validation
+------------------------
+helm lint mychart           
+helm install myapp ./mychart --dry-run --debug
 
 
 
