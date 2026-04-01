@@ -1,0 +1,157 @@
+Pv.yaml
+-------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-pv
+spec:
+  capacity:
+    storage: {{ .Values.persistence.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/{{ .Release.Name }}"
+
+pvc.yaml
+--------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-pvc
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+      
+
+configmaps.yaml
+---------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.namespace }}
+data:
+  APP_ENV: {{ .Values.config.APP_ENV | quote }}
+  APP_NAME: {{ .Values.config.APP_NAME | quote }}
+
+
+secrets.yaml
+------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-secret
+  namespace: {{ .Values.namespace }}
+type: Opaque
+data:
+  DB_USERNAME: {{ .Values.secret.DB_USERNAME | b64enc }}
+  DB_PASSWORD: {{ .Values.secret.DB_PASSWORD | b64enc }}
+
+
+hpa.yaml
+--------
+{{- if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}-hpa
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Release.Name }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+{{- end }}
+
+
+service.yaml
+------------
+namespace: prod
+
+replicaCount: 2
+
+image:
+  repository: kkeducationb2/java-webapp
+  tag: "1.1"
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+
+persistence:
+  size: 1Gi
+
+config:
+  APP_ENV: prod
+  APP_NAME: javawebapp
+
+secret:
+  DB_USERNAME: devdb
+  DB_PASSWORD: devdb@123
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+
+
+deployment.yaml
+---------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+                name: {{ .Release.Name }}-config
+                key: APP_ENV
+
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: DB_USERNAME
+
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: DB_PASSWORD
+
+---
+
+
+
+      
