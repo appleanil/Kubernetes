@@ -47,8 +47,8 @@ chmod 700 get_helm.sh
 
 sh get_helm.sh
 
-4. How to unistall helm
-------------------------
+4. How to uninstall helm
+-------------------------
 sudo rm /usr/local/bin/helm
 
 rm -rf ~/.config/helm
