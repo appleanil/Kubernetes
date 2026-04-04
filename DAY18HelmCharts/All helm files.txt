@@ -74,23 +74,126 @@ jio-stg-om-chart/
 17. helm rollback javawebapp 1 -n prod
     # Rollback to revision 1
 
+1. Chart.yaml
+-------------
+apiVersion: v2
+name: javawebapp
+description: A Helm chart for deploying Java Web Application with persistence and autoscaling
+type: application
 
-Pv.yaml
--------
+version: 0.1.0        # Chart version (increment when you change templates)
+appVersion: "1.1"     # Your application version (matches Docker image tag)
+
+keywords:
+  - java
+  - springboot
+  - webapp
+  - kubernetes
+
+maintainers:
+  - name: Anil Kumar
+
+
+2. values.yaml
+--------------
+namespace: prod
+
+replicaCount: 2
+
+image:
+  repository: kkeducationb2/java-webapp
+  tag: "1.1"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+
+persistence:
+  size: 1Gi
+
+# 👉 Optional (for future use – keep commented if not using)
+# storageType: hostPath   # change to "nfs" when needed
+
+# hostPath:
+#   path: /mnt/data
+
+# nfs:
+#   enabled: false
+#   server: 192.168.1.100
+#   path: /mnt/nfs/mongodb
+
+# ✅ MongoDB Configuration (ADDED)
+mongo:
+  name: mongodb
+  image: mongo:8.0.9-noble
+  port: 27017
+  serviceName: mongo-svc
+
+config:
+  APP_ENV: prod
+  APP_NAME: javawebapp
+
+secret:
+  DB_USERNAME: devdb
+  DB_PASSWORD: devdb@123
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 30     #in real time its 80-90%
+
+3. Pv.yaml
+-----------
+simple with NF-Server
+----------------------
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Release.Name }}-pv
+  name: {{ .Release.Name }}-mongo-pv
 spec:
   capacity:
-    storage: {{ .Values.persistence.size }}
+    storage: {{ .Values.storage.size }}
+  accessModes:
+    - ReadWriteMany   # NFS supports multi-node access
+  persistentVolumeReclaimPolicy: Retain    #from here to last line this is difference
+  nfs:
+    server: {{ .Values.nfs.server }}
+    path: {{ .Values.nfs.path }}
+
+----------------------------(or)----------------------------------
+
+simple with-out NFServer
+------------------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-mongo-pv
+spec:
+  capacity:
+    storage: {{ .Values.persistence.size }}  #this is difference
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/data/{{ .Release.Name }}"
+    path: "/mnt/data/{{ .Release.Name }}"   #this difference
 
-pvc.yaml
---------
+----------------------------(or)----------------------------------
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-mongo-pv
+spec:
+  capacity:
+    storage: {{ .Values.storage.size }}   #this is difference
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.storage.hostPath }}   #this is difference
+
+4. pvc.yaml
+------------
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -104,20 +207,21 @@ spec:
       storage: {{ .Values.persistence.size }}
       
 
-configmaps.yaml
----------------
+5. configmaps.yaml
+------------------
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-config
   namespace: {{ .Values.namespace }}
 data:
-  APP_ENV: {{ .Values.config.APP_ENV | quote }}
-  APP_NAME: {{ .Values.config.APP_NAME | quote }}
+  APP_ENV: {{ .Values.config.APP_ENV }}
+  APP_NAME: {{ .Values.config.APP_NAME }}
+  MONGO_HOST: {{ .Release.Name }}-mongo-svc
 
 
-secrets.yaml
-------------
+5. secrets.yaml
+----------------
 apiVersion: v1
 kind: Secret
 metadata:
@@ -129,8 +233,8 @@ data:
   DB_PASSWORD: {{ .Values.secret.DB_PASSWORD | b64enc }}
 
 
-hpa.yaml
---------
+6. hpa.yaml
+------------
 {{- if .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -154,40 +258,69 @@ spec:
 {{- end }}
 
 
-service.yaml
-------------
-namespace: prod
+7. mongo.yaml with-out NFS-Server
+---------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mongo
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mongo
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mongo
+    spec:
+      containers:
+      - name: mongo
+        image: {{ .Values.mongo.image }}
+        ports:
+        - containerPort: {{ .Values.mongo.port }}
 
-replicaCount: 2
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_USERNAME
 
-image:
-  repository: kkeducationb2/java-webapp
-  tag: "1.1"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_PASSWORD
 
-service:
-  type: NodePort
-  port: 80
-  targetPort: 8080
+        volumeMounts:
+        - name: mongo-storage
+          mountPath: /data/db
 
-persistence:
-  size: 1Gi
+      volumes:
+      - name: mongo-storage
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mongo-svc
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-mongo
+  ports:
+    - port: {{ .Values.mongo.port }}
+      targetPort: {{ .Values.mongo.port }}
+  type: ClusterIP
 
-config:
-  APP_ENV: prod
-  APP_NAME: javawebapp
 
-secret:
-  DB_USERNAME: devdb
-  DB_PASSWORD: devdb@123
-
-autoscaling:
-  minReplicas: 1
-  maxReplicas: 4
-  targetCPUUtilizationPercentage: 70
-
-
-deployment.yaml
----------------
+8. deployment.yaml without NFS-Server
+-------------------------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -226,6 +359,127 @@ spec:
               secretKeyRef:
                 name: {{ .Release.Name }}-secret
                 key: DB_PASSWORD
+
+
+9. mongo.yaml with NFS-Server
+-----------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mongo
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mongo
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mongo
+    spec:
+      containers:
+      - name: mongo
+        image: {{ .Values.mongo.image }}
+        ports:
+        - containerPort: {{ .Values.mongo.port }}
+
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_USERNAME
+
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_PASSWORD
+
+        volumeMounts:
+        - name: mongo-storage
+          mountPath: /data/db
+
+      volumes:
+      - name: mongo-storage
+        nfs:
+          server: {{ .Values.nfs.server }}
+          path: {{ .Values.nfs.path }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mongo-svc
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-mongo
+  ports:
+    - port: {{ .Values.mongo.port }}
+      targetPort: {{ .Values.mongo.port }}
+  type: ClusterIP
+
+
+10. deployment with NFS-Server
+-------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: APP_ENV
+
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: APP_NAME
+
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_USERNAME
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_PASSWORD
+
+        volumeMounts:
+        - name: app-storage
+          mountPath: /data
+
+      volumes:
+      - name: app-storage
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pvc
 
 ==========================================================================================================================
 "install = create" and "upgarde = exiting yaml changes"
