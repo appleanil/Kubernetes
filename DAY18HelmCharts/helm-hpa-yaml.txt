@@ -1,3 +1,13 @@
+mychart/
+├── Chart.yaml          # Metadata about the chart (apiVersion, name, version, etc.)
+├── values.yaml         # Default configuration (image, replicas, ports, HPA, etc.)
+├── charts/             # Subcharts / dependencies (optional)
+└── templates/          # Kubernetes resource templates
+    ├── deployment.yaml # Application Deployment
+    ├── service.yaml    # Service (NodePort/ClusterIP)
+    ├── hpa.yaml        # Horizontal Pod Autoscaler ✅ ADDED
+
+
 1. Chart yaml file in HPA by using Helm
 ---------------------------------------
 apiVersion: v2
