@@ -28,15 +28,16 @@ Helm operates in a client-server model:
 helm 2:
 
 https://www.google.com/search?q=helm+in+k8s+2&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWIK4Xt_7ap01lm4VoujMDzvZC5TY6Q%3A17289024
-69006&ei=RfUMZ5ILsZ7j4Q__5ILIAg&ved=0ahUKEwjSwZDM142JAxUxzzgGHXyACkQ4dUDCBA&uact=5&oq=helm+in+k8s+2&gs_lp=Egxnd3Mtd2l6LXNlcnAiDWhlbG0gaW4gazhzIDJIpQ5Q7AJYkgxwAXgAkAEAmAFhoA
-GRBaoBATe4AQPIAQD4AQGYAgWgAq8DwgIKEAAYgAQYQxiKBcICBRAAGIAEwgIEECMYJ8ICBhAAGAcYHsICCBAAGAUYBxgewgIIEAAYBxgIGB7CAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwMyLjOgB_wd&sclient=gwswizser
-#vhid=CnN5ezLxGwlb8M&vssid=mosaic
+69006&ei=RfUMZ5ILsZ7j4Q__5ILIAg&ved=0ahUKEwjSwZDM142JAxUxzzgGHXyACkQ4dUDCBA&uact=5&oq=helm+in+k8s+2&gs_lp=Egxnd3Mtd2l6LXNlcnAiDWhlbG0gaW4gazhzIDJIpQ5Q7AJYkgxwAXg
+AkAEAmAFhoAGRBaoBATe4AQPIAQD4AQGYAgWgAq8DwgIKEAAYgAQYQxiKBcICBRAAGIAEwgIEECMYJ8ICBhAAGAcYHsICCBAAGAUYBxgewgIIEAAYBxgIGB7CAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwMyLjO
+gB_wd&sclient=gwswizser#vhid=CnN5ezLxGwlb8M&vssid=mosaic
 
 helm 3:
 
-https://www.google.com/search?q=helm+in+k8s+3+archetecture&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWILeu84H6o3S6g8w1f-
-ITRaOqfA84Q%3A1728902522703&ei=evUMZ9jNKsKW4EPmq6auQs&ved=0ahUKEwjY8t3l142JAxVCyzgGHRqXJrcQ4dUDCBA&uact=5&oq=helm+in+k8s+3+archetecture&gs_lp=Egxnd3Mtd2l6LXNlcnAiG
-mhlbG0gaW4gazhzIDMgYXJjaGV0ZWN0dXJlSJ8lUOEBWPojcAF4AJABAJgB0QGgAZkMqgEFNS43LjG4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8kE&sclient=gws-wiz-serp#vhid=HShMz9xvTEjAwM&vssid=mosaic
+https://www.google.com/search?q=helm+in+k8s+3+archetecture&sca_esv=9c1db43462cf1df4&rlz=1C1UEAD_enIN1101IN1102&udm=2&biw=1440&bih=825&sxsrf=ADLYWILeu84H6o3S6g8w
+1fITRaOqfA84Q%3A1728902522703&ei=evUMZ9jNKsKW4EPmq6auQs&ved=0ahUKEwjY8t3l142JAxVCyzgGHRqXJrcQ4dUDCBA&uact=5&oq=helm+in+k8s+3+archetecture&gs_lp=Egxnd3Mtd2l6LXNl
+cnAiGmhlbG0gaW4gazhzIDMgYXJjaGV0ZWN0dXJlSJ8lUOEBWPojcAF4AJABAJgB0QGgAZkMqgEFNS43LjG4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8kE&sclient=gwswizserp#vhid=HShMz9xvTEjAwM&
+vssid=mosaic
 
 
 3. Installation
