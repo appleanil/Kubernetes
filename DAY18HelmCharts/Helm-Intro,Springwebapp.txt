@@ -93,29 +93,6 @@ jio-stg-om-chart/
     ├── resourcequota.yaml
     ├── limitrange.yaml
 
-Example for deployment
-----------------------
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Release.Name }}
-  namespace: {{ .values.namespace }}     #we can define this as values.yaml
-spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app: {{ .Release.Name }}
-  template:
-    metadata:
-      labels:
-        app: {{ .Release.Name }}
-    spec:
-      containers:
-      - name: {{ .Release.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        ports:
-        - containerPort: {{ .Values.service.targetPort }}
-
 
 6. Templating
 --------------
@@ -127,33 +104,29 @@ from command-line parameters when deploying.
 ---------------
 You can customize deployments by creating your own values.yaml file, overriding default values in the chart:
 
-stgvalues.yaml
---------------
-replicaCount: 2
-image:
-  repository: my-repo/my-app
-  tag: "1.0.0"
-service:
-  type: LoadBalancer
-  port: 80
-request:
- cpu: 1
- memory: 12Gi
-
+stgvalues.yaml  
+--------------                                             
+replicaCount: 2 
+image: repository: my-repo/my-app                                        
+tag: "1.0.0"                                                    
+service:                                                        
+  type: LoadBalancer                                                
+  port: 80                                                                                                                       
+request:                                                             
+ cpu: 1                                                             
+ memory: 12G
 
 prod-values.yaml
 ----------------
 replicaCount: 5
-image:
-  repository: my-repo/my-app-prod
+image: repository: my-repo/my-app-prod
   tag: "1.1.0"
 service:
   type: LoadBalancer
   port: 80
 request:
  cpu: 8
- memory: 128Gi
-
+ memory: 128Gi                                                          
 
 
 8. Best Practices
@@ -203,9 +176,6 @@ How to add helm repo?
 
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 
-
-
-
 helm repo ls
 
 How to search chart for that repo? ---------------> helm search repo metrics-server
@@ -231,7 +201,6 @@ helm upgrade --install metrics-server metrics-server/metrics-server -n test-ns
 helm ls -A
 
 helm ls -n kube-system
-
 
 
 Increased to 2 replicas
@@ -295,7 +264,6 @@ javawebapp/ (or) ordermanagement (or) billing like this
 ├── templates/
 │   ├── deployment.yaml
 │   ├── service.yaml
-│   └── PVC.yaml
 └── values.yaml
 
 
@@ -305,11 +273,42 @@ Step 2: Modify the Chart.yaml
 Edit the Chart.yaml file to provide metadata for your chart. Here’s an example:
 
 apiVersion: v2
-name: javawebapp
-description: A Helm chart for deploying a Java web application
-version: 1.0.0          #helm version
-appVersion: "1.0.1"     #image version means application version
 
+name: javawebapp
+
+description: >
+  Production-grade Helm chart for deploying a scalable Java web application
+  with support for autoscaling, environment-specific configurations,
+  and external dependencies like databases.
+
+type: application
+
+version: 1.0.0
+
+appVersion: "1.0.1"
+
+keywords:
+  - java
+  - springboot
+  - microservice
+  - kubernetes
+  - helm
+
+home: https://your-company.com/javawebapp
+
+sources:
+  - https://github.com/your-org/javawebapp
+
+maintainers:
+  - name: Anil Kumar
+    email: anilanilji09@email.com
+
+icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png
+
+annotations:
+  category: Application
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Step 3: Update the values.yaml
 ------------------------------
@@ -318,9 +317,9 @@ In values.yaml, set default values that can be customized when deploying. For ex
 replicaCount: 2
 
 image:
-  repository: kkeducation123456/java-web-app
+  repository: kkeducation123456/java-web-app    #anildocker11/maven:0.0.1
   pullPolicy: IfNotPresent
-  tag: "1.0.1"          #image version means application version
+  tag: "1.0.1"          # image version means application version
 
 service:
   type: NodePort
@@ -329,6 +328,7 @@ service:
 
 namespace: prod
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Step 4: Edit the Deployment Template
 ------------------------------------
@@ -355,6 +355,7 @@ spec:
         ports:
         - containerPort: {{ .Values.service.targetPort }}
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Step 5: Edit the Service Template
 ---------------------------------
@@ -373,6 +374,7 @@ spec:
   - port: {{ .Values.service.port }}
     targetPort: {{ .Values.service.targetPort }}
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Step 6: Deploy the Helm Chart
 -----------------------------
