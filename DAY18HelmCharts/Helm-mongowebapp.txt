@@ -233,9 +233,21 @@ spec:
         - name: MONGO_DB_HOSTNAME
           value: {{ .Release.Name }}-mongo-svc
 
+        - name: MONGO_DB_USERNAME   
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_USERNAME
+
+        - name: MONGO_DB_PASSWORD   
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_PASSWORD
+
         volumeMounts:
         - name: app-storage
-          mountPath: /data   # optional
+          mountPath: /data
 
         resources:
           requests:
@@ -249,7 +261,6 @@ spec:
       - name: app-storage
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-pvc
-
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
