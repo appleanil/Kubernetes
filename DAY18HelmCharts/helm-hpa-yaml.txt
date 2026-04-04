@@ -1,0 +1,180 @@
+1. Chart yaml file in HPA by using Helm
+---------------------------------------
+apiVersion: v2
+name: javawebapp
+description: >
+  Production-grade Helm chart for deploying a Java Web Application
+  with Horizontal Pod Autoscaling (HPA) on Kubernetes.
+
+type: application
+
+version: 0.1.0
+
+appVersion: "1.1"
+
+keywords:
+  - java
+  - springboot
+  - kubernetes
+  - helm
+  - hpa
+
+home: https://example.com/javawebapp
+
+sources:
+  - https://github.com/your-org/javawebapp
+
+maintainers:
+  - name: Anil Kumar
+    email: anil@example.com
+
+icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+2. Values yaml file in HPA by using Helm
+----------------------------------------
+namespace: prod
+
+replicaCount: 1
+
+image:
+  repository: registry.k8s.io/hpa-example
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 80
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 30
+  targetMEMORYUtilizationPercentage: 80
+
+  
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+3. Deployment.yaml in hpa by using Helm charts
+----------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: app
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+
+            
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+4. Service yaml file in HPA by using Helm
+-----------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-svc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ .Release.Name }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+5. HPA.yaml in hpa by using Helm
+--------------------------------
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}-hpa
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Release.Name }}-app
+
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.targetMEMORYUtilizationPercentage }}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. helm install hpa ~/anilhelm -n prod --dry-run --debug
+2. helm install hpa ~/anilhelm -n prod
+3. kubectl get all -n prod
+4. kubectl run -i --tty load-generator --rm --image=busybox /bin/sh
+5. while true; do wget -q -O- <url;> done
+6. watch kubectl get all -n prod
+7. When CPU is increasing then automatically pods will increases.
+
+
+
+
+
+
+
+
+
+            
