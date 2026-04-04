@@ -173,18 +173,9 @@ spec:
 
 1. helm install hpa ~/anilhelm -n prod --dry-run --debug
 2. helm install hpa ~/anilhelm -n prod
-3. kubectl get all -n prod
-4. kubectl run -i --tty load-generator --rm --image=busybox /bin/sh
-5. while true; do wget -q -O- <url;> done
-6. watch kubectl get all -n prod
-7. When CPU is increasing then automatically pods will increases.
-
-
-
-
-
-
-
-
-
-            
+3. helm upgrade --install hpa ~/anilhelm -n prod ----------------> we can deploy change the image version
+4. kubectl get all -n prod
+5. kubectl run -i --tty load-generator --rm --image=busybox /bin/sh
+6. while true; do wget -q -O- <url;> done
+7. watch kubectl get all -n prod
+8. When CPU is increasing then automatically pods will increases.
