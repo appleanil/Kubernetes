@@ -1,10 +1,6 @@
-yum install tree -y 
 
-helm create javawebapp
 
-tree javawebapp
-
-jio-stg-om-chart/
+nfs-server/
   mychart/
 ├── Chart.yaml          # Metadata about the chart (or) Info about project apiVersion, Name, Description, Version, appVersion
 ├── values.yaml         # Default configuration values hardcode cheykunda undali ante values.yaml lo paste cheyali like app, env, name, replicas, secrets, ports, image
