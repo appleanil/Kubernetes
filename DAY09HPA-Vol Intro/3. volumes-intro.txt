@@ -4,6 +4,12 @@ For ReplicaSet using mongoDB then delete mongoDB automatcally recreate again Rep
 we can use statefulSet for upcoming seesion for mongodb.
 First we need to bring the mongodb application and then webapp.
 
+Yee node lo ithy aa mongoDB pod untundo aa node lo unna data store cheysthunndi.
+Eppudu nenu mongoDB delete cheyste automatically inko mongoDB pod vasthundi.
+Appudu vere Node lo mongoDB pod vasthundi akkada kuda fresh ga data store cheyali.
+Again MongoDB pod delete cheyste again old Node lo vastundi appudu akkada unna old data store cheysthundi
+
+
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
