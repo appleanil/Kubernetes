@@ -42,7 +42,7 @@ vssid=mosaic
 
 3. Installation
 ----------------
-sudo yum install curl -y
+sudo apt install curl -y
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 
 chmod 700 get_helm.sh
