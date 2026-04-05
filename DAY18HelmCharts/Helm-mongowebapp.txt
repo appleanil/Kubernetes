@@ -154,6 +154,7 @@ data:
 
 7. Mongo yaml file in MongoDB by using Helm Charts
 --------------------------------------------------
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -172,10 +173,24 @@ spec:
         app: {{ .Release.Name }}-mongo
     spec:
       containers:
-      - name: mongo
+      - name: mongo   # ✅ REQUIRED
         image: {{ .Values.mongo.image }}
         ports:
         - containerPort: {{ .Values.mongo.port }}
+
+        # 🔥 IMPORTANT (creates DB user)
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_USERNAME
+
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DB_PASSWORD
 
         volumeMounts:
         - name: mongo-storage
@@ -185,6 +200,7 @@ spec:
       - name: mongo-storage
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-pvc
+
 ---
 apiVersion: v1
 kind: Service
@@ -192,13 +208,12 @@ metadata:
   name: {{ .Release.Name }}-mongo-svc
   namespace: {{ .Values.namespace }}
 spec:
+  type: ClusterIP
   selector:
     app: {{ .Release.Name }}-mongo
   ports:
     - port: {{ .Values.mongo.port }}
       targetPort: {{ .Values.mongo.port }}
-  type: ClusterIP
-
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 
   
@@ -210,19 +225,19 @@ metadata:
   name: {{ .Release.Name }}-app
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ .Release.Name }}
+    app: {{ .Release.Name }}-app
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: {{ .Release.Name }}-app
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        app: {{ .Release.Name }}-app
     spec:
       containers:
-      - name: app
+      - name: app   # ✅ REQUIRED (fix for your error)
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
 
@@ -233,21 +248,21 @@ spec:
         - name: MONGO_DB_HOSTNAME
           value: {{ .Release.Name }}-mongo-svc
 
-        - name: MONGO_DB_USERNAME   
+        - name: MONGO_DB_USERNAME
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secret
               key: DB_USERNAME
 
-        - name: MONGO_DB_PASSWORD   
+        - name: MONGO_DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secret
               key: DB_PASSWORD
 
-        volumeMounts:
-        - name: app-storage
-          mountPath: /data
+        # 🔥 IMPORTANT (fix Mongo auth error)
+        - name: SPRING_DATA_MONGODB_URI
+          value: mongodb://$(MONGO_DB_USERNAME):$(MONGO_DB_PASSWORD)@{{ .Release.Name }}-mongo-svc:27017/?authSource=admin
 
         resources:
           requests:
@@ -257,10 +272,7 @@ spec:
             cpu: {{ .Values.resources.limits.cpu }}
             memory: {{ .Values.resources.limits.memory }}
 
-      volumes:
-      - name: app-storage
-        persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-pvc
+# ❌ NO PVC HERE (correct design)
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
