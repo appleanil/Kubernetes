@@ -1,0 +1,241 @@
+1. Chart.yaml in Helm Charts
+-----------------------------
+apiVersion: v2
+name: spring-mongo-app
+description: Spring Boot + MongoDB Helm Chart
+type: application
+
+version: 0.1.0
+appVersion: "1.0.0"
+
+keywords:
+  - springboot
+  - mongodb
+  - kubernetes
+
+maintainers:
+  - name: Anil Kumar
+    email: anilanilji09@gmail.com
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+2. values.yaml in Helm Charts
+-----------------------------
+namespace: prod
+
+replicaCount: 2
+
+image:
+  repository: kkeducation12345/spring-app
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+mongo:
+  image: mongo:8.0.9-noble
+  port: 27017
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+  # nodePort: 32091   # optional (remove for auto)
+
+secret:
+  username: devdb
+  password: devdb@123
+
+resources:
+  requests:
+    cpu: 300m
+    memory: 256Mi
+  limits:
+    cpu: 300m
+    memory: 512Mi
+
+# 🔥 if u are using this lines then go for helm charts in mongo or else no need and check with-out helm chart also Volume Configuration (MongoDB) 
+persistence:
+  enabled: true
+  hostPath: /mongobkp        # path on node
+  mountPath: /data/db        # Mongo default data dir
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+3. deployment.yaml in Helm Charts
+---------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-springwebapp
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-springwebapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-springwebapp
+    spec:
+      containers:
+      - name: springwebapp-con
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+
+        env:
+        - name: MONGO_DB_HOSTNAME
+          value: {{ .Release.Name }}-mongosvc
+
+        - name: MONGO_DB_USERNAME
+          value: {{ .Values.secret.username }}
+
+        - name: MONGO_DB_PASSWORD
+          value: {{ .Values.secret.password }}
+
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+4. service.yaml in Helm Charts
+------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-springappsvc
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ .Release.Name }}-springwebapp
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      nodePort: {{ .Values.service.nodePort }}
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+5. mongo.yaml in Helm Charts with-out hardcoded
+-----------------------------------------------
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: {{ .Release.Name }}-mongodb
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mongodb
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mongodb
+    spec:
+      containers:
+      - name: mongocon
+        image: {{ .Values.mongo.image }}
+        ports:
+        - containerPort: {{ .Values.mongo.port }}
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: {{ .Values.secret.username }}
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: {{ .Values.secret.password }}
+        volumeMounts:
+        - name: mongovol
+          mountPath: /data/db
+      volumes:
+      - name: mongovol
+        hostPath:
+          path: /mongobkp
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mongosvc
+  namespace: {{ .Values.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-mongodb
+  ports:
+    - port: {{ .Values.mongo.port }}
+      targetPort: {{ .Values.mongo.port }}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+another mongo.yaml in helm charts with hardcoded
+------------------------------------------------
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: {{ .Release.Name }}-mongodb
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mongodb
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mongodb
+    spec:
+      containers:
+      - name: mongocon
+        image: {{ .Values.mongo.image }}
+        ports:
+        - containerPort: {{ .Values.mongo.port }}
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: {{ .Values.secret.username }}
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: {{ .Values.secret.password }}
+        volumeMounts:
+        - name: mongovol
+          mountPath: {{ .Values.persistence.mountPath }}
+      volumes:
+      - name: mongovol
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+     
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mongosvc
+  namespace: {{ .Values.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-mongodb
+  ports:
+    - port: {{ .Values.mongo.port }}
+      targetPort: {{ .Values.mongo.port }}
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+helm install mongodb ~/mongo -n prod
+helm ls
+kubectl get all
+kubectl get all -o wide
+helm upgrade --install mongodb ~/mongo -n prod
+helm status mongodb --show-resources --------------> check all helm info, pods, services, deployments and replicasets
