@@ -56,8 +56,10 @@ resources:
 # 🔥 if u are using this lines then go for helm charts in mongo or else no need and check with-out helm chart also Volume Configuration (MongoDB) 
 persistence:
   enabled: true
-  hostPath: /mongobkp        # path on node
-  mountPath: /data/db        # Mongo default data dir
+  storageSize: 1Gi        # 🔥 added (used in PVC)
+  storageClass: manual    # 🔥 added (used in PV/PVC)
+  hostPath: /mongobkp
+  mountPath: /data/db
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -181,8 +183,8 @@ spec:
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-another mongo.yaml in helm charts with hardcoded
-------------------------------------------------
+6. another mongo.yaml in helm charts with hardcoded
+----------------------------------------------------
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
@@ -239,3 +241,66 @@ kubectl get all
 kubectl get all -o wide
 helm upgrade --install mongodb ~/mongo -n prod
 helm status mongodb --show-resources --------------> check all helm info, pods, services, deployments and replicasets
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+1. pv.yaml in Helm Charts
+-------------------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-mongo-pv
+spec:
+  capacity:
+    storage: {{ .Values.persistence.storageSize }}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ .Values.persistence.storageClass }}
+  hostPath:
+    path: {{ .Values.persistence.hostPath }}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+2. pvc.yaml in Helm Charts
+--------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-mongo-pvc
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storageSize }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+USE ABOVE 6. another mongo.yaml in helm charts with hardcoded PV.YAML AND PVC.YAML DONE
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+1. configmaps.yaml in Helm Charts
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
