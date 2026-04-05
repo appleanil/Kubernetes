@@ -317,7 +317,7 @@ In values.yaml, set default values that can be customized when deploying. For ex
 replicaCount: 2
 
 image:
-  repository: kkeducation123456/java-web-app    #anildocker11/maven:0.0.1
+  repository: anildocker11/maven:0.0.1              #kkeducation123456/java-web-app    anildocker11/maven:0.0.1
   pullPolicy: IfNotPresent
   tag: "1.0.1"          # image version means application version
 
