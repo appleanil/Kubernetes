@@ -107,7 +107,7 @@ You can customize deployments by creating your own values.yaml file, overriding 
 stgvalues.yaml  
 --------------                                             
 replicaCount: 2 
-image: repository: my-repo/my-app                                        
+image: repository: my-repo/my-app       # docker registry                                     
 tag: "1.0.0"                                                    
 service:                                                        
   type: LoadBalancer                                                
@@ -119,8 +119,8 @@ request:
 prod-values.yaml
 ----------------
 replicaCount: 5
-image: repository: my-repo/my-app-prod
-  tag: "1.1.0"
+image: repository: my-repo/my-app-prod   # docker registry
+tag: "1.1.0"
 service:
   type: LoadBalancer
   port: 80
