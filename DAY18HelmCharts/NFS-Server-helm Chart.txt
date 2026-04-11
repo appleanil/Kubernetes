@@ -1,5 +1,3 @@
-
-
 nfs-server/
   mychart/
 ├── Chart.yaml          # Metadata about the chart (or) Info about project apiVersion, Name, Description, Version, appVersion
@@ -338,140 +336,149 @@ sudo apt install -y nfs-common ----------------> run this command in master, nod
 "install = create" and "upgarde = exiting yaml changes"
 
 
-==================== 🚀 1. HELM BASIC COMMANDS ====================
+1. Helm Basic Commands
+-----------------------
 
-helm version -----------------------------> Shows installed Helm version
+1. helm version -----------------------------> Shows installed Helm version
 
-helm help --------------------------------> Displays help for Helm commands
+2. helm help --------------------------------> Displays help for Helm commands
 
-helm repo list ---------------------------> Lists added repositories
+3. helm repo list ---------------------------> Lists added repositories
 
-helm repo add bitnami https://charts.bitnami.com/bitnami --> Adds Bitnami repo
+4. helm repo add bitnami https://charts.bitnami.com/bitnami --> Adds Bitnami repo
 
-helm repo update -------------------------> Updates repo index (latest charts)
+5. helm repo update -------------------------> Updates repo index
 
-helm search repo nginx -------------------> Search charts in added repos
+6. helm search repo nginx -------------------> Search charts in repos
 
-helm search hub nginx --------------------> Search charts in Artifact Hub (online)
+7. helm search hub nginx --------------------> Search charts in Artifact Hub
 
 
 
-==================== 📦 2. HELM CHART MANAGEMENT ====================
+2. Helm Chart Management
+------------------------
 
-helm create mychart ----------------------> Creates new Helm chart structure
+8. helm create mychart ----------------------> Creates new Helm chart
 
-helm lint mychart ------------------------> Validates chart syntax & structure
+9. helm lint mychart ------------------------> Validate chart
 
-helm package mychart ---------------------> Packages chart into .tgz file
+10. helm package mychart --------------------> Package into .tgz
 
-helm show chart mychart ------------------> Shows Chart.yaml details
+11. helm show chart mychart -----------------> Show Chart.yaml
 
-helm show values mychart -----------------> Displays default values.yaml
+12. helm show values mychart ----------------> Show values.yaml
 
-helm show all mychart --------------------> Shows complete chart info
+13. helm show all mychart -------------------> Show full chart info
 
 
 
-==================== 🚀 3. INSTALL / UPGRADE / UNINSTALL ====================
+3. Install / Upgrade / Uninstall
+--------------------------------
 
-helm install myapp ./mychart -----------------------> Install chart as "myapp"
+14. helm install myapp ./mychart ------------> Install chart
 
-helm install myapp bitnami/nginx -------------------> Install from Helm repo
+15. helm install myapp bitnami/nginx --------> Install from repo
 
-helm install myapp ./mychart -f values.yaml --------> Install using custom values
+16. helm install myapp ./mychart -f values.yaml --> Use custom values
 
-helm install myapp ./mychart --set replicaCount=3 --> Override values via CLI
+17. helm install myapp ./mychart --set replicaCount=3 --> Override values
 
-helm upgrade myapp ./mychart -----------------------> Upgrade existing release
+18. helm upgrade myapp ./mychart ------------> Upgrade release
 
-helm upgrade myapp ./mychart -f values.yaml --------> Upgrade using values file
+19. helm upgrade myapp ./mychart -f values.yaml --> Upgrade with values
 
-helm upgrade myapp ./mychart --set image.tag=2.0 --> Update specific value
+20. helm upgrade myapp ./mychart --set image.tag=2.0 --> Update value
 
-helm upgrade --install myapp ./mychart ------------> Install if not exists / upgrade if exists
+21. helm upgrade --install myapp ./mychart --> Install or upgrade
 
-helm uninstall myapp -------------------------------> Delete release
+22. helm uninstall myapp --------------------> Delete release
 
-helm uninstall myapp --keep-history ---------------> Delete but keep history
+23. helm uninstall myapp --keep-history ----> Delete but keep history
 
 
 
-==================== 📊 4. RELEASE MANAGEMENT ====================
+4. Release Management
+---------------------
 
-helm list -----------------------------------------> List releases in default namespace
+24. helm list -------------------------------> List releases
 
-helm list -n prod ---------------------------------> List releases in prod namespace
+25. helm list -n prod -----------------------> List in prod namespace
 
-helm list -A --------------------------------------> List releases in all namespaces
+26. helm list -A ----------------------------> List all namespaces
 
-helm status myapp -n prod --------------------------> Show release status & details
+27. helm status myapp -n prod ---------------> Show release status
 
-helm history myapp -n prod -------------------------> Show revision history
+28. helm history myapp -n prod --------------> Show history
 
 
 
-==================== 🔄 5. ROLLBACK & DEBUGGING ====================
+5. Rollback & Debugging
+-----------------------
 
-helm rollback myapp 1 ------------------------------> Rollback to revision 1
+29. helm rollback myapp 1 -------------------> Rollback to v1
 
-helm rollback myapp 2 ------------------------------> Rollback to revision 2
+30. helm rollback myapp 2 -------------------> Rollback to v2
 
-helm get all myapp -n prod -------------------------> Show all chart info (values + templates)
+31. helm get all myapp -n prod --------------> Show all details
 
-helm get values myapp -n prod ----------------------> Show current values
+32. helm get values myapp -n prod -----------> Show values
 
-helm get manifest myapp -n prod --------------------> Show generated YAML from templates
+33. helm get manifest myapp -n prod ---------> Show YAML
 
 
 
-==================== ⚙️ 6. ADVANCED HELM COMMANDS ====================
+6. Advanced Commands
+--------------------
 
-helm template myapp ./mychart ----------------------> Render YAML (no deployment)
+34. helm template myapp ./mychart -----------> Render YAML
 
-helm template myapp ./mychart -f values.yaml -------> Render YAML with custom values
+35. helm template myapp ./mychart -f values.yaml --> Render with values
 
-helm dependency update ------------------------------> Download/update dependencies
+36. helm dependency update ------------------> Update dependencies
 
-helm dependency build -------------------------------> Build dependencies from Chart.lock
+37. helm dependency build -------------------> Build dependencies
 
-helm upgrade myapp ./mychart --reuse-values --------> Upgrade using existing values
+38. helm upgrade myapp ./mychart --reuse-values --> Reuse values
 
-helm install myapp ./mychart --namespace dev --create-namespace --> Install in custom namespace
+39. helm install myapp ./mychart --namespace dev --create-namespace --> Install custom ns
 
 
 
-==================== 🎯 7. WORKING WITH VALUES ====================
+7. Working with Values
+----------------------
 
-helm install myapp ./mychart -f custom-values.yaml --> Install with custom values file
+40. helm install myapp ./mychart -f custom-values.yaml --------> Custom values
 
-helm install myapp ./mychart --set image.tag=latest --> Override image tag
+41. helm install myapp ./mychart --set image.tag=latest -------> Override image
 
-helm install myapp ./mychart --set replicaCount=3 --> Set replicas dynamically
+42. helm install myapp ./mychart --set replicaCount=3 ---------> Set replicas
 
-helm upgrade myapp ./mychart --set service.type=NodePort --> Update service type
+43. helm upgrade myapp ./mychart --set service.type=NodePort --> Update service
 
 
 
-==================== 🧪 8. TESTING & VALIDATION ====================
+8. Testing & Validation
+------------------------
 
-helm lint mychart ----------------------------------> Validate chart syntax
+44. helm lint mychart -----------------------> Validate chart
 
-helm install myapp ./mychart --dry-run -------------> Simulate install (no apply)
+45. helm install myapp ./mychart --dry-run --> Simulate install
 
-helm install myapp ./mychart --dry-run --debug -----> Simulate + show full debug output
+46. helm install myapp ./mychart --dry-run --debug --> Debug install
 
-helm upgrade --install myapp ./mychart --dry-run --debug --> Test install/upgrade safely
+47. helm upgrade --install myapp ./mychart --dry-run --debug --> Safe test
 
 
 
-==================== 📂 9. KUBERNETES + HELM INTEGRATION ====================
+9. Kubernetes + Helm Integration
+---------------------------------
 
-kubectl get all -n prod ----------------------------> View all resources in prod namespace
+48. kubectl get all -n prod ---------------------> View prod resources
 
-kubectl get all -n default -------------------------> View resources in default namespace
+49. kubectl get all -n default ------------------> View default resources
 
-helm template ./mychart > output.yaml -------------> Export rendered YAML
+50. helm template ./mychart > output.yaml -------> Export YAML
 
-kubectl apply -f output.yaml -----------------------> Apply YAML manually
+51. kubectl apply -f output.yaml ----------------> Apply YAML manually
 
-helm status myapp --show-resources -n prod --------> Show all created resources
+52. helm status myapp --show-resources -n prod --> Show all resource
