@@ -11,7 +11,7 @@ When we are practising plz use
 3. StatefulSet and 
 4. RBAC
 
-How to change capacity from t3.micro to t3.large, t3.medium....
+How to change capacity from t3.micro to t3.large....
 
 goto instance type state ---> stop the instance (when it is stopped) then only go for the next step
 
@@ -23,22 +23,27 @@ Step - 01 ----> switch to root user sudo su -
 Step - 02 ----> install vi jenkins.sh
 
 #!/bin/bash
-sudo apt update -y
-#sudo apt upgrade -y
-wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
-echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
-sudo apt update -y
-sudo apt install temurin-17-jdk -y
-/usr/bin/java --version
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
-                  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-                  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-                              /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt-get update -y
-sudo apt-get install jenkins -y
+# Install Java (if not already)
+sudo apt update
+sudo apt install -y fontconfig openjdk-17-jdk
+
+# Download Jenkins
+wget https://pkg.jenkins.io/debian-stable/binary/jenkins_2.440.1_all.deb
+
+# Install Jenkins
+sudo apt install -y ./jenkins_2.440.1_all.deb
+
+# Start Jenkins
+sudo systemctl daemon-reexec
+sudo systemctl enable jenkins
 sudo systemctl start jenkins
-sudo systemctl status jenkins
+
+# Check status
+sudo systemctl status jenkins --no-pager
+
+# Get admin password
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
 
 Step - 03 -----> chmod +x jenkins.sh
 
@@ -89,8 +94,6 @@ eksctl create cluster \
 
 
 Step - 13 -------> aws eks list-clusters, kubectl get nodes, kubectl get namespace kubectl config set-context --current --namespace=prod
-
-
 
 Step - 14 -------> In jenkins install these plugins
 
