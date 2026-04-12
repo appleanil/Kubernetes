@@ -44,6 +44,8 @@ spec:
       port: 80      
       targetPort: 8080 
 
+go and check in chrome Node IP and should enable the security group with NodePort
+
 NOTE: Increase the resources and see, now new nodes are coming eventhough we defined min and max
 
 EKS Cluster Auto scaler
@@ -116,6 +118,8 @@ step 3: Install the clusterAutoAscaller
 
 link: https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md
 
+apply in gitbash
+eppudu ee pod up avvadaniki manaki okka memory and cpu kavali kabbati anduku nenu just 100 millicore cpu tesukunna u can check in Deployment resources
 kubectl apply -f cluster-autoscaler-autonodes.yaml
 
 ---
