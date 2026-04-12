@@ -1,4 +1,4 @@
-
+(AKIA2VZMZCSVTHWURJGO   uzFMvrh3/4OEDzDqGRGbDv9e3Z66CNmH2WIPSOP2)
 https://getting-started-with-kubernetes.hashnode.dev/deploying-applications-to-aws-eks-from-jenkins
 
 github link:   Niranjan ---> https://github.com/KandlaguntaVenkataSivaNiranjanReddy/spring-boot-mongo-docker-kkfunda/tree/feature
