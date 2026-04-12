@@ -1,7 +1,157 @@
 
 https://getting-started-with-kubernetes.hashnode.dev/deploying-applications-to-aws-eks-from-jenkins
 
+github link:   Niranjan ---> https://github.com/KandlaguntaVenkataSivaNiranjanReddy/spring-boot-mongo-docker-kkfunda/tree/feature
+github link:   ANil -------> https://github.com/appleanil/spring-boot-mongo-docker-kkfunda.git ------> plz use feature branche only
+
+
+When we are practising plz use 
+1. JenkinsCD, 
+2. NodeAutoScaler, 
+3. StatefulSet and 
+4. RBAC
+
+How to change capacity from t3.micro to t3.large, t3.medium....
+
+goto instance type state ---> stop the instance (when it is stopped) then only go for the next step
+
+select Action ---> click on change instance then select type t3.micro to t3.large and come down click on change instance type
+
+
+Step - 01 ----> switch to root user sudo su -
+
+Step - 02 ----> install vi jenkins.sh
+
+#!/bin/bash
+sudo apt update -y
+#sudo apt upgrade -y
+wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
+echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+sudo apt update -y
+sudo apt install temurin-17-jdk -y
+/usr/bin/java --version
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+                  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+                  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+                              /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update -y
+sudo apt-get install jenkins -y
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+Step - 03 -----> chmod +x jenkins.sh
+
+Step - 04 -----> go and take IP Address :8080
+
+Step - 05 -----> sudo apt update sudo apt install unzip curl -y
+
+Step - 06 -----> Come to normal user exit
+
+Step - 07 -----> curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+Step - 08 -----> Check once aws --version
+
+Step - 09 -----> aws configure
+
+Step - 10 -----> In AWS Anil kumar (Profile) click on Security credentials, scroll down and create access key click on Command line Interface (CLI) and create then
+                 give name "Anil jenkins AKSk" and then copy in gitbash and both keep it aside
+
+Step - 11 ------> install kubectl
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+
+
+Step - 12 ------> install eksctl
+
+curl -LO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz"
+tar -xzf eksctl_Linux_amd64.tar.gz
+sudo mv eksctl /usr/local/bin/
+eksctl version
+
+
+Step - 12 ------> EKS Cluster
+
+eksctl create cluster \
+--name my-cluster \
+--region ap-south-1 \
+--nodegroup-name mynodes \
+--node-type t3.medium \
+--nodes 2 \
+--nodes-min 2 \
+--nodes-max 3 \
+--managed
 
 
 
-github link:   https://github.com/KandlaguntaVenkataSivaNiranjanReddy/spring-boot-mongo-docker-kkfunda/tree/feature
+Step - 13 -------> aws eks list-clusters, kubectl get nodes, kubectl get namespace kubectl config set-context --current --namespace=prod
+
+
+
+Step - 14 -------> In jenkins install these plugins
+
+AWS Credentials Plugin, Kubernetes Plugin, Kubernetes CLI Plugin, Kubernetes Credentials, Stage view
+
+
+Step - 15 ------> Add AWS Credentials in Jenkins
+copy and paste accesskey and secretkey and description give aws eks cred
+
+Step - 16 -------> Create a New Job in Jenkins for Kubernetes Deployment by PIPELINE
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout from GitHub') {
+            steps {
+                git branch: 'feature', 
+                    url: 'https://github.com/appleanil/spring-boot-mongo-docker-kkfunda.git'
+            }
+        }
+
+        stage('Setup KubeConfig') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-eks-cred']]) {
+                    sh '''
+                        aws eks update-kubeconfig --region ap-south-1 --name my-cluster
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-eks-cred']]) {
+                    sh '''
+                        kubectl apply -f springappmongo.yaml --validate=false
+                    '''
+                }
+            }
+        }
+
+        stage('Verify Pods and Services') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                  credentialsId: 'aws-eks-cred']]) {
+                    sh '''
+                        kubectl get pods
+                        kubectl get svc
+                    '''
+                }
+            }
+        }
+    }
+}
+
+
+Step - 17 ---------> go and check gitbash kubectl get all -n prod
+
+
+
+plz do some more activities whiile practising search in chtgpt
