@@ -52,7 +52,10 @@ The Cluster Autoscaler in Amazon EKS (Elastic Kubernetes Service) automatically 
 It helps manage the scaling of worker nodes in your cluster, adding nodes when there are pending pods that cannot be scheduled due to insufficient
 resources and removing nodes when they are underutilized.
 
-Okka node resources over indi ante appude pod another node loki deploy avthundi
+Okka node resources over indi ante appude pod another node loki deploy avthundi.
+
+Pod ----------> automatically increase avvali ante HorizontalPodAutoscaler
+Server -------> automatically increase avvali ante ClusterAutoscaler
 
 
 How to set-up
