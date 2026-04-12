@@ -122,6 +122,8 @@ apply in gitbash
 eppudu ee pod up avvadaniki manaki okka memory and cpu kavali kabbati anduku nenu just 100 millicore cpu tesukunna u can check in Deployment resources
 kubectl apply -f cluster-autoscaler-autonodes.yaml
 
+eksctl delete cluster my-k8s-cluster --region ap-south-1
+
 ---
 apiVersion: v1
 kind: ServiceAccount
