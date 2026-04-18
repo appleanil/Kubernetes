@@ -1,6 +1,8 @@
 Kubernetes Init Containers & Sidecar Containers
 ===============================================
 
+TWO CONTAINERS LO OKKA CONTAINER EMO MAIN APP AND ANOTHER CONTAINER IS CHECKING FOR PRE CHECKS
+
 1. Init Containers
 ------------------
 Init Containers అనేవి main container start అవ్వడానికి ముందు run అయ్యే containers. ---------> chtgpt telugu
@@ -83,6 +85,103 @@ Sidecar Containers:
 Logging (ELK / Fluentd)
 Monitoring (Prometheus agents)
 Proxy (Istio sidecar)
+
+
+Probes, Init Containers, and Sidecars
+
+1. Init Container Runs before main container starts
+--------------------------------------------------- 
+Use:
+Wait for DB
+Setup config
+Run migrations
+Key point:
+
+👉 If it fails → app never starts
+
+
+🔹 2. Sidecar Container Runs together with main app
+---------------------------------------------------
+Use:
+Logging
+Monitoring
+Proxy
+Key point:
+
+👉 Runs continuously
+
+
+🔹 3. Probes (VERY IMPORTANT)
+-----------------------------
+👉 Used by Kubernetes to check container health
+
+Types of probes
+✅ Liveness Probe
+------------------
+👉 “Is container alive?”
+If fails → container restarts
+
+✅ Readiness Probe
+-------------------
+👉 “Is container ready to serve traffic?”
+If fails → removed from service (no traffic)
+
+✅ Startup Probe
+-----------------
+👉 “Has app started successfully?”
+Prevents early restarts
+
+🔥 Example (easy)
+-----------------
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+
+👉 Kubernetes keeps checking this endpoint
+
+
+🧠 Real-world scenario
+----------------------
+E-commerce app
+Component	Role
+Init Container	Wait for DB
+Main App	Runs API
+Sidecar	Sends logs
+Probe	Checks /health
+
+
+⚡ Key differences (simple)
+| Feature             | Init | Sidecar |Probe|
+| ------------------- | ---- | ------- | ----|
+| Runs before app     | ✅   | ❌     | ❌ |   
+| Runs with app       | ❌   | ✅     | ✅ |   
+| Continuous          | ❌   | ✅     | ✅ |  
+| Can restart app     | ❌   | ❌     | ✅ |   
+| Used for setup      | ✅   | ❌     | ❌ |   
+| Used for monitoring | ❌   | ✅     | ✅ |
+
+
+
+Init container was waiting for DB
+That’s NOT probe’s job
+
+👉 Probe does NOT block startup
+👉 Init container DOES block startup
+
+
+🎯 Interview-ready answer
+--------------------------
+Init containers are used for pre-start initialization tasks, sidecar containers run alongside the application for continuous support, and probes are used 
+by Kubernetes to monitor container health and manage lifecycle actions like restart or traffic routing.
+
+
+💡 Simple memory trick
+---------------------
+Init --------> Before
+Sidecar -----> Alongside
+Probe -------> Check
+
 
 
 
