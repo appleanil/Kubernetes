@@ -64,7 +64,8 @@ NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM          
 mongodb-pv1  1Gi        RWX            Delete           Failed   prod/mongodb1-pvc   <unset>        <unset>                 7m17s
 
 Even though we delete and re-apply mongo-cm-secrets.yaml and pvc.yaml, the Mongo pod and PVC remain in Pending state because the existing PersistentVolume 
-is in Failed state and cannot be reused. This failure can happen when using the Delete reclaim policy with NFS, where Kubernetes is unable to clean up the storage. The Pending state is due to the unusable PV, not directly because of the reclaim policy.
+is in Failed state and cannot be reused. This failure can happen when using the Delete reclaim policy with NFS, where Kubernetes is unable to clean up the storage.
+The Pending state is due to the unusable PV, not directly because of the reclaim policy.
 persistenvolumeclaim: delete in pv.yaml
 
 
@@ -73,7 +74,7 @@ persistenvolumeclaim: delete in pv.yaml
 Reclaim policies --> Default Reclaim policy
 --------------------------------------------
 1. Retain: When a PV is released from a PVC with a "Retain" reclaim policy, the volume is not automatically deleted. Instead,it remains in the cluster in a released state.
-            The underlying storage is preserved, allowing you to manually reclaim or manage the data.
+The underlying storage is preserved, allowing you to manually reclaim or manage the data.
 My mongo pod and PVC is deleted, PV is in released state and data is safe(NFS-Server).
 For long time we have data then use "Retain"
 
