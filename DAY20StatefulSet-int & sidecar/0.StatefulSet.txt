@@ -1,3 +1,7 @@
+StatefulSet is used to manage stateful applications by providing stable identity, persistent storage, ordered deployment, and stable network identity.
+The sequence numbering (pod-0, pod-1) is just one part of it.
+
+
 ---
 apiVersion: v1
 kind: ConfigMap
