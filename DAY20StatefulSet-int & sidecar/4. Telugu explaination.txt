@@ -1,3 +1,17 @@
+Class Breif Explaination
+------------------------
+Create init container
+kubectl logs init-container-demo -n test-ns -c init-wait
+kubectl logs init-container-demo -n test-ns -c main-app
+
+Create sidecar container
+watch live logs by kubectl exec -it sidecar-container-demo -- sh
+cd /logs
+watch cat app.log
+then check in normal user watch kubectl logs sidecar-container-demo -c sidecar-log-watcher
+same logs should reflect here and there also check timings
+
+
 Kubernetes Init Containers & Sidecar Containers
 ===============================================
 
