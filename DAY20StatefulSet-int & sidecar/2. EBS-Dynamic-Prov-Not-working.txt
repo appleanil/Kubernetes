@@ -10,6 +10,8 @@ Step 1: Install the AWS EBS CSI Driver
 
 --> So we need to manually install it using the official overlay:
 
+--> sudo yum install git -y
+
 kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.35"
  
 What this does:
