@@ -1,0 +1,99 @@
+Kubernetes Init Containers & Sidecar Containers
+===============================================
+
+1. Init Containers
+------------------
+Init Containers అనేవి main container start అవ్వడానికి ముందు run అయ్యే containers. ---------> chtgpt telugu
+
+Init containers run before the main container to perform setup tasks. ---------------------> chtgpt english
+
+Init containers are like pre-flight checks before the app launches. -----------------------> kkfunda
+
+📌 ముఖ్య లక్షణాలు:
+👉 Main container start కంటే ముందే run అవుతాయి
+👉 ఒక్కొక్కటి sequence లో run అవుతాయి
+👉 పూర్తయ్యాక (complete) అవి stop అవుతాయి
+👉 Fail అయితే pod start కాదు
+
+💡 Example (real-time)
+----------------------
+MongoDB start అవ్వాలి
+కానీ ముందు config setup కావాలి
+
+initContainers:
+- name: init-db
+  image: busybox
+  command: ['sh', '-c', 'echo initializing db...']
+
+
+2. SideCar Containers
+---------------------
+Sidecar Container అనేది main container తో పాటు same pod లో run అయ్యే helper container. --------> chtgpt telugu
+
+Sidecar containers run alongside the main container to provide supporting functionality like logging, monitoring, or proxying. -------> chtgpt english
+
+Sidecar containers are like helpers that work alongside main apps. -----------------------------> kkfunda
+
+📌 ముఖ్య లక్షణాలు:
+-------------------
+👉 Main container తో పాటు run అవుతుంది
+👉 Same network & storage share చేస్తుంది
+👉 Pod lifetime అంతా run అవుతుంది
+
+💡 Example (real-time)
+----------------------
+
+Logging sidecar:
+----------------
+
+containers:
+- name: app
+  image: my-app
+
+- name: log-sidecar
+  image: busybox
+  command: ['sh', '-c', 'tail -f /logs/app.log']
+  
+
+👉 ఇది app logs capture చేస్తుంది
+
+🧠 Simple analogy
+
+👉 Sidecar = “Assistant” / “Helper”
+
+
+| Feature  | Init Container         | Sidecar Container         |
+| -------- | ---------------------- | ------------------------- |
+| Run time | Before main container  | Along with main container |
+| Purpose  | Setup / Initialization | Support / Helper          |
+| Lifetime | Short (one-time)       | Runs continuously         |
+| Order    | Sequential             | Parallel                  |
+
+
+Real-world use cases
+--------------------
+Init Containers:
+---------------
+DB connection wait చేయడం
+Config files generate చేయడం
+Permissions set చేయడం
+
+Sidecar Containers:
+-------------------
+Logging (ELK / Fluentd)
+Monitoring (Prometheus agents)
+Proxy (Istio sidecar)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
