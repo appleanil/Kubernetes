@@ -110,7 +110,7 @@ step 2:
 
 attach the policy to eks cluster IAM role.
 
-select the EKS IAM role --> permissions --> add permissions --> Attach policies --> select ClusterAutoScalerpolicy--> add permissions 
+select the EKS IAM role --> select nodegroup --> permissions --> add permissions --> Attach policies --> select ClusterAutoScalerpolicy--> add permissions 
 
 
 step 3: Install the clusterAutoAscaller
