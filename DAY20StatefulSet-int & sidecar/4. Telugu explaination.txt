@@ -5,7 +5,7 @@ kubectl logs init-container-demo -n test-ns -c init-wait
 kubectl logs init-container-demo -n test-ns -c main-app
 
 Create sidecar container
-watch live logs by kubectl exec -it sidecar-container-demo -- sh
+watch live logs by kubectl exec -it sidecar-container-demo -c main-app -- sh
 cd /logs
 watch cat app.log
 then check in normal user watch kubectl logs sidecar-container-demo -c sidecar-log-watcher
