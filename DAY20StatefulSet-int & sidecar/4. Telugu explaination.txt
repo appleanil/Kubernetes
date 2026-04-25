@@ -5,10 +5,11 @@ kubectl logs init-container-demo -n test-ns -c init-wait
 kubectl logs init-container-demo -n test-ns -c main-app
 
 Create sidecar container
-watch live logs by kubectl exec -it sidecar-container-demo -c main-app -- sh
-cd /logs
-watch cat app.log
-then check in normal user watch kubectl logs sidecar-container-demo -c sidecar-log-watcher
+watch live logs by kubectl logs -f sidecar-container -c sidecar-log-watcher
+watch live logs by kubectl exec -it sidecar-container -c main-app -- sh
+cat /logs/app.log
+watch live logs ----> tail -f /logs/app.log
+then check in normal user 
 same logs should reflect here and there also check timings
 
 
