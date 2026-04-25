@@ -29,11 +29,9 @@ affinity:
 1️⃣ In
 --------------------------------------------------
 
-Meaning:
-Given list lo unna value match avvali.
+Meaning ---------> Given list lo unna value match avvali.
 
-Example:
-env=prod or env=stage
+Example ---------> env=prod or env=stage
 
 apiVersion: v1
 kind: Pod
@@ -54,15 +52,14 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu:
-👉 env=prod లేదా env=stage ఉన్న node లో deploy అవుతుంది.
+
+Telugu ------> env=prod లేదా env=stage ఉన్న node లో deploy అవుతుంది.
 
 --------------------------------------------------
 2️⃣ NotIn
 --------------------------------------------------
 
-Meaning:
-Given list values avoid cheyyali.
+Meaning ---------> Given list values avoid cheyyali.
 
 apiVersion: v1
 kind: Pod
@@ -82,8 +79,7 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu:
-👉 env=dev nodes lo deploy కాదు.
+Telugu --------> env=dev nodes lo deploy కాదు.
 
 --------------------------------------------------
 3️⃣ Exists
@@ -108,15 +104,13 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu:
-👉 gpu label ఉన్న ఏ node అయినా okay.
+Telugu ---------> gpu label ఉన్న ఏ node అయినా okay.
 
 --------------------------------------------------
 4️⃣ DoesNotExist
 --------------------------------------------------
 
-Meaning:
-Aa key ఉండకూడదు.
+Meaning --------> Aa key ఉండకూడదు.
 
 apiVersion: v1
 kind: Pod
@@ -134,15 +128,13 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu:
-👉 gpu label లేని nodes లో deploy అవుతుంది.
+Telugu -----------> gpu label లేని nodes లో deploy అవుతుంది.
 
 --------------------------------------------------
 5️⃣ Gt
 --------------------------------------------------
 
-Meaning:
-Value greater than ఉండాలి. Numeric only.
+Meaning ----------> Value greater than ఉండాలి. Numeric only.
 
 apiVersion: v1
 kind: Pod
@@ -162,16 +154,14 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu:
-👉 cpu label 4 కన్నా ఎక్కువ ఉండాలి.
-Example: cpu=8 node eligible.
+Telugu ------> cpu label 4 కన్నా ఎక్కువ ఉండాలి.
+Example -----> cpu=8 node eligible.
 
 --------------------------------------------------
 6️⃣ Lt
 --------------------------------------------------
 
-Meaning:
-Value less than ఉండాలి.
+Meaning ---------> Value less than ఉండాలి.
 
 apiVersion: v1
 kind: Pod
@@ -191,9 +181,8 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu:
-👉 cpu label 8 కన్నా తక్కువ nodes.
-Example: cpu=4 eligible.
+Telugu ---------> cpu label 8 కన్నా తక్కువ nodes.
+Example---------> cpu=4 eligible.
 
 --------------------------------------------------
 🔥 Summary Table
