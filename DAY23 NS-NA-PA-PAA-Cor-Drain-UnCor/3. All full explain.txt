@@ -6,12 +6,26 @@ Match kakapothe Pod Pending                       | Match kakapothe vere node lo
 Must satisfy scheduler rule                       | Scheduler gives preference only.
 
 
-1. nodeSelector          2. Node Affinity          3. Pod Affinity
----------------------------------------------------------------------------
-Simple exact match      | Advanced node matching   | Deploy near another pod
-env: prod               | env in (prod,stage)      | same node as frontend
-                        | zone preferred           |
 
+1. nodeSelector        2. Node Affinity         3. Pod Affinity            4. Pod Anti-Affinity
+---------------------|-------------------------|--------------------------|----------------------------
+Simple exact match   | Advanced node matching  | Deploy near another pod  | Deploy away from another pod
+env: prod            | env in (prod,stage)     | same node as frontend    | different node than replica
+                     | zone preferred          |                          | avoid same node placement
+
+
+1. nodeSelector         2. Node Affinity          3. Pod Affinity               4. Pod Anti-Affinity
+----------------------|--------------------------|------------------------------|------------------------------
+Simple exact match    | Advanced node matching   | Vere pod daggara deploy chey | Vere pod daggara deploy cheyyaku
+env: prod             | env in (prod,stage)      | Frontend unna node lo backend| Replica ni vere node lo pettu
+                      | zone preferred           | Same node placement          | Same node avoid chey
+
+
+Pod Affinity                    | Pod Anti-Affinity
+--------------------------------|--------------------------------
+Frontend --> Node1              | App-1 --> Node1
+Backend  --> Node1              | App-2 --> Node2
+Same node deployment            | Different node deployment
 
 
 Kubernetes Node Affinity operators ni use chesi pod ఏ node lo deploy avvali decide chestham.
