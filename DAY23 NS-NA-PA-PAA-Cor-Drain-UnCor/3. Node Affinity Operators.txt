@@ -1,3 +1,15 @@
+Difference Between Required vs Preferred
+1. RequiredDuringSchedulingIgnoredDuringExecution -------> Hard Rule 🔥
+
+1. Condition match avvali compulsory.
+2. Match kakapothe pod Pending.
+
+2. PreferredDuringSchedulingIgnoredDuringExecution ------> Soft Rule 😊
+
+1. Match ayithe good.
+2. Match kakapothe vere node lo deploy.
+
+
 Kubernetes Node Affinity operators ni use chesi pod ఏ node lo deploy avvali decide chestham.
 
 You asked for all operators:
