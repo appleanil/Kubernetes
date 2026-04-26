@@ -1,25 +1,24 @@
-Difference Between Required vs Preferred
-1. RequiredDuringSchedulingIgnoredDuringExecution -------> Hard Rule 🔥
+1. RequiredDuringSchedulingIgnoredDuringExecution | 2. PreferredDuringSchedulingIgnoredDuringExecution
+------------------------------------------------- |---------------------------------------------------
+Hard Rule 🔥                                      | Soft Rule 😊
+Condition match compulsory                        | Match ayithe good
+Match kakapothe Pod Pending                       | Match kakapothe vere node lo deploy
+Must satisfy scheduler rule                       | Scheduler gives preference only.
 
-1. Condition match avvali compulsory.
-2. Match kakapothe pod Pending.
 
-2. PreferredDuringSchedulingIgnoredDuringExecution ------> Soft Rule 😊
+1. nodeSelector          2. Node Affinity          3. Pod Affinity
+---------------------------------------------------------------------------
+Simple exact match      | Advanced node matching   | Deploy near another pod
+env: prod               | env in (prod,stage)      | same node as frontend
+                        | zone preferred           |
 
-1. Match ayithe good.
-2. Match kakapothe vere node lo deploy.
 
 
 Kubernetes Node Affinity operators ni use chesi pod ఏ node lo deploy avvali decide chestham.
 
 You asked for all operators:
 
-👉 In
-👉 NotIn
-👉 Exists
-👉 DoesNotExist
-👉 Gt
-👉 Lt
+1 In 2 NotIn 3 Exists 4 DoesNotExist 5 Gt 6 Lt
 
 I’ll give each YAML + Telugu explanation + example.
 
@@ -37,13 +36,13 @@ affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
 
+
 --------------------------------------------------
 1️⃣ In
 --------------------------------------------------
-
 Meaning ---------> Given list lo unna value match avvali.
-
 Example ---------> env=prod or env=stage
+Telugu ----------> env=prod లేదా env=stage ఉన్న node లో deploy అవుతుంది.
 
 apiVersion: v1
 kind: Pod
@@ -65,13 +64,11 @@ spec:
     image: nginx
 
 
-Telugu ------> env=prod లేదా env=stage ఉన్న node లో deploy అవుతుంది.
-
 --------------------------------------------------
 2️⃣ NotIn
 --------------------------------------------------
-
 Meaning ---------> Given list values avoid cheyyali.
+Telugu ----------> env=dev nodes lo deploy కాదు.
 
 apiVersion: v1
 kind: Pod
@@ -91,14 +88,12 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu --------> env=dev nodes lo deploy కాదు.
 
 --------------------------------------------------
 3️⃣ Exists
 --------------------------------------------------
-
-Meaning:
-Key undali chaalu. Value important kaadu.
+Meaning ----------> Key undali chaalu. Value important kaadu.
+Telugu -----------> gpu label ఉన్న ఏ node అయినా okay.
 
 apiVersion: v1
 kind: Pod
@@ -116,13 +111,12 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu ---------> gpu label ఉన్న ఏ node అయినా okay.
 
 --------------------------------------------------
 4️⃣ DoesNotExist
 --------------------------------------------------
-
 Meaning --------> Aa key ఉండకూడదు.
+Telugu -----------> gpu label లేని nodes లో deploy అవుతుంది.
 
 apiVersion: v1
 kind: Pod
@@ -140,13 +134,13 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu -----------> gpu label లేని nodes లో deploy అవుతుంది.
 
 --------------------------------------------------
 5️⃣ Gt
 --------------------------------------------------
-
 Meaning ----------> Value greater than ఉండాలి. Numeric only.
+Telugu -----------> cpu label 4 కన్నా ఎక్కువ ఉండాలి.
+Example ----------> cpu=8 node eligible.
 
 apiVersion: v1
 kind: Pod
@@ -166,14 +160,13 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu ------> cpu label 4 కన్నా ఎక్కువ ఉండాలి.
-Example -----> cpu=8 node eligible.
 
 --------------------------------------------------
 6️⃣ Lt
 --------------------------------------------------
-
 Meaning ---------> Value less than ఉండాలి.
+Telugu ----------> cpu label 8 కన్నా తక్కువ nodes.
+Example ---------> cpu=4 eligible.
 
 apiVersion: v1
 kind: Pod
@@ -193,8 +186,6 @@ spec:
   - name: nginx
     image: nginx
 
-Telugu ---------> cpu label 8 కన్నా తక్కువ nodes.
-Example---------> cpu=4 eligible.
 
 --------------------------------------------------
 🔥 Summary Table
