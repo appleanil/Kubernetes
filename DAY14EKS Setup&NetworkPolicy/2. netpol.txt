@@ -209,8 +209,8 @@ IQ: How to check connecton one Namespace to another Namespace -------> Fully Qua
 ============================================================================================================================================
 
 
-Example 1 This yaml define u only prod(ns) sprinapp and nginx is to allow traffic and ns(test) javawebapp not allow
----------------------------------------------------------------------------------------------------------------------
+Example 1 This yaml define u same NS lo PodSelector only prod(ns) springapp and nginx is to allow traffic and ns(test) javawebapp not allow
+--------------------------------------------------------------------------------------------------------------------------------------------
 
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -253,8 +253,8 @@ kubectl exec -it javawebappdep-95fd6f796-bjsbs -n test-ns -- /bin/bash
 curl -v telnet://mongo-svc:27017    ---> no connection
 
 
-Example-2 prod + test ---> This yaml define u only prod(ns) sprinapp and ns(test) javawebapp allow, and another ns(prod) nginx is not allow
---------------------------------------------------------------------------------------------------------------------------------------------
+Example-2 PodSelector & NamespaceSelector ---> This yaml define u only prod(ns) springapp and ns(test) javawebapp allow, and another ns(prod) nginx is not allow
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 NOTE: add namespace selector and check the connection
 
    - namespaceSelector:
@@ -296,8 +296,8 @@ kubectl get netpol  -n test-ns
 
 
 
-Example-3 Only Namespace Selector -------> This yaml define u only test(ns) of pod javawebapp is to allow traffic and another ns(prod) sprigwebapp and nginx not allow
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Example-3 Only Namespace Selector  This yaml define u only test(ns) of pod javawebapp is to allow traffic and another ns(prod) sprigwebapp and nginx not allow
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -321,6 +321,27 @@ spec:
 
 
 curl -v telnet://mongo-svc.prod.svc.cluster.local:27017
+
+
+Example:- ipBlock — Selects by IP range (CIDR) Controls traffic from external IPs or CIDR blocks.
+-------------------------------------------------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-cidr
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 192.168.1.0/24    # Allow this IP range
+            except:
+              - 192.168.1.100/32    # But block this specific IP
+
 
 ==========================================================================================================================================================
 
