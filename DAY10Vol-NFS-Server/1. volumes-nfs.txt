@@ -3,8 +3,6 @@ InterView Question ----> my team have 7 ppl, and i supports 5 microservices
 
 k8s volumes
 ============
-
-
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata: 
@@ -100,9 +98,7 @@ spec:
 
 
 
-
 kubectl exec -it <pod-Name> -n <NS> -- ls /data/db
-
 
 
 =====================================================================================================================================================
@@ -165,8 +161,6 @@ emptyDir
 HosptPath Volumes
 
 
---> explain the diagram
-
 setup the NFS server -------> By default NFS server port number is 2049
 ====================
 
@@ -192,11 +186,9 @@ sudo chmod 777 -R /mnt/nfs_share/
 
 step 6: Assign the server access to the clients through NFS export file.
 
-
 sudo vi /etc/exports
 
 /mnt/nfs_share/ *(rw,sync,no_subtree_check,no_root_squash)
-
 
 step 7: export the shared directory
 
@@ -206,13 +198,12 @@ sudo systemctl restart nfs-kernel-server
 
 step 8: check the nfs process is running or not
 
-ps -ef|grep -i "nfs"
+ps -ef | grep -i "nfs"
 
 
 
 configuring the nfs client machine
 ==================================
-
 --> Install in all the machines of k8s cluster
 
 sudo apt update -y
