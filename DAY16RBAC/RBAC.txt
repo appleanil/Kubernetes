@@ -8,14 +8,57 @@ Here's a breakdown of its key components and how it works:
 
 Key Components
 --------------
+ROLE: Defines a set of permissions within a specific namespace. It grants access to resources like pods, deployments, etc.
+1. Role (రోల్) ----------> Kubernetes లో ఒక specific **namespace** లో ఏఏ permissions ఉండాలో define చేస్తుంది.
+Example:
+* pods చూడటం
+* deployments create చేయటం
+* services update చేయటం
+అంటే, ఒక namespace లో user ఏమి చేయగలడో Role నిర్ణయిస్తుంది.
 
-Role: Defines a set of permissions within a specific namespace. It grants access to resources like pods, deployments, etc.
+2.RoleBinding: Grants the permissions defined in a Role to a user or a group within a specific namespace.
+2. RoleBinding (రోల్ బైండింగ్) ------> Role లో define చేసిన permissions ను ఒక **user**, **group**, లేదా **service account** కు assign చేస్తుంది.
+అంటే:* “ఈ user కి ఈ Role permissions ఇవ్వాలి” అని connect చేసే component.
+ఇది కూడా ఒక specific namespace లో మాత్రమే పనిచేస్తుంది.
 
-RoleBinding: Grants the permissions defined in a Role to a user or a group within a specific namespace.
+3. ClusterRole: Similar to a Role but applies across the entire cluster. It can be used for non-namespaced resources or for cluster-wide permissions.
+3. ClusterRole (క్లస్టర్ రోల్) --------> ఇది Role లాంటిదే కానీ మొత్తం **cluster** కి వర్తిస్తుంది.
+ఇది ఉపయోగించే సందర్భాలు:
+* cluster-wide permissions ఇవ్వాలి
+* nodes వంటి non-namespaced resources access చేయాలి
+Example:
+* అన్ని namespaces లో pods చూడటం
+* nodes access చేయటం
 
-ClusterRole: Similar to a Role but applies across the entire cluster. It can be used for non-namespaced resources or for cluster-wide permissions.
+4. ClusterRoleBinding: Grants the permissions defined in a ClusterRole to a user or a group across the entire cluster.
+4. ClusterRoleBinding -------> ClusterRole లో ఉన్న permissions ను ఒక **user**, **group**, లేదా **service account** కు cluster మొత్తం మీద assign చేస్తుంది.
 
-ClusterRoleBinding: Grants the permissions defined in a ClusterRole to a user or a group across the entire cluster.
+అంటే:* “ఈ user కి cluster అంతటా ఈ permissions ఇవ్వాలి” అని bind చేస్తుంది.
+
+
+| Role + RoleBinding                              | ClusterRole + ClusterRoleBinding                             |
+| ----------------------------------------------- | ------------------------------------------------------------ |
+| Specific namespace లో మాత్రమే పనిచేస్తుంది        | మొత్తం cluster లో పనిచేస్తుంది                                 |
+| Example: `dev` namespace                        | Example: అన్ని namespaces                                    |
+| Role → permissions define చేస్తుంది               | ClusterRole → cluster-wide permissions define చేస్తుంది        |
+| RoleBinding → Role ని user కి assign చేస్తుంది     | ClusterRoleBinding → ClusterRole ని user కి assign చేస్తుంది     |
+| Namespace level access control                  | Cluster level access control                                 |
+| Example Permission: pod create                  | Example Permission: logs view across cluster                 |
+| Only `dev` namespace లో pod create చేయగలరు    | అన్ని namespaces లో logs చూడగలరు                           |
+| Namespaced resources కోసం ఎక్కువగా ఉపయోగిస్తారు  | Cluster-wide / non-namespaced resources కోసం ఉపయోగిస్తారు    |
+
+
+
+Short Difference Table
+----------------------
+
+| Component          | Scope            | Purpose                             |
+| ------------------ | ---------------- | ----------------------------------- |
+| Role               | Single Namespace | Namespace permissions               |
+| RoleBinding        | Single Namespace | Role ని user కి assign చేయటం       |
+| ClusterRole        | Entire Cluster   | Cluster-wide permissions            |
+| ClusterRoleBinding | Entire Cluster   | ClusterRole ని user కి assign చేయటం|
+
 
 
 Practical
@@ -54,7 +97,7 @@ Download and run the AWS CLI MSI installer for Windows (64-bit):
 
 https://awscli.amazonaws.com/AWSCLIV2.msi
 
-paste in google and download it later open that file click next, next... later go and check bash terminal
+paste in google and download it later open that file click next, next... later go exit and open bash terminal
 
 
 step 3: create IAM user and create a access and seceret key for that user
@@ -62,11 +105,11 @@ step 3: create IAM user and create a access and seceret key for that user
 goto IAM in another tab --> select user in left side --> enter username anildevops and ignore change password --> next --> permission AWS user to grp --> next
 --> take unsername and password --> go and check another browser for user having access
 select user and open --> security Credantails --> select command line interface --> next --> decrition add username --> next --> take AccessKey and SecurityKey
-https://gobidesi.signin.aws.amazon.com/console
+https://733996455083.signin.aws.amazon.com/console
 
-uname:   kkfunda
+uname:   Rbac_Anil
 
-pwd:    Vision@2031
+pwd:    Anil@123456
 
 AK: AKfef
 
@@ -88,18 +131,18 @@ step 5: create eks read-only policy and attach to the user
 1. aws sts get-caller-identity
 2. aws eks list-clusters
 3. aws eks update-kubeconfig --name my-demo-cluster --region ap-south-1
-4. cat /c/Users/gpras/.kube/config
+4. cat  \C\Users\anila\.kube\config
 5. kubectl get po (error vasthundi)
 
 But we are not able to list kubectl get po, etc
 
 1. open user --> Add Permission --> Attach Policies directly --> search s3fullaccess, ec2fullaccess
-2. aws sts get-caller-identity
+2. aws sts get-caller-identity ------> userID, Acct no, ARN link
 3. aws eks list-clusters
 4. aws eks update-kubeconfig --name my-k8s-cluster --region ap-south-1
-5. go IAM create Policy --> Create policy --> click visual --> search eks --> give all read and list permissions --> resources --> next
+5. go IAM create Policy --> Create policy --> click visual --> search eks --> give all read and list permissions --> resources give "all" --> next
 6. give policy name(eks-policy) --> next --> goto user --> Add Permissions --> Attach policy --> customised manages or search eks-policy --> next --> Add Permissions
-7. run above commands (1 to 5) check once for access.
+7. run above commands (1 to 4) check once for access.
 
 
 
@@ -122,8 +165,8 @@ data:
       rolearn: arn:aws:iam::418295704475:role/EKS-worker-role-class
       username: system:node:{{EC2PrivateDNSName}}
   mapUsers: |
-    - userarn: arn:aws:iam::418295704475:user/prasanth          # open IAM user and copy ARN and paste it
-      username: anildevops                                      # add IAM user name
+    - userarn: arn:aws:iam::733996455083:user/Rbac_Anil          # open IAM user and copy ARN and paste it
+      username: Rbac_Anil                                        # add IAM user name
 kind: ConfigMap
 metadata:
   creationTimestamp: "2024-10-11T07:12:50Z"
@@ -133,14 +176,8 @@ metadata:
   uid: fe764e06-c2ec-4f84-bc3b-5732c1ebfaeb
 
 
-
 kubectl get pods --> we dont have permission
 kubectl get po -n prod
-
-srihari --> RBAC
-
-sai --> admin
-
 
 ==============================================================================================================================
 
@@ -153,7 +190,7 @@ metadata:
   namespace: prod      # permission denied for another namespace like default, test, stg, utg if u want create check once
   name: pod-reader     # name should be same in Role and RoleBinding
 rules:
-- apiGroups: [""]      # "" indicates all the core API group
+- apiGroups: [""]      # "" indicates all the core API group(by default v1 only)we can write like also v1, apps/v1, ....
   resources: ["pods"]  # we can define Pods, Service, PVC, PV, Configmaps, Secret, Deployment, ReplicaController, ReplicaSet
   verbs: ["get", "watch", "list"]   # practice once give all permissions like Read, list, check below
 ---
@@ -164,7 +201,7 @@ metadata:
   namespace: prod
 subjects:
 - kind: User
-  name: anildevops
+  name: anil          # for assingment create group in linux search in chtgpt and offical doc of k8s.
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
@@ -175,23 +212,26 @@ go and check kubectl get po -n prod
 kubectl get svc -n prod
 if u want Service, PVC, PV, Configmaps, Secret, Deployment, ReplicaController, ReplicaSet
 then kubectl get po -n prod
-take pod name pod-reader kubectl edit po pod-reader -n prod
+take pod name pod-reader kubectl edit role pod-reader -n prod
 apiGroups
-- ""  ---> for all
-- v1
-- apps/v1
+- "*"  ---> for all
+- v1   ---> specific/particular
+- apps/v1 --> specific/particular
 add resource
-- ""  ---> for all 
+- "*"  ---> for all means pods, services, replicationcontrollers, deployments, replicasets, statefulsets, daemonsets, configmaps, secrets, persistentvolumeclaims
 - pods
 - Services
 - ReplicaController like this
 verbs (permission)
-- ""  ---> for all
+- "*"  ---> for all
 - read
 - list
 - get
 - delete
 - watch
+- create
+- update
+- patch
 
 ==============================================================================================================================
 
@@ -201,7 +241,7 @@ kind: ClusterRole
 metadata:
   name: fullaccesscr # name should be same in ClusterRole and ClusterRoleBinding
 rules:
-- apiGroups: ["*"]   # by default v1 later apps/v1, autoscaling, like some other
+- apiGroups: ["*"]   # by default v1 later apps/v1, autoscaling, like some other we can give in a single line
   resources: ["*"]   # we can define Pods, Service, PVC, PV, Configmaps, Secret, Deployment, ReplicaController, ReplicaSet
   verbs: ["*"]       # practice once permissions like Read, list, write, watch, check below
 
@@ -212,7 +252,7 @@ metadata:
   name: fullaccess   # name should be same in ClusterRole and ClusterRoleBinding
 subjects:
 - kind: User
-  name: anildevops
+  name: anildevops   # practise for different user also
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
@@ -221,7 +261,7 @@ roleRef:
 
 kubectl create ns prod
 kubectl get ns
-go and check officals doc in krs search for Role, RoleBinding, ClusterRole, ClusterRoleBinding
+go and check officals doc in k8s search for Role, RoleBinding, ClusterRole, ClusterRoleBinding
 create multiple users and then practise
 
 =============================================================================================================================
