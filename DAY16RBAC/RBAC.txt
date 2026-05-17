@@ -265,6 +265,31 @@ go and check officals doc in k8s search for Role, RoleBinding, ClusterRole, Clus
 create multiple users and then practise
 
 =============================================================================================================================
+How to know which verbs to check
+
+kubectl auth can-i get pod --as anil
+kubectl auth can-i list pod --as anil
+kubectl auth can-i watch pod --as anil
+kubectl auth can-i get services --as=anil
+kubectl auth can-i list configmaps --as=anil
+kubectl auth can-i create deployments --as=anil
+kubectl auth can-i delete nodes --as=anil
+kubectl auth can-i get secrets --as=anil
+Check All Permissions -------> kubectl auth can-i --list --as=anil
+
+Namespace Specific
+------------------
+kubectl auth can-i get pods -n prod --as=anil
+
+for group
+
+kubectl auth can-i get pods \
+  -n prod \
+  --as=Anil \
+  --as-group=Devops_group
+kubectl auth can-i get pods -n prod --as=Anil --as-group=Devops_group
+
+kubectl auth can-i create deployments -n dev --as=anil
 
 verbs:
 - get        # read single resource
