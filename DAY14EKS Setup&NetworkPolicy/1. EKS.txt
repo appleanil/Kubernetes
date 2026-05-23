@@ -70,6 +70,7 @@ echo "=============================="
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
+After creating EKS cluster then plz add permission for nodegroup goto IAM, Roles, select nodegroup, Add Permissions, search AmazonEBSDriverPolicy, next.
 1. Goto IAM role
 2. In left side select Roles and create Roles
 3. Select AWS Service and down side select EC2 --> next
