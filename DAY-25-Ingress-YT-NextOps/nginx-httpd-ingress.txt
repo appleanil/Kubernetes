@@ -1,0 +1,378 @@
+Real-Time DevOps Interview Answer
+
+Ingress is a Kubernetes resource used to expose multiple applications externally using a single LoadBalancer/IP and route traffic based on path or hostname.
+It helps reduce cloud cost and centralize traffic management using an Ingress Controller.
+
+Kubernetes Ingress — Detailed Explanation
+
+In Kubernetes, Ingress is used to expose HTTP/HTTPS applications from outside the cluster and route traffic to different services.
+
+Problem Before Ingress
+
+Suppose you have 3 applications:
+NGINX app
+HTTPD app
+Spring Boot app
+
+Without Ingress:
+NGINX   -> LoadBalancer
+HTTPD   -> LoadBalancer
+SPRING  -> LoadBalancer
+
+Each service needs:
+Separate external IP
+Separate AWS LoadBalancer
+Higher cost
+Solution Using Ingress
+
+With Ingress:
+Internet
+    ↓
+Single LoadBalancer
+    ↓
+Ingress Controller
+    ↓
+Routes traffic to services
+
+
+Now:
+One LoadBalancer
+One external IP
+Multiple applications
+Real-Time Architecture
+
+
+User Request
+     ↓
+AWS LoadBalancer
+     ↓
+NGINX Ingress Controller
+     ↓
+Ingress Rules
+     ↓
+Service
+     ↓
+   Pods
+
+
+Main Components
+----------------
+| Component          | Purpose               |
+| ------------------ | --------------------- |
+| Ingress            | Defines routing rules |
+| Ingress Controller | Executes rules        |
+| Service            | Connects to pods      |
+| Pod                | Runs application      |
+
+
+What Ingress Can Do
+1. Path-Based Routing
+Example:
+/nginx  -> nginx-service
+/httpd  -> httpd-service
+User accesses:
+http://EXTERNAL-IP/nginx
+http://EXTERNAL-IP/httpd
+
+2. Host-Based Routing
+Example:
+app1.company.com -> nginx-service
+app2.company.com -> spring-service
+
+3. SSL/HTTPS Termination
+Ingress can manage:
+SSL certificates
+HTTPS traffic
+Example:
+https://myapp.com
+
+4. Load Balancing
+Ingress distributes traffic across:
+Multiple pods
+Multiple nodes
+
+5. URL Rewrite
+Example:
+/app1/test -> /
+using annotations.
+Why DevOps Engineers Use Ingress
+Cost Optimization
+Without ingress:
+10 apps = 10 LoadBalancers
+With ingress:
+10 apps = 1 LoadBalancer
+Huge AWS cost savings.
+Centralized Traffic Management
+
+Ingress manages:
+Routing
+SSL
+Security
+Authentication
+Rewrite rules
+
+
+Better Production Architecture
+Used in:
+Microservices
+Banking apps
+E-commerce platforms
+Enterprise applications
+
+Types of Kubernetes Services vs Ingress
+| Type         | Purpose                |
+| ------------ | ---------------------- |
+| ClusterIP    | Internal communication |
+| NodePort     | Expose using NodeIP    |
+| LoadBalancer | Creates external LB    |
+| Ingress      | Smart routing layer    |
+
+
+Ingress itself does NOT route traffic.
+
+Ingress Controller
+
+Common controllers:
+
+NGINX Ingress Controller
+AWS ALB Controller
+Traefik
+HAProxy
+Example Flow
+
+Suppose:
+
+/nginx -> nginx-service
+/httpd -> httpd-service
+
+Request Flow:
+
+Browser
+  ↓
+Ingress Controller
+  ↓
+Ingress Rule Check
+  ↓
+nginx-service
+  ↓
+nginx pod
+
+Real-Time Example
+Company has:
+frontend app
+backend API
+auth service
+
+Ingress routes:
+
+/api      -> backend-service
+/auth     -> auth-service
+/         -> frontend-service
+
+Single domain:
+company.com
+Common Ingress Annotations
+Annotation	Purpose
+rewrite-target	URL rewrite
+ssl-redirect	Redirect HTTP→HTTPS
+use-regex	Enable regex paths
+auth-type	Authentication
+rate-limit	Traffic limiting
+
+
+Example Ingress YAML
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: my-ingress
+
+spec:
+  ingressClassName: nginx
+
+  rules:
+  - http:
+      paths:
+
+      - path: /nginx
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+              
+
+Most Used in Production
+
+In AWS EKS:
+
+AWS ALB + Ingress Controller
+
+OR
+
+NGINX Ingress Controller
+because they support:
+SSL
+Routing
+Security
+Scalability
+High availability
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+kubectl apply -f nginx.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: nginx
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: nginx
+
+  template:
+    metadata:
+      labels:
+        app: nginx
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+
+        ports:
+        - containerPort: 80
+
+        env:
+        - name: TITLE
+          value: "NGINX APP1"
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: nginx
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: nginx
+
+  ports:
+  - port: 80
+    targetPort: 80
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+kubectl apply -f httpd.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: httpd
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: httpd
+
+  template:
+    metadata:
+      labels:
+        app: httpd
+
+    spec:
+      containers:
+      - name: httpd
+        image: httpd:latest
+
+        ports:
+        - containerPort: 80
+
+        env:
+        - name: TITLE
+          value: "APACHE APP2"
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: httpd
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: httpd
+
+  ports:
+  - port: 80
+    targetPort: 80
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.1/deploy/static/provider/cloud/deploy.yaml 
+firstly apply this yaml file
+
+kubectl apply -f ingress-controller.yaml
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: k8s-ingress
+  namespace: prod
+
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+spec:
+  ingressClassName: nginx
+
+  rules:
+  - http:
+      paths:
+
+      # nginx app
+      - path: /nginx(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+
+      # httpd app
+      - path: /httpd(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: httpd
+            port:
+              number: 80
+
+      # default backend
+      - path: /(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
